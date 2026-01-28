@@ -11,6 +11,7 @@ import BookTest from "./pages/BookTest";
 import BookAppointment from "./pages/BookAppointment";
 import MyAppointments from "./pages/MyAppointments";
 import Doctors from "./pages/Doctors";
+import DoctorProfile from "./pages/DoctorProfile";
 import MyRequests from "./pages/MyRequests";
 import Dashboard from "./pages/Dashboard";
 import NotificationSettingsPage from "./pages/NotificationSettingsPage";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/book-appointment" element={<BookAppointment />} />
             <Route path="/my-appointments" element={<MyAppointments />} />
             <Route path="/doctors" element={<Doctors />} />
+            <Route path="/doctors/:id" element={<DoctorProfile />} />
             <Route path="/my-requests" element={<MyRequests />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/settings/notifications" element={<NotificationSettingsPage />} />
