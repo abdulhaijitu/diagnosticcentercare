@@ -155,15 +155,17 @@ Deno.serve(async (req) => {
     // Log SMS attempt to database
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
     
-    await supabaseAdmin.from("sms_logs").insert({
-      phone: normalizedPhone,
-      message: message,
-      provider: provider,
-      status: result.success ? "sent" : "failed",
-      response: result.response || result.error,
-    }).catch((err) => {
-      console.error("Failed to log SMS:", err);
-    });
+    try {
+      await supabaseAdmin.from("sms_logs").insert({
+        phone: normalizedPhone,
+        message: message,
+        provider: provider,
+        status: result.success ? "sent" : "failed",
+        response: result.response || result.error,
+      });
+    } catch (logErr) {
+      console.error("Failed to log SMS:", logErr);
+    }
 
     if (result.success) {
       return new Response(

@@ -309,6 +309,36 @@ export type Database = {
           },
         ]
       }
+      sms_logs: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          phone: string
+          provider: string
+          response: Json | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          phone: string
+          provider?: string
+          response?: Json | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          phone?: string
+          provider?: string
+          response?: Json | null
+          status?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
