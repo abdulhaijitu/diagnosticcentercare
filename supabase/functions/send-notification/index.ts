@@ -174,9 +174,51 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Send via WhatsApp gateway if enabled
     if (settings.whatsapp_enabled) {
-      console.log(`[WhatsApp] Would send to user ${userId}: ${message}`);
-      // TODO: Integrate with WhatsApp Business API
+      try {
+        // Get user's phone number from profiles
+        const { data: profile } = await supabaseAdmin
+          .from("profiles")
+          .select("phone")
+          .eq("id", userId)
+          .single();
+
+        if (profile?.phone) {
+          const whatsappResponse = await fetch(`${supabaseUrl}/functions/v1/send-whatsapp`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${supabaseServiceKey}`,
+            },
+            body: JSON.stringify({
+              phone: profile.phone,
+              message: message,
+              // Use template for first contact (customize template name as needed)
+              templateName: "notification_update",
+              templateParams: [title, message],
+            }),
+          });
+
+          const whatsappResult = await whatsappResponse.json();
+          console.log(`[WhatsApp] Sent to ${profile.phone}:`, whatsappResult);
+
+          // Update log status
+          await supabaseAdmin
+            .from("notification_logs")
+            .update({
+              status: whatsappResult.success ? "delivered" : "failed",
+              delivered_at: whatsappResult.success ? new Date().toISOString() : null,
+              metadata: { ...data, whatsapp_response: whatsappResult },
+            })
+            .eq("notification_id", notification.id)
+            .eq("channel", "whatsapp");
+        } else {
+          console.log(`[WhatsApp] No phone number for user ${userId}`);
+        }
+      } catch (whatsappError) {
+        console.error("[WhatsApp] Failed:", whatsappError);
+      }
     }
 
     if (settings.email_enabled) {
