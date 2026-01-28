@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useHomeCollectionRequests, CollectionStatus } from "@/hooks/useHomeCollectionRequests";
+import { useStaffMembers } from "@/hooks/useStaffMembers";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -55,10 +56,13 @@ const CHART_COLORS = {
 
 const Dashboard = () => {
   const { user, isLoading: authLoading, isAdmin, isStaff, roles } = useAuth();
-  const { requests, isLoading, updateRequestStatus, reschedule } = useHomeCollectionRequests();
+  const { requests, isLoading, updateRequestStatus, reschedule, assignStaff } = useHomeCollectionRequests();
+  const { staffMembers, isLoading: staffLoading } = useStaffMembers();
   const [selectedRequest, setSelectedRequest] = useState<string | null>(null);
   const [rescheduleData, setRescheduleData] = useState({ date: "", time: "" });
   const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
+  const [isAssignStaffOpen, setIsAssignStaffOpen] = useState(false);
+  const [selectedStaffId, setSelectedStaffId] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [dateFilter, setDateFilter] = useState<string>("all");
   const [serviceFilter, setServiceFilter] = useState<string>("all");
@@ -200,6 +204,27 @@ const Dashboard = () => {
   const openReschedule = (requestId: string) => {
     setSelectedRequest(requestId);
     setIsRescheduleOpen(true);
+  };
+
+  const openAssignStaff = (requestId: string) => {
+    setSelectedRequest(requestId);
+    setSelectedStaffId("");
+    setIsAssignStaffOpen(true);
+  };
+
+  const handleAssignStaff = async () => {
+    if (selectedRequest && selectedStaffId) {
+      await assignStaff(selectedRequest, selectedStaffId);
+      setIsAssignStaffOpen(false);
+      setSelectedRequest(null);
+      setSelectedStaffId("");
+    }
+  };
+
+  const getAssignedStaffName = (staffId: string | null) => {
+    if (!staffId) return null;
+    const staff = staffMembers.find((s) => s.id === staffId);
+    return staff?.full_name || staff?.email || "Unknown Staff";
   };
 
   return (
@@ -605,6 +630,16 @@ const Dashboard = () => {
                               <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
                               <span className="text-muted-foreground">{request.address}</span>
                             </div>
+
+                            {/* Assigned Staff Info */}
+                            {request.assigned_staff_id && (
+                              <div className="flex items-center gap-2 text-sm bg-primary/5 rounded-lg px-3 py-2">
+                                <User className="h-4 w-4 text-primary" />
+                                <span className="text-foreground">
+                                  Assigned: <span className="font-medium">{getAssignedStaffName(request.assigned_staff_id)}</span>
+                                </span>
+                              </div>
+                            )}
                           </div>
 
                           {/* Actions */}
@@ -627,6 +662,15 @@ const Dashboard = () => {
 
                             {isAdmin && (
                               <>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => openAssignStaff(request.id)}
+                                  className={request.assigned_staff_id ? "border-primary/50" : ""}
+                                >
+                                  <UserPlus className="h-4 w-4 mr-2" />
+                                  {request.assigned_staff_id ? "Reassign Staff" : "Assign Staff"}
+                                </Button>
                                 <Button
                                   variant="outline"
                                   size="sm"
@@ -795,6 +839,54 @@ const Dashboard = () => {
             </div>
             <Button onClick={handleReschedule} className="w-full">
               Confirm Reschedule
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Assign Staff Dialog */}
+      <Dialog open={isAssignStaffOpen} onOpenChange={setIsAssignStaffOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Assign Staff</DialogTitle>
+            <DialogDescription>
+              Select a staff member to assign for this home collection
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <div className="space-y-2">
+              <Label htmlFor="staff-select">Select Staff</Label>
+              {staffLoading ? (
+                <div className="text-sm text-muted-foreground">Loading staff members...</div>
+              ) : staffMembers.length === 0 ? (
+                <div className="text-sm text-muted-foreground p-4 bg-muted rounded-lg text-center">
+                  No staff members available. Please add staff users first.
+                </div>
+              ) : (
+                <Select value={selectedStaffId} onValueChange={setSelectedStaffId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a staff member" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {staffMembers.map((staff) => (
+                      <SelectItem key={staff.id} value={staff.id}>
+                        <div className="flex flex-col">
+                          <span>{staff.full_name || "Unnamed Staff"}</span>
+                          <span className="text-xs text-muted-foreground">{staff.email || staff.phone}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+            <Button 
+              onClick={handleAssignStaff} 
+              className="w-full"
+              disabled={!selectedStaffId || staffMembers.length === 0}
+            >
+              <UserPlus className="h-4 w-4 mr-2" />
+              Confirm Assignment
             </Button>
           </div>
         </DialogContent>
