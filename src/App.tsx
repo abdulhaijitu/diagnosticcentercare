@@ -11,6 +11,7 @@ import BookTest from "./pages/BookTest";
 import Doctors from "./pages/Doctors";
 import MyRequests from "./pages/MyRequests";
 import Dashboard from "./pages/Dashboard";
+import NotificationSettingsPage from "./pages/NotificationSettingsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/doctors" element={<Doctors />} />
             <Route path="/my-requests" element={<MyRequests />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/settings/notifications" element={<NotificationSettingsPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
