@@ -4,6 +4,8 @@ import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useHomeCollectionRequests, CollectionStatus } from "@/hooks/useHomeCollectionRequests";
 import { useStaffMembers } from "@/hooks/useStaffMembers";
+import { useReports } from "@/hooks/useReports";
+import { ReportUploadDialog } from "@/components/reports/ReportUploadDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,7 +31,7 @@ import {
   Calendar, Clock, MapPin, Phone, FlaskConical, User, 
   CheckCircle2, AlertCircle, ClipboardList, RefreshCw,
   TrendingUp, FileUp, UserPlus, Activity, Filter,
-  BarChart3, PieChart, ArrowUpRight, ArrowDownRight
+  BarChart3, PieChart, ArrowUpRight, ArrowDownRight, FileText
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { format, isToday, isThisWeek, isThisMonth, subDays, startOfDay, endOfDay } from "date-fns";
@@ -58,10 +60,13 @@ const Dashboard = () => {
   const { user, isLoading: authLoading, isAdmin, isStaff, roles } = useAuth();
   const { requests, isLoading, updateRequestStatus, reschedule, assignStaff } = useHomeCollectionRequests();
   const { staffMembers, isLoading: staffLoading } = useStaffMembers();
+  const { getReportsForRequest } = useReports();
   const [selectedRequest, setSelectedRequest] = useState<string | null>(null);
   const [rescheduleData, setRescheduleData] = useState({ date: "", time: "" });
   const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
   const [isAssignStaffOpen, setIsAssignStaffOpen] = useState(false);
+  const [isUploadReportOpen, setIsUploadReportOpen] = useState(false);
+  const [uploadRequestData, setUploadRequestData] = useState<{ requestId: string; patientId: string; patientName: string } | null>(null);
   const [selectedStaffId, setSelectedStaffId] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [dateFilter, setDateFilter] = useState<string>("all");
@@ -225,6 +230,11 @@ const Dashboard = () => {
     if (!staffId) return null;
     const staff = staffMembers.find((s) => s.id === staffId);
     return staff?.full_name || staff?.email || "Unknown Staff";
+  };
+
+  const openUploadReport = (requestId: string, patientId: string, patientName: string) => {
+    setUploadRequestData({ requestId, patientId, patientName });
+    setIsUploadReportOpen(true);
   };
 
   return (
@@ -679,10 +689,20 @@ const Dashboard = () => {
                                   <Calendar className="h-4 w-4 mr-2" />
                                   Reschedule
                                 </Button>
-                                <Button variant="outline" size="sm">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => openUploadReport(request.id, request.patient_id, request.full_name)}
+                                >
                                   <FileUp className="h-4 w-4 mr-2" />
                                   Upload Report
                                 </Button>
+                                {getReportsForRequest(request.id).length > 0 && (
+                                  <Badge variant="secondary" className="gap-1">
+                                    <FileText className="h-3 w-3" />
+                                    {getReportsForRequest(request.id).length} Report(s)
+                                  </Badge>
+                                )}
                               </>
                             )}
                           </div>
@@ -891,6 +911,17 @@ const Dashboard = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Upload Report Dialog */}
+      {uploadRequestData && (
+        <ReportUploadDialog
+          open={isUploadReportOpen}
+          onOpenChange={setIsUploadReportOpen}
+          requestId={uploadRequestData.requestId}
+          patientId={uploadRequestData.patientId}
+          patientName={uploadRequestData.patientName}
+        />
+      )}
 
       <Footer />
     </div>
