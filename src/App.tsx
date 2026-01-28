@@ -12,6 +12,7 @@ import Doctors from "./pages/Doctors";
 import MyRequests from "./pages/MyRequests";
 import Dashboard from "./pages/Dashboard";
 import NotificationSettingsPage from "./pages/NotificationSettingsPage";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/book-test" element={<BookTest />} />
