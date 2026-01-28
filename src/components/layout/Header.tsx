@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, X, Phone, Mail, User, LogOut, LayoutDashboard, ClipboardList, Settings } from "lucide-react";
+import { Menu, X, Phone, Mail, User, LogOut, LayoutDashboard, ClipboardList, Settings, CalendarCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import trustCareLogo from "@/assets/trust-care-logo.png";
 import { useAuth } from "@/contexts/AuthContext";
@@ -128,9 +128,15 @@ export function Header() {
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
+                      <Link to="/my-appointments" className="flex items-center gap-2 cursor-pointer">
+                        <CalendarCheck className="h-4 w-4" />
+                        My Appointments
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                       <Link to="/my-requests" className="flex items-center gap-2 cursor-pointer">
                         <ClipboardList className="h-4 w-4" />
-                        My Requests
+                        My Test Requests
                       </Link>
                     </DropdownMenuItem>
                     {(isAdmin || isStaff) && (

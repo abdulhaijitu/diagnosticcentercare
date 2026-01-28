@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import BookTest from "./pages/BookTest";
+import BookAppointment from "./pages/BookAppointment";
+import MyAppointments from "./pages/MyAppointments";
 import Doctors from "./pages/Doctors";
 import MyRequests from "./pages/MyRequests";
 import Dashboard from "./pages/Dashboard";
@@ -31,6 +33,8 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/book-test" element={<BookTest />} />
+            <Route path="/book-appointment" element={<BookAppointment />} />
+            <Route path="/my-appointments" element={<MyAppointments />} />
             <Route path="/doctors" element={<Doctors />} />
             <Route path="/my-requests" element={<MyRequests />} />
             <Route path="/dashboard" element={<Dashboard />} />

@@ -1,24 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Search, 
   Stethoscope, 
@@ -27,12 +14,10 @@ import {
   Star,
   GraduationCap,
   MapPin,
-  User,
-  Phone,
-  Mail,
   ArrowRight,
   CheckCircle2
 } from "lucide-react";
+import { useDoctors } from "@/hooks/useAppointments";
 
 // Mock data for specialties
 const specialties = [
@@ -187,21 +172,36 @@ const doctors = [
 ];
 
 const Doctors = () => {
+  const navigate = useNavigate();
+  const { doctors: dbDoctors, isLoading } = useDoctors();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSpecialty, setSelectedSpecialty] = useState("all");
   const [selectedAvailability, setSelectedAvailability] = useState("all");
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
-  const [selectedDoctor, setSelectedDoctor] = useState<typeof doctors[0] | null>(null);
-  const [bookingData, setBookingData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    date: "",
-    time: "",
-    reason: "",
-  });
 
-  const filteredDoctors = doctors.filter((doctor) => {
+  // Combine mock doctors with database doctors for display
+  const allDoctors = [
+    ...doctors, // mock data for display variety
+    ...dbDoctors.map((doc) => ({
+      id: doc.id,
+      name: doc.name,
+      specialty: doc.specialty.toLowerCase().replace(/\s+/g, ""),
+      specialtyName: doc.specialty,
+      qualification: doc.qualification || "",
+      experience: doc.experience_years || 0,
+      rating: 4.8,
+      reviews: Math.floor(Math.random() * 200) + 50,
+      fee: doc.consultation_fee,
+      image: doc.avatar_url || "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&h=300&fit=crop&crop=face",
+      availability: doc.available_days.map(d => d.charAt(0).toUpperCase() + d.slice(1)),
+      nextSlot: "Available",
+      languages: ["English", "Bengali"],
+      hospital: "TrustCare Diagnostic Center",
+      isFromDb: true,
+      dbId: doc.id,
+    })),
+  ];
+
+  const filteredDoctors = allDoctors.filter((doctor) => {
     const matchesSearch = 
       doctor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       doctor.specialtyName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -210,9 +210,9 @@ const Doctors = () => {
     // Simple availability filter logic
     let matchesAvailability = true;
     if (selectedAvailability === "today") {
-      matchesAvailability = doctor.nextSlot.includes("Today");
+      matchesAvailability = doctor.nextSlot.includes("Today") || doctor.nextSlot === "Available";
     } else if (selectedAvailability === "tomorrow") {
-      matchesAvailability = doctor.nextSlot.includes("Tomorrow");
+      matchesAvailability = doctor.nextSlot.includes("Tomorrow") || doctor.nextSlot === "Available";
     } else if (selectedAvailability === "weekend") {
       matchesAvailability = doctor.availability.includes("Saturday") || doctor.availability.includes("Friday");
     }
@@ -220,25 +220,13 @@ const Doctors = () => {
     return matchesSearch && matchesSpecialty && matchesAvailability;
   });
 
-  const handleBookAppointment = (doctor: typeof doctors[0]) => {
-    setSelectedDoctor(doctor);
-    setIsBookingOpen(true);
-  };
-
-  const handleBookingSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Implement booking with Lovable Cloud
-    console.log("Appointment booked:", { doctor: selectedDoctor, ...bookingData });
-    setIsBookingOpen(false);
-    setSelectedDoctor(null);
-    setBookingData({
-      name: "",
-      phone: "",
-      email: "",
-      date: "",
-      time: "",
-      reason: "",
-    });
+  const handleBookAppointment = (doctor: typeof allDoctors[0]) => {
+    // Navigate to booking page with doctor pre-selected if from DB
+    if ('isFromDb' in doctor && doctor.isFromDb) {
+      navigate(`/book-appointment?doctor=${doctor.dbId}`);
+    } else {
+      navigate("/book-appointment");
+    }
   };
 
   return (
@@ -426,135 +414,6 @@ const Doctors = () => {
           </div>
         </section>
 
-        {/* Booking Dialog */}
-        <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-          <DialogContent className="sm:max-w-lg">
-            <DialogHeader>
-              <DialogTitle>Book Appointment</DialogTitle>
-              <DialogDescription>
-                {selectedDoctor && `Schedule your consultation with ${selectedDoctor.name}`}
-              </DialogDescription>
-            </DialogHeader>
-
-            {selectedDoctor && (
-              <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-xl mb-4">
-                <img
-                  src={selectedDoctor.image}
-                  alt={selectedDoctor.name}
-                  className="w-16 h-16 rounded-xl object-cover"
-                />
-                <div>
-                  <h4 className="font-semibold text-foreground">{selectedDoctor.name}</h4>
-                  <p className="text-sm text-primary">{selectedDoctor.specialtyName}</p>
-                  <p className="text-sm text-muted-foreground">Fee: ৳{selectedDoctor.fee}</p>
-                </div>
-              </div>
-            )}
-
-            <form onSubmit={handleBookingSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="apt-name">Full Name</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="apt-name"
-                    placeholder="Enter your full name"
-                    value={bookingData.name}
-                    onChange={(e) => setBookingData({ ...bookingData, name: e.target.value })}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="apt-phone">Phone</Label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="apt-phone"
-                      type="tel"
-                      placeholder="01XXXXXXXXX"
-                      value={bookingData.phone}
-                      onChange={(e) => setBookingData({ ...bookingData, phone: e.target.value })}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="apt-email">Email</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="apt-email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={bookingData.email}
-                      onChange={(e) => setBookingData({ ...bookingData, email: e.target.value })}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="apt-date">Preferred Date</Label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="apt-date"
-                      type="date"
-                      value={bookingData.date}
-                      onChange={(e) => setBookingData({ ...bookingData, date: e.target.value })}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="apt-time">Preferred Time</Label>
-                  <Select
-                    value={bookingData.time}
-                    onValueChange={(value) => setBookingData({ ...bookingData, time: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select time" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="10:00">10:00 AM</SelectItem>
-                      <SelectItem value="11:00">11:00 AM</SelectItem>
-                      <SelectItem value="12:00">12:00 PM</SelectItem>
-                      <SelectItem value="14:00">2:00 PM</SelectItem>
-                      <SelectItem value="15:00">3:00 PM</SelectItem>
-                      <SelectItem value="16:00">4:00 PM</SelectItem>
-                      <SelectItem value="17:00">5:00 PM</SelectItem>
-                      <SelectItem value="18:00">6:00 PM</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="apt-reason">Reason for Visit (Optional)</Label>
-                <Input
-                  id="apt-reason"
-                  placeholder="Briefly describe your health concern"
-                  value={bookingData.reason}
-                  onChange={(e) => setBookingData({ ...bookingData, reason: e.target.value })}
-                />
-              </div>
-
-              <Button type="submit" size="lg" className="w-full">
-                Confirm Appointment
-                <ArrowRight className="h-4 w-4 ml-1" />
-              </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
       </main>
       <Footer />
     </div>
