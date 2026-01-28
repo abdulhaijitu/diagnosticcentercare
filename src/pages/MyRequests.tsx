@@ -2,7 +2,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useHomeCollectionRequests } from "@/hooks/useHomeCollectionRequests";
-import { StatusTracker } from "@/components/home-collection/StatusTracker";
+import { EnhancedStatusTracker } from "@/components/home-collection/EnhancedStatusTracker";
 import { ReportList } from "@/components/reports/ReportList";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -112,8 +112,8 @@ const MyRequests = () => {
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    {/* Status Tracker */}
-                    <StatusTracker currentStatus={request.status} />
+                    {/* Enhanced Status Tracker with realtime updates */}
+                    <EnhancedStatusTracker requestId={request.id} currentStatus={request.status} />
 
                     {/* Details Grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-border">
