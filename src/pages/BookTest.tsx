@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import {
   Dialog,
   DialogContent,
@@ -14,12 +16,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { 
   Search, 
   FlaskConical, 
@@ -28,7 +36,7 @@ import {
   Building2,
   CheckCircle2,
   X,
-  Calendar,
+  CalendarIcon,
   User,
   Phone,
   Mail,
@@ -190,11 +198,11 @@ const BookTest = () => {
     name: "",
     phone: "",
     email: "",
-    date: "",
     time: "",
     collectionType: "home",
     address: "",
   });
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   const { user, profile } = useAuth();
   const { createRequest } = useHomeCollectionRequests();
@@ -256,7 +264,7 @@ const BookTest = () => {
         phone: bookingData.phone,
         email: bookingData.email,
         address: bookingData.address,
-        preferred_date: bookingData.date,
+        preferred_date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : "",
         preferred_time: bookingData.time,
       });
 
@@ -265,11 +273,11 @@ const BookTest = () => {
       if (!error) {
         setIsBookingOpen(false);
         setSelectedTests([]);
+        setSelectedDate(undefined);
         setBookingData({
           name: "",
           phone: "",
           email: "",
-          date: "",
           time: "",
           collectionType: "home",
           address: "",
@@ -544,18 +552,31 @@ const BookTest = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="booking-date">Preferred Date</Label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="booking-date"
-                      type="date"
-                      value={bookingData.date}
-                      onChange={(e) => setBookingData({ ...bookingData, date: e.target.value })}
-                      className="pl-10"
-                      required
-                    />
-                  </div>
+                  <Label>Preferred Date</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !selectedDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <CalendarComponent
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={setSelectedDate}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="booking-time">Preferred Time</Label>
