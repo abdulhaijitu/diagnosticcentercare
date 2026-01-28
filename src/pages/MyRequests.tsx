@@ -3,10 +3,11 @@ import { Footer } from "@/components/layout/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useHomeCollectionRequests } from "@/hooks/useHomeCollectionRequests";
 import { StatusTracker } from "@/components/home-collection/StatusTracker";
+import { ReportList } from "@/components/reports/ReportList";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, Clock, MapPin, Phone, FlaskConical, AlertCircle } from "lucide-react";
+import { Calendar, Clock, MapPin, Phone, FlaskConical, AlertCircle, FileText } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
@@ -167,6 +168,9 @@ const MyRequests = () => {
                         </div>
                       </div>
                     )}
+
+                    {/* Reports */}
+                    <ReportList requestId={request.id} />
                   </CardContent>
                 </Card>
               ))}
