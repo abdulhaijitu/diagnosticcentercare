@@ -16,6 +16,7 @@ import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 const navigation = [
   { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
   { name: "Services", href: "/services" },
   { name: "Doctors", href: "/doctors" },
   { name: "Book Test", href: "/book-test" },
