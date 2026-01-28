@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin, Clock, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import trustCareLogo from "@/assets/trust-care-logo.png";
 
 const services = [
   { name: "Diagnostic Tests", href: "/services#diagnostic" },
@@ -32,9 +33,11 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">TC</span>
-              </div>
+              <img 
+                src={trustCareLogo} 
+                alt="TrustCare Logo" 
+                className="h-12 w-auto brightness-0 invert"
+              />
               <div className="flex flex-col">
                 <span className="font-bold text-xl leading-tight">TrustCare</span>
                 <span className="text-sm text-background/60">Diagnostic Center</span>

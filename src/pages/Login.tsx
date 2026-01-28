@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle2 } from "lucide-react";
+import trustCareLogo from "@/assets/trust-care-logo.png";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,9 +28,11 @@ const Login = () => {
           <div className="bg-card rounded-3xl shadow-elevated p-8 md:p-10 border border-border">
             {/* Header */}
             <div className="text-center mb-8">
-              <div className="w-16 h-16 mx-auto rounded-2xl bg-primary flex items-center justify-center mb-4">
-                <span className="text-primary-foreground font-bold text-2xl">TC</span>
-              </div>
+              <img 
+                src={trustCareLogo} 
+                alt="TrustCare Logo" 
+                className="h-16 w-auto mx-auto mb-4"
+              />
               <h1 className="text-2xl font-bold text-foreground mb-2">
                 Welcome Back
               </h1>
