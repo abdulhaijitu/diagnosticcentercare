@@ -19,7 +19,6 @@ const navigation = [
   { name: "About", href: "/about" },
   { name: "Services", href: "/services" },
   { name: "Doctors", href: "/doctors" },
-  { name: "Book Test", href: "/book-test" },
   { name: "Contact", href: "/contact" },
 ];
 
@@ -100,6 +99,10 @@ export function Header() {
                   {item.name}
                 </Link>
               ))}
+              {/* Highlighted Book Test CTA */}
+              <Button asChild size="sm" className="ml-2">
+                <Link to="/book-test">Book Test</Link>
+              </Button>
             </div>
 
             {/* Desktop CTA / User Menu */}
@@ -204,6 +207,12 @@ export function Header() {
                   {item.name}
                 </Link>
               ))}
+              {/* Highlighted Book Test CTA for Mobile */}
+              <Button asChild className="w-full mt-2">
+                <Link to="/book-test" onClick={() => setMobileMenuOpen(false)}>
+                  Book Test
+                </Link>
+              </Button>
               <div className="pt-4 border-t border-border space-y-2">
                 {user ? (
                   <>
