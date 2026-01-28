@@ -8,10 +8,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, X, Phone, Mail, User, LogOut, LayoutDashboard, ClipboardList } from "lucide-react";
+import { Menu, X, Phone, Mail, User, LogOut, LayoutDashboard, ClipboardList, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import trustCareLogo from "@/assets/trust-care-logo.png";
 import { useAuth } from "@/contexts/AuthContext";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -105,15 +106,17 @@ export function Header() {
               {isLoading ? (
                 <div className="h-10 w-24 bg-muted animate-pulse rounded-lg" />
               ) : user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="gap-2">
-                      <User className="h-4 w-4" />
-                      <span className="max-w-[120px] truncate">
-                        {profile?.full_name || user.email?.split("@")[0]}
-                      </span>
-                    </Button>
-                  </DropdownMenuTrigger>
+                <>
+                  <NotificationBell />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="gap-2">
+                        <User className="h-4 w-4" />
+                        <span className="max-w-[120px] truncate">
+                          {profile?.full_name || user.email?.split("@")[0]}
+                        </span>
+                      </Button>
+                    </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <div className="px-2 py-1.5">
                       <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
@@ -127,12 +130,22 @@ export function Header() {
                       </Link>
                     </DropdownMenuItem>
                     {(isAdmin || isStaff) && (
-                      <DropdownMenuItem asChild>
-                        <Link to="/dashboard" className="flex items-center gap-2 cursor-pointer">
-                          <LayoutDashboard className="h-4 w-4" />
-                          Dashboard
-                        </Link>
-                      </DropdownMenuItem>
+                      <>
+                        <DropdownMenuItem asChild>
+                          <Link to="/dashboard" className="flex items-center gap-2 cursor-pointer">
+                            <LayoutDashboard className="h-4 w-4" />
+                            Dashboard
+                          </Link>
+                        </DropdownMenuItem>
+                        {isAdmin && (
+                          <DropdownMenuItem asChild>
+                            <Link to="/settings/notifications" className="flex items-center gap-2 cursor-pointer">
+                              <Settings className="h-4 w-4" />
+                              Notification Settings
+                            </Link>
+                          </DropdownMenuItem>
+                        )}
+                      </>
                     )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem 
@@ -144,6 +157,7 @@ export function Header() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+                </>
               ) : (
                 <>
                   <Button variant="ghost" asChild>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -40,6 +40,24 @@ export function useHomeCollectionRequests() {
   const { user, isAdmin, isStaff } = useAuth();
   const { toast } = useToast();
 
+  // Send notification helper
+  const sendNotification = useCallback(
+    async (
+      userId: string,
+      type: "booking_confirmed" | "sample_assigned" | "sample_collected" | "processing_started" | "report_ready",
+      data: Record<string, unknown>
+    ) => {
+      try {
+        await supabase.functions.invoke("send-notification", {
+          body: { userId, type, data },
+        });
+      } catch (error) {
+        console.error("Failed to send notification:", error);
+      }
+    },
+    []
+  );
+
   const fetchRequests = async () => {
     if (!user) return;
 
@@ -77,12 +95,24 @@ export function useHomeCollectionRequests() {
     if (!user) return { error: new Error("Not authenticated") };
 
     try {
-      const { error } = await supabase.from("home_collection_requests").insert({
-        patient_id: user.id,
-        ...requestData,
-      });
+      const { data: newRequest, error } = await supabase
+        .from("home_collection_requests")
+        .insert({
+          patient_id: user.id,
+          ...requestData,
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Send booking confirmation notification
+      await sendNotification(user.id, "booking_confirmed", {
+        requestId: newRequest.id,
+        testNames: requestData.test_names,
+        date: requestData.preferred_date,
+        time: requestData.preferred_time,
+      });
 
       toast({
         title: "Success",
@@ -110,6 +140,13 @@ export function useHomeCollectionRequests() {
     if (!user) return { error: new Error("Not authenticated") };
 
     try {
+      // Get the request first to know the patient_id
+      const { data: request } = await supabase
+        .from("home_collection_requests")
+        .select("patient_id, test_names, preferred_date, preferred_time")
+        .eq("id", requestId)
+        .single();
+
       const { error: updateError } = await supabase
         .from("home_collection_requests")
         .update({ status, notes })
@@ -124,6 +161,27 @@ export function useHomeCollectionRequests() {
         changed_by: user.id,
         notes,
       });
+
+      // Send notification based on status
+      if (request) {
+        const notificationTypeMap: Record<CollectionStatus, "sample_assigned" | "sample_collected" | "processing_started" | "report_ready" | null> = {
+          requested: null,
+          assigned: "sample_assigned",
+          collected: "sample_collected",
+          processing: "processing_started",
+          ready: "report_ready",
+        };
+
+        const notificationType = notificationTypeMap[status];
+        if (notificationType) {
+          await sendNotification(request.patient_id, notificationType, {
+            requestId,
+            testNames: request.test_names,
+            date: request.preferred_date,
+            time: request.preferred_time,
+          });
+        }
+      }
 
       toast({
         title: "Success",
