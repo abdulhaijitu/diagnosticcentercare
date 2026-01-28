@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -31,8 +32,12 @@ import {
   User,
   Phone,
   Mail,
-  ArrowRight
+  ArrowRight,
+  Loader2
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useHomeCollectionRequests } from "@/hooks/useHomeCollectionRequests";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock data for diagnostic tests
 const testCategories = [
@@ -180,15 +185,35 @@ const BookTest = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedTests, setSelectedTests] = useState<SelectedTest[]>([]);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingData, setBookingData] = useState({
     name: "",
     phone: "",
     email: "",
     date: "",
     time: "",
-    collectionType: "center",
+    collectionType: "home",
     address: "",
   });
+
+  const { user, profile } = useAuth();
+  const { createRequest } = useHomeCollectionRequests();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  // Auto-fill from profile when booking dialog opens
+  const handleOpenBooking = () => {
+    if (profile) {
+      setBookingData({
+        ...bookingData,
+        name: profile.full_name || "",
+        phone: profile.phone || "",
+        email: profile.email || user?.email || "",
+        address: profile.address || "",
+      });
+    }
+    setIsBookingOpen(true);
+  };
 
   const filteredTests = diagnosticTests.filter((test) => {
     const matchesSearch = test.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -208,21 +233,58 @@ const BookTest = () => {
 
   const totalPrice = selectedTests.reduce((sum, test) => sum + test.price, 0);
 
-  const handleBookingSubmit = (e: React.FormEvent) => {
+  const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement booking with Lovable Cloud
-    console.log("Booking submitted:", { tests: selectedTests, ...bookingData, totalPrice });
-    setIsBookingOpen(false);
-    setSelectedTests([]);
-    setBookingData({
-      name: "",
-      phone: "",
-      email: "",
-      date: "",
-      time: "",
-      collectionType: "center",
-      address: "",
-    });
+
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "Please login to book a test",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+
+    if (bookingData.collectionType === "home") {
+      setIsSubmitting(true);
+      
+      const { error } = await createRequest({
+        test_names: selectedTests.map((t) => t.name),
+        total_amount: totalPrice,
+        full_name: bookingData.name,
+        phone: bookingData.phone,
+        email: bookingData.email,
+        address: bookingData.address,
+        preferred_date: bookingData.date,
+        preferred_time: bookingData.time,
+      });
+
+      setIsSubmitting(false);
+
+      if (!error) {
+        setIsBookingOpen(false);
+        setSelectedTests([]);
+        setBookingData({
+          name: "",
+          phone: "",
+          email: "",
+          date: "",
+          time: "",
+          collectionType: "home",
+          address: "",
+        });
+        navigate("/my-requests");
+      }
+    } else {
+      // For center visits, just show confirmation
+      toast({
+        title: "Booking Confirmed!",
+        description: "Please visit our center on the selected date and time.",
+      });
+      setIsBookingOpen(false);
+      setSelectedTests([]);
+    }
   };
 
   return (
@@ -411,7 +473,7 @@ const BookTest = () => {
                     <p className="text-sm text-muted-foreground">Total</p>
                     <p className="text-xl font-bold text-foreground">৳{totalPrice}</p>
                   </div>
-                  <Button size="lg" onClick={() => setIsBookingOpen(true)}>
+                  <Button size="lg" onClick={handleOpenBooking}>
                     Book Now
                     <ArrowRight className="h-4 w-4 ml-1" />
                   </Button>
@@ -581,9 +643,18 @@ const BookTest = () => {
                 </div>
               </div>
 
-              <Button type="submit" size="lg" className="w-full">
-                Confirm Booking
-                <ArrowRight className="h-4 w-4 ml-1" />
+              <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    Confirm Booking
+                    <ArrowRight className="h-4 w-4 ml-1" />
+                  </>
+                )}
               </Button>
             </form>
           </DialogContent>
