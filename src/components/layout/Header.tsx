@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone, Mail, ChevronDown } from "lucide-react";
+import { Menu, X, Phone, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
+import trustCareLogo from "@/assets/trust-care-logo.png";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -51,9 +52,11 @@ export function Header() {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg md:text-xl">TC</span>
-              </div>
+              <img 
+                src={trustCareLogo} 
+                alt="TrustCare Logo" 
+                className="h-10 md:h-12 w-auto"
+              />
               <div className="flex flex-col">
                 <span className="font-bold text-lg md:text-xl text-foreground leading-tight">
                   TrustCare
