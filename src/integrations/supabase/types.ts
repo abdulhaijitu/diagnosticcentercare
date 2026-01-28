@@ -360,6 +360,36 @@ export type Database = {
         }
         Relationships: []
       }
+      whatsapp_logs: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          phone: string
+          response: Json | null
+          status: string
+          template_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          phone: string
+          response?: Json | null
+          status?: string
+          template_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          phone?: string
+          response?: Json | null
+          status?: string
+          template_name?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
