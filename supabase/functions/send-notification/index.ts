@@ -130,11 +130,48 @@ Deno.serve(async (req) => {
       // Don't fail the request, logs are for auditing
     }
 
-    // Future: Here you would trigger SMS/WhatsApp/Email providers
-    // For now, we just log the intent
+    // Send via SMS gateway if enabled
     if (settings.sms_enabled) {
-      console.log(`[SMS] Would send to user ${userId}: ${message}`);
-      // TODO: Integrate with SMS gateway (e.g., Twilio, MessageBird)
+      try {
+        // Get user's phone number from profiles
+        const { data: profile } = await supabaseAdmin
+          .from("profiles")
+          .select("phone")
+          .eq("id", userId)
+          .single();
+
+        if (profile?.phone) {
+          const smsResponse = await fetch(`${supabaseUrl}/functions/v1/send-sms`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${supabaseServiceKey}`,
+            },
+            body: JSON.stringify({
+              phone: profile.phone,
+              message: message,
+            }),
+          });
+
+          const smsResult = await smsResponse.json();
+          console.log(`[SMS] Sent to ${profile.phone}:`, smsResult);
+
+          // Update log status
+          await supabaseAdmin
+            .from("notification_logs")
+            .update({
+              status: smsResult.success ? "delivered" : "failed",
+              delivered_at: smsResult.success ? new Date().toISOString() : null,
+              metadata: { ...data, sms_response: smsResult },
+            })
+            .eq("notification_id", notification.id)
+            .eq("channel", "sms");
+        } else {
+          console.log(`[SMS] No phone number for user ${userId}`);
+        }
+      } catch (smsError) {
+        console.error("[SMS] Failed:", smsError);
+      }
     }
 
     if (settings.whatsapp_enabled) {
