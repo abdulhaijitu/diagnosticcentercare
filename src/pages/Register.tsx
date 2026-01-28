@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,26 +7,55 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { 
   Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, 
-  CheckCircle2, Shield, Clock, Award 
+  CheckCircle2, Shield, Clock, Award, Loader2
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     password: "",
   });
+  const navigate = useNavigate();
+  const { signUp } = useAuth();
+  const { toast } = useToast();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement registration logic with Lovable Cloud
-    console.log("Registration attempt:", formData);
+    setIsLoading(true);
+
+    const { error } = await signUp(
+      formData.email,
+      formData.password,
+      formData.name,
+      formData.phone
+    );
+
+    if (error) {
+      toast({
+        title: "Registration Failed",
+        description: error.message || "Failed to create account",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    toast({
+      title: "Account Created!",
+      description: "You have successfully registered. Welcome to TrustCare!",
+    });
+
+    navigate("/");
   };
 
   const benefits = [
@@ -188,9 +217,18 @@ const Register = () => {
                     </p>
                   </div>
 
-                  <Button type="submit" size="lg" className="w-full">
-                    Create Account
-                    <ArrowRight className="h-4 w-4" />
+                  <Button type="submit" size="lg" className="w-full" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Creating Account...
+                      </>
+                    ) : (
+                      <>
+                        Create Account
+                        <ArrowRight className="h-4 w-4" />
+                      </>
+                    )}
                   </Button>
 
                   <p className="text-xs text-center text-muted-foreground">

@@ -14,16 +14,185 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      collection_status_history: {
+        Row: {
+          changed_by: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          request_id: string
+          status: Database["public"]["Enums"]["collection_status"]
+        }
+        Insert: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          request_id: string
+          status: Database["public"]["Enums"]["collection_status"]
+        }
+        Update: {
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          request_id?: string
+          status?: Database["public"]["Enums"]["collection_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collection_status_history_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "home_collection_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      home_collection_requests: {
+        Row: {
+          address: string
+          assigned_at: string | null
+          assigned_by: string | null
+          assigned_staff_id: string | null
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          notes: string | null
+          patient_id: string
+          phone: string
+          preferred_date: string
+          preferred_time: string
+          status: Database["public"]["Enums"]["collection_status"]
+          test_names: string[]
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          assigned_at?: string | null
+          assigned_by?: string | null
+          assigned_staff_id?: string | null
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          notes?: string | null
+          patient_id: string
+          phone: string
+          preferred_date: string
+          preferred_time: string
+          status?: Database["public"]["Enums"]["collection_status"]
+          test_names: string[]
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          assigned_at?: string | null
+          assigned_by?: string | null
+          assigned_staff_id?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          phone?: string
+          preferred_date?: string
+          preferred_time?: string
+          status?: Database["public"]["Enums"]["collection_status"]
+          test_names?: string[]
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_admin_or_manager: { Args: { _user_id: string }; Returns: boolean }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role:
+        | "super_admin"
+        | "admin"
+        | "doctor"
+        | "manager"
+        | "sales"
+        | "staff"
+        | "patient"
+      collection_status:
+        | "requested"
+        | "assigned"
+        | "collected"
+        | "processing"
+        | "ready"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +319,23 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: [
+        "super_admin",
+        "admin",
+        "doctor",
+        "manager",
+        "sales",
+        "staff",
+        "patient",
+      ],
+      collection_status: [
+        "requested",
+        "assigned",
+        "collected",
+        "processing",
+        "ready",
+      ],
+    },
   },
 } as const

@@ -1,9 +1,17 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone, Mail } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Menu, X, Phone, Mail, User, LogOut, LayoutDashboard, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils";
 import trustCareLogo from "@/assets/trust-care-logo.png";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -16,6 +24,13 @@ const navigation = [
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, profile, isLoading, isAdmin, isStaff, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -85,14 +100,60 @@ export function Header() {
               ))}
             </div>
 
-            {/* Desktop CTA */}
+            {/* Desktop CTA / User Menu */}
             <div className="hidden md:flex items-center gap-3">
-              <Button variant="ghost" asChild>
-                <Link to="/login">Log In</Link>
-              </Button>
-              <Button asChild>
-                <Link to="/register">Get Started</Link>
-              </Button>
+              {isLoading ? (
+                <div className="h-10 w-24 bg-muted animate-pulse rounded-lg" />
+              ) : user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="gap-2">
+                      <User className="h-4 w-4" />
+                      <span className="max-w-[120px] truncate">
+                        {profile?.full_name || user.email?.split("@")[0]}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-2 py-1.5">
+                      <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/my-requests" className="flex items-center gap-2 cursor-pointer">
+                        <ClipboardList className="h-4 w-4" />
+                        My Requests
+                      </Link>
+                    </DropdownMenuItem>
+                    {(isAdmin || isStaff) && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/dashboard" className="flex items-center gap-2 cursor-pointer">
+                          <LayoutDashboard className="h-4 w-4" />
+                          Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem 
+                      onClick={handleSignOut}
+                      className="text-destructive focus:text-destructive cursor-pointer"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <>
+                  <Button variant="ghost" asChild>
+                    <Link to="/login">Log In</Link>
+                  </Button>
+                  <Button asChild>
+                    <Link to="/register">Get Started</Link>
+                  </Button>
+                </>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -129,16 +190,54 @@ export function Header() {
                 </Link>
               ))}
               <div className="pt-4 border-t border-border space-y-2">
-                <Button variant="outline" className="w-full" asChild>
-                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                    Log In
-                  </Link>
-                </Button>
-                <Button className="w-full" asChild>
-                  <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                    Get Started
-                  </Link>
-                </Button>
+                {user ? (
+                  <>
+                    <div className="px-4 py-2">
+                      <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                    </div>
+                    <Link
+                      to="/my-requests"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted"
+                    >
+                      My Requests
+                    </Link>
+                    {(isAdmin || isStaff) && (
+                      <Link
+                        to="/dashboard"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted"
+                      >
+                        Dashboard
+                      </Link>
+                    )}
+                    <Button
+                      variant="outline"
+                      className="w-full text-destructive"
+                      onClick={() => {
+                        handleSignOut();
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                        Log In
+                      </Link>
+                    </Button>
+                    <Button className="w-full" asChild>
+                      <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
+                        Get Started
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
               {/* Mobile contact info */}
               <div className="pt-4 border-t border-border space-y-2 text-sm text-muted-foreground">
