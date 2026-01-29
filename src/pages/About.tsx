@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/ui/FloatingActions";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
@@ -152,6 +153,14 @@ const achievements = [
 
 const About = () => {
   return (
+    <>
+      <SEOHead
+        title="About Us"
+        titleBn="আমাদের সম্পর্কে"
+        description="Learn about TrustCare Diagnostic Center - our mission, vision, team, and commitment to fast and accurate lab services in Dhaka."
+        descriptionBn="ট্রাস্ট কেয়ার ডায়াগনোস্টিক সেন্টার সম্পর্কে জানুন - আমাদের মিশন, ভিশন, টিম এবং দ্রুত ও নির্ভুল ল্যাব সেবার প্রতিশ্রুতি।"
+        url="https://diagnosticcentercare.lovable.app/about"
+      />
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       
@@ -461,6 +470,7 @@ const About = () => {
       <Footer />
       <FloatingActions />
     </div>
+    </>
   );
 };
 
