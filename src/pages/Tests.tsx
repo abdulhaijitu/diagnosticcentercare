@@ -3,12 +3,13 @@ import { Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/ui/FloatingActions";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 import { useDiagnosticTests, useTestCategories } from "@/hooks/useDiagnosticTests";
 import { 
   Search, 
@@ -116,9 +117,16 @@ const Tests = () => {
   );
 
   return (
+    <>
+      <SEOHead
+        title="ডায়াগনস্টিক টেস্ট সমূহ"
+        titleBn="ডায়াগনস্টিক টেস্ট"
+        description="Browse all diagnostic tests at TrustCare. Blood tests, X-ray, Ultrasound, ECG and more. Book online with home sample collection."
+        descriptionBn="ট্রাস্ট কেয়ারের সব ডায়াগনস্টিক টেস্ট দেখুন। রক্ত পরীক্ষা, এক্স-রে, আল্ট্রাসাউন্ড, ইসিজি। অনলাইনে বুক করুন।"
+        url="https://diagnosticcentercare.lovable.app/tests"
+      />
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      
       <main className="flex-1">
         {/* Hero Section */}
         <section className="bg-gradient-hero text-white py-12 md:py-16">
@@ -204,14 +212,7 @@ const Tests = () => {
                 {isLoading && (
                   <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
                     {[...Array(6)].map((_, i) => (
-                      <Card key={i}>
-                        <CardContent className="pt-6">
-                          <Skeleton className="h-6 w-3/4 mb-2" />
-                          <Skeleton className="h-4 w-1/2 mb-4" />
-                          <Skeleton className="h-4 w-full mb-2" />
-                          <Skeleton className="h-8 w-24" />
-                        </CardContent>
-                      </Card>
+                      <SkeletonCard key={i} lines={3} />
                     ))}
                   </div>
                 )}
@@ -325,6 +326,7 @@ const Tests = () => {
       <Footer />
       <FloatingActions />
     </div>
+    </>
   );
 };
 

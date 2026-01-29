@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/ui/FloatingActions";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 import {
   Sheet,
   SheetContent,
@@ -250,6 +251,14 @@ const Doctors = () => {
   };
 
   return (
+    <>
+      <SEOHead
+        title="Our Doctors"
+        titleBn="আমাদের ডাক্তারগণ"
+        description="Book appointments with experienced specialist doctors at TrustCare. Cardiology, Gynecology, Pediatrics, Orthopedics and more."
+        descriptionBn="ট্রাস্ট কেয়ারে অভিজ্ঞ বিশেষজ্ঞ ডাক্তারদের সাথে অ্যাপয়েন্টমেন্ট নিন। কার্ডিওলজি, গাইনি, শিশু, অর্থোপেডিক্স।"
+        url="https://diagnosticcentercare.lovable.app/doctors"
+      />
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <main className="flex-1">
@@ -474,6 +483,7 @@ const Doctors = () => {
       <Footer />
       <FloatingActions />
     </div>
+    </>
   );
 };
 

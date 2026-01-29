@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/ui/FloatingActions";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -162,6 +163,14 @@ const Contact = () => {
   ];
 
   return (
+    <>
+      <SEOHead
+        title="Contact Us"
+        titleBn="যোগাযোগ করুন"
+        description="Contact TrustCare Diagnostic Center. Phone: 01345580203. Email: trustcaredc@gmail.com. Address: Mohammadpur, Dhaka-1207."
+        descriptionBn="ট্রাস্ট কেয়ার ডায়াগনোস্টিক সেন্টারে যোগাযোগ করুন। ফোন: ০১৩৪৫৫৮০২০৩। ইমেইল: trustcaredc@gmail.com। মোহাম্মদপুর, ঢাকা।"
+        url="https://diagnosticcentercare.lovable.app/contact"
+      />
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <main className="flex-1">
@@ -466,6 +475,7 @@ const Contact = () => {
       <Footer />
       <FloatingActions />
     </div>
+    </>
   );
 };
 

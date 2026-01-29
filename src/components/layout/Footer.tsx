@@ -13,7 +13,7 @@ const quickLinks = [
   { name: "About Us", href: "/about" },
   { name: "Our Doctors", href: "/doctors" },
   { name: "Book a Test", href: "/book-test" },
-  { name: "Download Reports", href: "/reports" },
+  { name: "Download Reports", href: "/my-requests" },
   { name: "Contact Us", href: "/contact" },
 ];
 
@@ -26,28 +26,33 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer className="bg-foreground text-background">
+    <footer className="bg-foreground text-background" role="contentinfo">
       {/* Main Footer */}
       <div className="container-custom section-padding">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand Column */}
-          <div className="lg:col-span-1">
+          <div className="sm:col-span-2 lg:col-span-1">
             <Link to="/" className="flex items-center gap-3 mb-6">
               <img 
                 src={trustCareLogo} 
-                alt="TrustCare Logo" 
+                alt="TrustCare Diagnostic Center Logo" 
                 className="h-12 w-auto brightness-0 invert"
+                width={48}
+                height={48}
               />
               <div className="flex flex-col">
                 <span className="font-bold text-xl leading-tight">TrustCare</span>
                 <span className="text-sm text-background/60">Diagnostic Center</span>
               </div>
             </Link>
-            <p className="text-background/70 text-sm leading-relaxed mb-6">
+            <p className="text-background/70 text-sm leading-relaxed mb-4">
               TrustCare Diagnostic & Consultation Center Limited provides fast and accurate 
               lab services with compassionate care you can trust.
             </p>
-            <p className="text-sm font-medium text-primary">
+            <p className="text-sm font-medium text-primary mb-2">
+              "Your Trust, Your Care"
+            </p>
+            <p className="text-sm text-background/70">
               ট্রাস্ট কেয়ার ডায়াগনোস্টিক এন্ড কনসালটেশন সেন্টার লিমিটেড
             </p>
           </div>
@@ -89,37 +94,39 @@ export function Footer() {
           {/* Contact Column */}
           <div>
             <h3 className="font-semibold text-lg mb-6">Contact Us</h3>
-            <ul className="space-y-4">
-              <li>
-                <a 
-                  href="tel:01345580203" 
-                  className="flex items-start gap-3 text-background/70 hover:text-primary transition-colors duration-200"
-                >
-                  <Phone className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">01345580203</span>
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="mailto:trustcaredc@gmail.com" 
-                  className="flex items-start gap-3 text-background/70 hover:text-primary transition-colors duration-200"
-                >
-                  <Mail className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                  <span className="text-sm">trustcaredc@gmail.com</span>
-                </a>
-              </li>
-              <li className="flex items-start gap-3 text-background/70">
-                <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <span className="text-sm">
-                  Plot-04, Block-F, Dhaka Uddan Co-operative Housing Society Ltd, 
-                  Chandrima Model Town, Avenue-1 Gate Chowrasta, Mohammadpur, Dhaka-1207
-                </span>
-              </li>
-              <li className="flex items-start gap-3 text-background/70">
-                <Clock className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <span className="text-sm">Open 24/7</span>
-              </li>
-            </ul>
+            <address className="not-italic">
+              <ul className="space-y-4">
+                <li>
+                  <a 
+                    href="tel:+8801345580203" 
+                    className="flex items-start gap-3 text-background/70 hover:text-primary transition-colors duration-200"
+                  >
+                    <Phone className="h-5 w-5 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                    <span className="text-sm">01345580203</span>
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="mailto:trustcaredc@gmail.com" 
+                    className="flex items-start gap-3 text-background/70 hover:text-primary transition-colors duration-200"
+                  >
+                    <Mail className="h-5 w-5 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                    <span className="text-sm">trustcaredc@gmail.com</span>
+                  </a>
+                </li>
+                <li className="flex items-start gap-3 text-background/70">
+                  <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                  <span className="text-sm">
+                    Plot-04, Block-F, Dhaka Uddan Co-operative Housing Society Ltd, 
+                    Chandrima Model Town, Avenue-1 Gate Chowrasta, Mohammadpur, Dhaka-1207
+                  </span>
+                </li>
+                <li className="flex items-start gap-3 text-background/70">
+                  <Clock className="h-5 w-5 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                  <span className="text-sm">Open 24/7</span>
+                </li>
+              </ul>
+            </address>
 
             {/* Social Links */}
             <div className="mt-6 flex items-center gap-3">
@@ -130,7 +137,7 @@ export function Footer() {
                   aria-label={social.label}
                   className="w-10 h-10 rounded-lg bg-background/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
                 >
-                  <social.icon className="h-5 w-5" />
+                  <social.icon className="h-5 w-5" aria-hidden="true" />
                 </a>
               ))}
             </div>
