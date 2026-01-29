@@ -14,6 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          created_at: string
+          doctor_id: string
+          id: string
+          notes: string | null
+          patient_email: string | null
+          patient_id: string
+          patient_name: string
+          patient_phone: string
+          reason: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          created_at?: string
+          doctor_id: string
+          id?: string
+          notes?: string | null
+          patient_email?: string | null
+          patient_id: string
+          patient_name: string
+          patient_phone: string
+          reason?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          created_at?: string
+          doctor_id?: string
+          id?: string
+          notes?: string | null
+          patient_email?: string | null
+          patient_id?: string
+          patient_name?: string
+          patient_phone?: string
+          reason?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       collection_status_history: {
         Row: {
           changed_by: string | null
@@ -85,6 +150,66 @@ export type Database = {
           responded_by?: string | null
           status?: string
           subject?: string
+        }
+        Relationships: []
+      }
+      doctors: {
+        Row: {
+          available_days: string[]
+          available_from: string
+          available_to: string
+          avatar_url: string | null
+          bio: string | null
+          consultation_fee: number
+          created_at: string
+          experience_years: number | null
+          id: string
+          is_active: boolean
+          max_patients_per_slot: number
+          name: string
+          qualification: string | null
+          slot_duration: number
+          specialty: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          available_days?: string[]
+          available_from?: string
+          available_to?: string
+          avatar_url?: string | null
+          bio?: string | null
+          consultation_fee?: number
+          created_at?: string
+          experience_years?: number | null
+          id?: string
+          is_active?: boolean
+          max_patients_per_slot?: number
+          name: string
+          qualification?: string | null
+          slot_duration?: number
+          specialty: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          available_days?: string[]
+          available_from?: string
+          available_to?: string
+          avatar_url?: string | null
+          bio?: string | null
+          consultation_fee?: number
+          created_at?: string
+          experience_years?: number | null
+          id?: string
+          is_active?: boolean
+          max_patients_per_slot?: number
+          name?: string
+          qualification?: string | null
+          slot_duration?: number
+          specialty?: string
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
