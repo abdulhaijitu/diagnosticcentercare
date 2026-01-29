@@ -299,37 +299,87 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
                 <FormItem>
                   <FormLabel>Select Time Slot</FormLabel>
                   {availableSlots.length > 0 ? (
-                    <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                      {availableSlots.map((slot) => {
-                        const isBooked = bookedSlots.includes(slot);
-                        const isSelected = field.value === slot;
-                        return (
-                          <Button
-                            key={slot}
-                            type="button"
-                            variant={isSelected ? "default" : "outline"}
-                            size="sm"
-                            disabled={isBooked}
-                            className={cn(
-                              "text-xs",
-                              isBooked && "opacity-50 cursor-not-allowed line-through"
-                            )}
-                            onClick={() => field.onChange(slot)}
-                          >
-                            <Clock className="h-3 w-3 mr-1" />
-                            {slot}
-                          </Button>
-                        );
-                      })}
+                    <div className="space-y-3">
+                      {/* Legend */}
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500" />
+                          <span>Available</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500" />
+                          <span>Booked</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <div className="w-3 h-3 rounded-full bg-primary" />
+                          <span>Selected</span>
+                        </div>
+                      </div>
+                      
+                      {/* Slots Grid */}
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                        {availableSlots.map((slot) => {
+                          const isBooked = bookedSlots.includes(slot);
+                          const isSelected = field.value === slot;
+                          return (
+                            <Button
+                              key={slot}
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              disabled={isBooked}
+                              className={cn(
+                                "relative text-xs transition-all duration-200",
+                                isBooked && "bg-red-50 border-red-200 text-red-400 cursor-not-allowed hover:bg-red-50 dark:bg-red-950/20 dark:border-red-800 dark:text-red-500",
+                                !isBooked && !isSelected && "bg-green-50 border-green-200 text-green-700 hover:bg-green-100 hover:border-green-300 dark:bg-green-950/20 dark:border-green-800 dark:text-green-400 dark:hover:bg-green-950/40",
+                                isSelected && "bg-primary border-primary text-primary-foreground hover:bg-primary/90 hover:border-primary ring-2 ring-primary/20"
+                              )}
+                              onClick={() => field.onChange(slot)}
+                            >
+                              <Clock className="h-3 w-3 mr-1" />
+                              {slot}
+                              {isBooked && (
+                                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                                  <span className="text-[8px] text-white font-bold">✕</span>
+                                </span>
+                              )}
+                              {isSelected && (
+                                <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
+                                  <Check className="h-2.5 w-2.5 text-primary-foreground" />
+                                </span>
+                              )}
+                            </Button>
+                          );
+                        })}
+                      </div>
+                      
+                      {/* Summary */}
+                      <div className="flex items-center justify-between text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
+                        <span>
+                          {availableSlots.length - bookedSlots.length} slots available
+                        </span>
+                        <span>
+                          {bookedSlots.length} slots booked
+                        </span>
+                      </div>
                     </div>
                   ) : watchDate && selectedDoctor ? (
-                    <p className="text-sm text-muted-foreground">
-                      No available slots for this date. Please select another date.
-                    </p>
+                    <div className="text-center py-6 bg-muted/50 rounded-lg border border-dashed">
+                      <Clock className="h-8 w-8 text-muted-foreground/50 mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">
+                        No available slots for this date.
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Please select another date.
+                      </p>
+                    </div>
                   ) : (
-                    <p className="text-sm text-muted-foreground">
-                      Select a doctor and date to see available slots
-                    </p>
+                    <div className="text-center py-6 bg-muted/50 rounded-lg border border-dashed">
+                      <CalendarIcon className="h-8 w-8 text-muted-foreground/50 mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">
+                        Select a doctor and date to see available slots
+                      </p>
+                    </div>
                   )}
                   <FormMessage />
                 </FormItem>
