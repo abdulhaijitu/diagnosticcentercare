@@ -63,39 +63,30 @@ const mockReviews = [
   },
 ];
 
-// Mock education data
-const mockEducation = [
-  { degree: "MBBS", institution: "Dhaka Medical College", year: "2005" },
-  { degree: "MD (Specialty)", institution: "BSMMU", year: "2010" },
-  { degree: "Fellowship", institution: "Royal College, UK", year: "2015" },
-];
+interface Education {
+  id: string;
+  degree: string;
+  institution: string;
+  year: number | null;
+  description: string | null;
+}
 
-// Mock experience data
-const mockExperience = [
-  { 
-    position: "Senior Consultant", 
-    hospital: "TrustCare Diagnostic Center", 
-    duration: "2020 - Present",
-    current: true
-  },
-  { 
-    position: "Consultant", 
-    hospital: "National Heart Foundation", 
-    duration: "2015 - 2020",
-    current: false
-  },
-  { 
-    position: "Medical Officer", 
-    hospital: "Dhaka Medical College Hospital", 
-    duration: "2010 - 2015",
-    current: false
-  },
-];
+interface Experience {
+  id: string;
+  position: string;
+  organization: string;
+  start_year: number;
+  end_year: number | null;
+  is_current: boolean;
+  description: string | null;
+}
 
 const DoctorProfile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const [education, setEducation] = useState<Education[]>([]);
+  const [experience, setExperience] = useState<Experience[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -103,14 +94,37 @@ const DoctorProfile = () => {
       if (!id) return;
       
       try {
-        const { data, error } = await supabase
+        // Fetch doctor details
+        const { data: doctorData, error: doctorError } = await supabase
           .from("doctors" as any)
           .select("*")
           .eq("id", id)
           .maybeSingle();
 
-        if (error) throw error;
-        setDoctor(data as unknown as Doctor);
+        if (doctorError) throw doctorError;
+        setDoctor(doctorData as unknown as Doctor);
+
+        // Fetch education
+        const { data: eduData, error: eduError } = await supabase
+          .from("doctor_education" as any)
+          .select("*")
+          .eq("doctor_id", id)
+          .order("year", { ascending: false });
+
+        if (!eduError && eduData) {
+          setEducation(eduData as unknown as Education[]);
+        }
+
+        // Fetch experience
+        const { data: expData, error: expError } = await supabase
+          .from("doctor_experience" as any)
+          .select("*")
+          .eq("doctor_id", id)
+          .order("start_year", { ascending: false });
+
+        if (!expError && expData) {
+          setExperience(expData as unknown as Experience[]);
+        }
       } catch (error) {
         console.error("Error fetching doctor:", error);
       } finally {
@@ -321,20 +335,25 @@ const DoctorProfile = () => {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="space-y-6">
-                          {mockEducation.map((edu, index) => (
-                            <div key={index} className="flex gap-4">
-                              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                                <GraduationCap className="h-6 w-6 text-primary" />
+                        {education.length > 0 ? (
+                          <div className="space-y-6">
+                            {education.map((edu) => (
+                              <div key={edu.id} className="flex gap-4">
+                                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                                  <GraduationCap className="h-6 w-6 text-primary" />
+                                </div>
+                                <div>
+                                  <h4 className="font-semibold text-foreground">{edu.degree}</h4>
+                                  <p className="text-muted-foreground">{edu.institution}</p>
+                                  {edu.year && <p className="text-sm text-muted-foreground">{edu.year}</p>}
+                                  {edu.description && <p className="text-sm text-muted-foreground mt-1">{edu.description}</p>}
+                                </div>
                               </div>
-                              <div>
-                                <h4 className="font-semibold text-foreground">{edu.degree}</h4>
-                                <p className="text-muted-foreground">{edu.institution}</p>
-                                <p className="text-sm text-muted-foreground">{edu.year}</p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-muted-foreground text-center py-4">No education information available.</p>
+                        )}
                       </CardContent>
                     </Card>
                   </TabsContent>
@@ -349,34 +368,41 @@ const DoctorProfile = () => {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="relative">
-                          {/* Timeline line */}
-                          <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-border" />
-                          
-                          <div className="space-y-8">
-                            {mockExperience.map((exp, index) => (
-                              <div key={index} className="flex gap-4 relative">
-                                <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center z-10 ${
-                                  exp.current ? "bg-primary text-primary-foreground" : "bg-muted"
-                                }`}>
-                                  <Briefcase className="h-5 w-5" />
-                                </div>
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2">
-                                    <h4 className="font-semibold text-foreground">{exp.position}</h4>
-                                    {exp.current && (
-                                      <Badge className="bg-success/10 text-success border-success/20">
-                                        Current
-                                      </Badge>
-                                    )}
+                        {experience.length > 0 ? (
+                          <div className="relative">
+                            {/* Timeline line */}
+                            <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-border" />
+                            
+                            <div className="space-y-8">
+                              {experience.map((exp) => (
+                                <div key={exp.id} className="flex gap-4 relative">
+                                  <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center z-10 ${
+                                    exp.is_current ? "bg-primary text-primary-foreground" : "bg-muted"
+                                  }`}>
+                                    <Briefcase className="h-5 w-5" />
                                   </div>
-                                  <p className="text-muted-foreground">{exp.hospital}</p>
-                                  <p className="text-sm text-muted-foreground">{exp.duration}</p>
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2">
+                                      <h4 className="font-semibold text-foreground">{exp.position}</h4>
+                                      {exp.is_current && (
+                                        <Badge className="bg-success/10 text-success border-success/20">
+                                          Current
+                                        </Badge>
+                                      )}
+                                    </div>
+                                    <p className="text-muted-foreground">{exp.organization}</p>
+                                    <p className="text-sm text-muted-foreground">
+                                      {exp.start_year} - {exp.is_current ? "Present" : exp.end_year}
+                                    </p>
+                                    {exp.description && <p className="text-sm text-muted-foreground mt-1">{exp.description}</p>}
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              ))}
+                            </div>
                           </div>
-                        </div>
+                        ) : (
+                          <p className="text-muted-foreground text-center py-4">No experience information available.</p>
+                        )}
                       </CardContent>
                     </Card>
                   </TabsContent>
