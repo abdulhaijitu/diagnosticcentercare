@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { FloatingActions } from "@/components/ui/FloatingActions";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
@@ -458,6 +459,7 @@ const About = () => {
       </main>
 
       <Footer />
+      <FloatingActions />
     </div>
   );
 };
