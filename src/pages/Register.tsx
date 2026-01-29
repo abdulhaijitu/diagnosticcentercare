@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { 
   Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, 
   CheckCircle2, Shield, Clock, Award, Loader2
@@ -66,6 +67,13 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEOHead 
+        title="Create Account"
+        titleBn="একাউন্ট তৈরি করুন"
+        description="Register for a free TrustCare account. Book diagnostic tests, schedule doctor appointments and access health reports online."
+        descriptionBn="বিনামূল্যে TrustCare একাউন্ট তৈরি করুন। ডায়াগনস্টিক টেস্ট বুক করুন, ডাক্তার অ্যাপয়েন্টমেন্ট নিন এবং অনলাইনে হেলথ রিপোর্ট দেখুন।"
+        noIndex={true}
+      />
       <Header />
       <main className="flex-1 py-12 px-4">
         <div className="container-custom">

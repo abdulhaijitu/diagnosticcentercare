@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 import trustCareLogo from "@/assets/trust-care-logo.png";
 import { useAuth } from "@/contexts/AuthContext";
@@ -45,6 +46,13 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEOHead 
+        title="Login"
+        titleBn="লগইন"
+        description="Sign in to your TrustCare account. Access your health reports, track sample collections and manage doctor appointments."
+        descriptionBn="আপনার TrustCare একাউন্টে সাইন ইন করুন। হেলথ রিপোর্ট দেখুন, স্যাম্পল কালেকশন ট্র্যাক করুন এবং ডাক্তার অ্যাপয়েন্টমেন্ট ম্যানেজ করুন।"
+        noIndex={true}
+      />
       <Header />
       <main className="flex-1 flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
