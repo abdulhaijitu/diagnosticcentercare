@@ -152,6 +152,19 @@ export function Footer() {
               </Link>
             </div>
           </div>
+          <div className="text-center mt-4 pt-4 border-t border-background/10">
+            <p className="text-xs text-background/50">
+              Design and Developed:{" "}
+              <a 
+                href="http://creationtechbd.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-primary transition-colors"
+              >
+                Creation Tech
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
