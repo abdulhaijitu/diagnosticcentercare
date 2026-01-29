@@ -1,9 +1,11 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   Heart, Target, Eye, Shield, Users, Award, 
-  Clock, CheckCircle2, Building2, Microscope 
+  Clock, CheckCircle2, Building2, Microscope,
+  Linkedin, Mail, Phone
 } from "lucide-react";
 
 const stats = [
@@ -43,6 +45,63 @@ const milestones = [
   { year: "২০২১", event: "বিশেষজ্ঞ ডাক্তার কনসালটেশন সার্ভিস চালু" },
   { year: "২০২২", event: "অনলাইন অ্যাপয়েন্টমেন্ট বুকিং সিস্টেম চালু" },
   { year: "২০২৩", event: "১০,০০০+ রোগী সেবার মাইলফলক অর্জন" },
+];
+
+const teamMembers = [
+  {
+    name: "ডা. আহমেদ করিম",
+    role: "প্রতিষ্ঠাতা ও ব্যবস্থাপনা পরিচালক",
+    qualification: "MBBS, FCPS (Pathology)",
+    bio: "২০+ বছরের অভিজ্ঞতাসম্পন্ন প্যাথলজিস্ট। সঠিক রোগ নির্ণয়ের মাধ্যমে রোগীদের সুস্থতায় অবদান রাখা তাঁর জীবনের লক্ষ্য।",
+    avatar: null,
+    email: "ahmed.karim@trustcaredc.com",
+    linkedin: "#",
+  },
+  {
+    name: "ডা. ফাতেমা নাসরিন",
+    role: "প্রধান প্যাথলজিস্ট",
+    qualification: "MBBS, MD (Clinical Pathology)",
+    bio: "১৫ বছরের অভিজ্ঞতা। ক্লিনিক্যাল প্যাথলজিতে বিশেষজ্ঞ এবং কোয়ালিটি কন্ট্রোল বিভাগের প্রধান।",
+    avatar: null,
+    email: "fatema.nasrin@trustcaredc.com",
+    linkedin: "#",
+  },
+  {
+    name: "মোহাম্মদ রাফি",
+    role: "অপারেশনস ম্যানেজার",
+    qualification: "MBA, Healthcare Management",
+    bio: "১০ বছরের হেলথকেয়ার অপারেশনস অভিজ্ঞতা। হোম কালেকশন সার্ভিস ও ডিজিটাল ট্রান্সফর্মেশনের নেতৃত্ব দিচ্ছেন।",
+    avatar: null,
+    email: "rafi@trustcaredc.com",
+    linkedin: "#",
+  },
+  {
+    name: "সাবরিনা আক্তার",
+    role: "প্রধান ল্যাব টেকনোলজিস্ট",
+    qualification: "BSc MLT, Diploma in Lab Medicine",
+    bio: "১২ বছরের ল্যাবরেটরি অভিজ্ঞতা। আধুনিক যন্ত্রপাতি পরিচালনা ও টিম ট্রেনিংয়ে বিশেষজ্ঞ।",
+    avatar: null,
+    email: "sabrina@trustcaredc.com",
+    linkedin: "#",
+  },
+  {
+    name: "ডা. তানভীর হাসান",
+    role: "কনসালট্যান্ট রেডিওলজিস্ট",
+    qualification: "MBBS, MD (Radiology)",
+    bio: "১৮ বছরের রেডিওলজি অভিজ্ঞতা। আল্ট্রাসাউন্ড, এক্স-রে ও ডায়াগনস্টিক ইমেজিংয়ে বিশেষজ্ঞ।",
+    avatar: null,
+    email: "tanvir@trustcaredc.com",
+    linkedin: "#",
+  },
+  {
+    name: "নাজমা বেগম",
+    role: "কাস্টমার কেয়ার প্রধান",
+    qualification: "BA, Customer Service Certified",
+    bio: "৮ বছরের কাস্টমার সার্ভিস অভিজ্ঞতা। রোগীদের সন্তুষ্টি নিশ্চিত করা তাঁর প্রধান দায়িত্ব।",
+    avatar: null,
+    email: "nazma@trustcaredc.com",
+    linkedin: "#",
+  },
 ];
 
 const About = () => {
@@ -195,8 +254,64 @@ const About = () => {
           </div>
         </section>
 
-        {/* Core Values Section */}
+        {/* Team Section */}
         <section className="section-padding">
+          <div className="container-custom">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Users className="h-5 w-5 text-primary" />
+                <span className="text-sm font-medium text-primary uppercase tracking-wider">আমাদের টিম</span>
+              </div>
+              <h2 className="text-display-sm md:text-display-md font-bold text-foreground mb-4">
+                অভিজ্ঞ পেশাদার দল
+              </h2>
+              <p className="text-muted-foreground">
+                আমাদের দক্ষ ও অভিজ্ঞ টিম আপনার সেবায় সর্বদা প্রস্তুত
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {teamMembers.map((member) => (
+                <Card key={member.name} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
+                  <CardContent className="pt-8 pb-6">
+                    <div className="text-center">
+                      <Avatar className="h-24 w-24 mx-auto mb-4 ring-4 ring-primary/10 group-hover:ring-primary/20 transition-all">
+                        <AvatarImage src={member.avatar || undefined} alt={member.name} />
+                        <AvatarFallback className="text-xl bg-gradient-to-br from-primary/20 to-accent/20 text-primary font-semibold">
+                          {member.name.split(" ").slice(-1)[0].charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <h3 className="text-lg font-semibold text-foreground mb-1">{member.name}</h3>
+                      <p className="text-sm font-medium text-primary mb-1">{member.role}</p>
+                      <p className="text-xs text-muted-foreground mb-3">{member.qualification}</p>
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-4">{member.bio}</p>
+                      
+                      <div className="flex items-center justify-center gap-3 pt-4 border-t border-border">
+                        <a 
+                          href={`mailto:${member.email}`}
+                          className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
+                          title="ইমেইল করুন"
+                        >
+                          <Mail className="h-4 w-4" />
+                        </a>
+                        <a 
+                          href={member.linkedin}
+                          className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
+                          title="LinkedIn প্রোফাইল"
+                        >
+                          <Linkedin className="h-4 w-4" />
+                        </a>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Core Values Section */}
+        <section className="section-padding bg-muted/30">
           <div className="container-custom">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-display-sm md:text-display-md font-bold text-foreground mb-4">
