@@ -32,6 +32,7 @@ import {
   Phone
 } from "lucide-react";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { CorporateInquiryForm } from "@/components/corporate/CorporateInquiryForm";
 
 const corporatePackages = [
   {
@@ -551,17 +552,19 @@ const Services = () => {
                     </div>
 
                     {/* CTA */}
-                    <Button 
-                      className="w-full" 
-                      variant={pkg.popular ? "default" : "outline"}
-                      size="lg"
-                      asChild
-                    >
-                      <a href="tel:+8801345580203">
-                        <Phone className="h-4 w-4 mr-2" />
-                        যোগাযোগ করুন
-                      </a>
-                    </Button>
+                    <CorporateInquiryForm 
+                      defaultPackage={pkg.id}
+                      trigger={
+                        <Button 
+                          className="w-full" 
+                          variant={pkg.popular ? "default" : "outline"}
+                          size="lg"
+                        >
+                          <Building2 className="h-4 w-4 mr-2" />
+                          অনুসন্ধান করুন
+                        </Button>
+                      }
+                    />
                   </CardContent>
                 </Card>
               ))}
@@ -596,12 +599,14 @@ const Services = () => {
                   <p className="text-white/80 mb-4 text-sm">
                     আপনার প্রতিষ্ঠানের চাহিদা অনুযায়ী প্যাকেজ ডিজাইন করুন
                   </p>
-                  <Button variant="secondary" size="lg" asChild>
-                    <a href="tel:+8801345580203">
-                      <Phone className="h-4 w-4 mr-2" />
-                      ০১৩৪৫-৫৮০২০৩
-                    </a>
-                  </Button>
+                  <CorporateInquiryForm 
+                    trigger={
+                      <Button variant="secondary" size="lg">
+                        <Building2 className="h-4 w-4 mr-2" />
+                        অনুসন্ধান করুন
+                      </Button>
+                    }
+                  />
                 </div>
               </div>
             </div>
