@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -174,6 +175,13 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEOHead 
+        title="My Profile"
+        titleBn="আমার প্রোফাইল"
+        description="Manage your personal information and account settings."
+        descriptionBn="আপনার ব্যক্তিগত তথ্য এবং একাউন্ট সেটিংস ম্যানেজ করুন।"
+        noIndex={true}
+      />
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
