@@ -18,6 +18,8 @@ import NotificationSettingsPage from "./pages/NotificationSettingsPage";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Services from "./pages/Services";
+import Tests from "./pages/Tests";
+import TestDetail from "./pages/TestDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +42,8 @@ const App = () => (
             <Route path="/my-appointments" element={<MyAppointments />} />
             <Route path="/doctors" element={<Doctors />} />
             <Route path="/doctors/:id" element={<DoctorProfile />} />
+            <Route path="/tests" element={<Tests />} />
+            <Route path="/tests/:slug" element={<TestDetail />} />
             <Route path="/my-requests" element={<MyRequests />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/settings/notifications" element={<NotificationSettingsPage />} />

@@ -153,6 +153,75 @@ export type Database = {
         }
         Relationships: []
       }
+      diagnostic_tests: {
+        Row: {
+          category: string
+          category_bn: string | null
+          created_at: string
+          description: string | null
+          description_bn: string | null
+          discounted_price: number | null
+          id: string
+          is_active: boolean
+          is_popular: boolean
+          name: string
+          name_bn: string | null
+          preparation: string | null
+          preparation_bn: string | null
+          price: number
+          report_time: string | null
+          report_time_bn: string | null
+          sample_type: string | null
+          sample_type_bn: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          category_bn?: string | null
+          created_at?: string
+          description?: string | null
+          description_bn?: string | null
+          discounted_price?: number | null
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          name: string
+          name_bn?: string | null
+          preparation?: string | null
+          preparation_bn?: string | null
+          price?: number
+          report_time?: string | null
+          report_time_bn?: string | null
+          sample_type?: string | null
+          sample_type_bn?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          category_bn?: string | null
+          created_at?: string
+          description?: string | null
+          description_bn?: string | null
+          discounted_price?: number | null
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          name?: string
+          name_bn?: string | null
+          preparation?: string | null
+          preparation_bn?: string | null
+          price?: number
+          report_time?: string | null
+          report_time_bn?: string | null
+          sample_type?: string | null
+          sample_type_bn?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       doctor_education: {
         Row: {
           created_at: string
