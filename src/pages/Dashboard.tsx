@@ -31,11 +31,12 @@ import {
   Calendar, Clock, MapPin, Phone, FlaskConical, User, 
   CheckCircle2, AlertCircle, ClipboardList, RefreshCw,
   TrendingUp, FileUp, UserPlus, Activity, Filter,
-  BarChart3, PieChart, ArrowUpRight, ArrowDownRight, FileText, Users, CalendarCheck
+  BarChart3, PieChart, ArrowUpRight, ArrowDownRight, FileText, Users, CalendarCheck, Stethoscope
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { StaffManagement } from "@/components/admin/StaffManagement";
 import { AppointmentsManagement } from "@/components/admin/AppointmentsManagement";
+import { DoctorManagement } from "@/components/admin/DoctorManagement";
 import { StaffDashboard } from "@/components/dashboard/StaffDashboard";
 import { format, isToday, isThisWeek, isThisMonth, subDays, startOfDay, endOfDay } from "date-fns";
 import { 
@@ -312,6 +313,12 @@ const Dashboard = () => {
                 <TrendingUp className="h-4 w-4" />
                 Analytics
               </TabsTrigger>
+              {isAdmin && (
+                <TabsTrigger value="doctors" className="gap-2">
+                  <Stethoscope className="h-4 w-4" />
+                  Doctors
+                </TabsTrigger>
+              )}
               {isAdmin && (
                 <TabsTrigger value="staff" className="gap-2">
                   <Users className="h-4 w-4" />
@@ -858,6 +865,13 @@ const Dashboard = () => {
             {isAdmin && (
               <TabsContent value="appointments" className="space-y-6">
                 <AppointmentsManagement />
+              </TabsContent>
+            )}
+
+            {/* Doctors Management Tab */}
+            {isAdmin && (
+              <TabsContent value="doctors" className="space-y-6">
+                <DoctorManagement />
               </TabsContent>
             )}
 
