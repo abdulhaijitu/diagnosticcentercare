@@ -201,6 +201,57 @@ export type Database = {
         }
         Relationships: []
       }
+      corporate_packages: {
+        Row: {
+          created_at: string
+          description: string | null
+          features: string[]
+          id: string
+          is_active: boolean
+          is_popular: boolean
+          min_employees: number
+          name: string
+          name_en: string
+          price: number
+          price_label: string
+          sort_order: number
+          tests: string[]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          features?: string[]
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          min_employees?: number
+          name: string
+          name_en: string
+          price?: number
+          price_label?: string
+          sort_order?: number
+          tests?: string[]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          features?: string[]
+          id?: string
+          is_active?: boolean
+          is_popular?: boolean
+          min_employees?: number
+          name?: string
+          name_en?: string
+          price?: number
+          price_label?: string
+          sort_order?: number
+          tests?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       diagnostic_tests: {
         Row: {
           category: string
