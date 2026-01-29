@@ -5,6 +5,7 @@ import { ServicesSection } from "@/components/home/ServicesSection";
 import { DoctorsSection } from "@/components/home/DoctorsSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { CTASection } from "@/components/home/CTASection";
+import { FloatingActions } from "@/components/ui/FloatingActions";
 
 const Index = () => {
   return (
@@ -18,6 +19,7 @@ const Index = () => {
         <CTASection />
       </main>
       <Footer />
+      <FloatingActions />
     </div>
   );
 };
