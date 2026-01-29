@@ -12,9 +12,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Search, Stethoscope, SlidersHorizontal } from "lucide-react";
+import { Search, Stethoscope, SlidersHorizontal, Mic, MicOff } from "lucide-react";
 import { useDoctors } from "@/hooks/useAppointments";
 import { DoctorCard, DoctorCardProps } from "@/components/doctors/DoctorCard";
+import { useVoiceSearch } from "@/hooks/useVoiceSearch";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock data for specialties
 const specialties = [
@@ -170,10 +172,30 @@ const doctors = [
 
 const Doctors = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { doctors: dbDoctors, isLoading } = useDoctors();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSpecialty, setSelectedSpecialty] = useState("all");
   const [selectedAvailability, setSelectedAvailability] = useState("all");
+
+  // Voice search hook
+  const { isListening, isSupported, transcript, startListening, stopListening } = useVoiceSearch({
+    language: "bn-BD", // Bengali language
+    onResult: (text) => {
+      setSearchQuery(text);
+      toast({
+        title: "ভয়েস সার্চ",
+        description: `"${text}" দিয়ে খোঁজা হচ্ছে`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "ভয়েস সার্চ ত্রুটি",
+        description: error,
+        variant: "destructive",
+      });
+    },
+  });
 
   // Combine mock doctors with database doctors for display
   const allDoctors = [
@@ -245,17 +267,42 @@ const Doctors = () => {
                 for all your health concerns.
               </p>
               
-              {/* Search Bar */}
+              {/* Search Bar with Voice */}
               <div className="relative max-w-xl mx-auto">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   type="text"
-                  placeholder="Search by doctor name or specialty..."
-                  value={searchQuery}
+                  placeholder={isListening ? "শুনছি..." : "Search by doctor name or specialty..."}
+                  value={isListening ? transcript || searchQuery : searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 h-14 rounded-xl bg-white text-foreground border-0 shadow-elevated"
+                  className="pl-12 pr-14 h-14 rounded-xl bg-white text-foreground border-0 shadow-elevated"
                 />
+                {isSupported && (
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant={isListening ? "default" : "ghost"}
+                    onClick={isListening ? stopListening : startListening}
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-lg transition-all ${
+                      isListening 
+                        ? "bg-destructive hover:bg-destructive/90 animate-pulse" 
+                        : "hover:bg-muted"
+                    }`}
+                    title={isListening ? "বন্ধ করুন" : "ভয়েস সার্চ"}
+                  >
+                    {isListening ? (
+                      <MicOff className="h-5 w-5 text-destructive-foreground" />
+                    ) : (
+                      <Mic className="h-5 w-5 text-muted-foreground" />
+                    )}
+                  </Button>
+                )}
               </div>
+              {isListening && (
+                <p className="text-white/80 text-sm mt-3 animate-pulse">
+                  🎤 কথা বলুন... "{transcript || "..."}"
+                </p>
+              )}
             </div>
           </div>
         </section>
