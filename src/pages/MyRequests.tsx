@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
 import { useHomeCollectionRequests } from "@/hooks/useHomeCollectionRequests";
 import { EnhancedStatusTracker } from "@/components/home-collection/EnhancedStatusTracker";
@@ -58,6 +59,13 @@ const MyRequests = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEOHead 
+        title="My Requests"
+        titleBn="আমার রিকোয়েস্টসমূহ"
+        description="Track your home sample collection requests and view test reports."
+        descriptionBn="আপনার হোম স্যাম্পল কালেকশন রিকোয়েস্ট ট্র্যাক করুন এবং টেস্ট রিপোর্ট দেখুন।"
+        noIndex={true}
+      />
       <Header />
       <main className="flex-1 section-padding">
         <div className="container-custom max-w-4xl">
