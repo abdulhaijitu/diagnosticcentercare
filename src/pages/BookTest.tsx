@@ -27,6 +27,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { 
   Search, 
@@ -41,7 +48,8 @@ import {
   Phone,
   Mail,
   ArrowRight,
-  Loader2
+  Loader2,
+  SlidersHorizontal
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useHomeCollectionRequests } from "@/hooks/useHomeCollectionRequests";
@@ -333,8 +341,63 @@ const BookTest = () => {
         <section className="section-padding">
           <div className="container-custom">
             <div className="flex flex-col lg:flex-row gap-8">
-              {/* Sidebar - Categories */}
-              <aside className="lg:w-64 flex-shrink-0">
+              {/* Mobile Filter Button */}
+              <div className="lg:hidden">
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="outline" className="w-full gap-2">
+                      <SlidersHorizontal className="h-4 w-4" />
+                      ফিল্টার করুন
+                      {selectedCategory !== "all" && (
+                        <span className="ml-1 px-2 py-0.5 text-xs bg-primary text-primary-foreground rounded-full">
+                          1
+                        </span>
+                      )}
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="left" className="w-80 overflow-y-auto">
+                    <SheetHeader>
+                      <SheetTitle>ফিল্টার</SheetTitle>
+                    </SheetHeader>
+                    <div className="mt-6 space-y-6">
+                      {/* Category Filter */}
+                      <div>
+                        <h3 className="font-semibold text-foreground mb-4">ক্যাটাগরি</h3>
+                        <ul className="space-y-2">
+                          {testCategories.map((category) => (
+                            <li key={category.id}>
+                              <button
+                                onClick={() => setSelectedCategory(category.id)}
+                                className={`w-full text-left px-4 py-2.5 rounded-lg transition-colors text-sm ${
+                                  selectedCategory === category.id
+                                    ? "bg-primary text-primary-foreground"
+                                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                }`}
+                              >
+                                {category.name}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Clear Filters */}
+                      {selectedCategory !== "all" && (
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => setSelectedCategory("all")}
+                        >
+                          ফিল্টার মুছুন
+                        </Button>
+                      )}
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </div>
+
+              {/* Desktop Sidebar - Categories */}
+              <aside className="hidden lg:block lg:w-64 flex-shrink-0">
                 <div className="bg-card rounded-2xl p-6 shadow-card sticky top-24">
                   <h3 className="font-semibold text-foreground mb-4">Categories</h3>
                   <ul className="space-y-2">
