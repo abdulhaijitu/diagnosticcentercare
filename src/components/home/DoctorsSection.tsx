@@ -110,7 +110,7 @@ export function DoctorsSection() {
                     <span className="font-semibold text-sm">{doctor.rating}</span>
                   </div>
                   <Button size="sm" variant="secondary" asChild>
-                    <Link to={`/doctors/${doctor.id}/book`}>
+                    <Link to="/book-appointment">
                       <Calendar className="h-4 w-4" />
                       Book
                     </Link>
