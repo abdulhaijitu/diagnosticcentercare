@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
 import { useHomeCollectionRequests, CollectionStatus } from "@/hooks/useHomeCollectionRequests";
 import { useStaffMembers } from "@/hooks/useStaffMembers";
@@ -202,6 +203,13 @@ const Dashboard = () => {
   if (isStaff && !isAdmin) {
     return (
       <div className="min-h-screen bg-muted/30 flex flex-col">
+        <SEOHead 
+          title="Staff Dashboard"
+          titleBn="স্টাফ ড্যাশবোর্ড"
+          description="Manage assigned sample collections and update request status."
+          descriptionBn="নির্ধারিত স্যাম্পল কালেকশন ম্যানেজ করুন এবং রিকোয়েস্ট স্ট্যাটাস আপডেট করুন।"
+          noIndex={true}
+        />
         <Header />
         <main className="flex-1 section-padding">
           <div className="container-custom">
@@ -263,6 +271,13 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-muted/30 flex flex-col">
+      <SEOHead 
+        title="Admin Dashboard"
+        titleBn="অ্যাডমিন ড্যাশবোর্ড"
+        description="Manage bookings, staff assignments, doctors and view analytics."
+        descriptionBn="বুকিং, স্টাফ অ্যাসাইনমেন্ট, ডাক্তার ম্যানেজ করুন এবং অ্যানালিটিক্স দেখুন।"
+        noIndex={true}
+      />
       <Header />
       <main className="flex-1 section-padding">
         <div className="container-custom">
