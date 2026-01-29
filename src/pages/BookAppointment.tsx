@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { FloatingActions } from "@/components/ui/FloatingActions";
 import { AppointmentBookingForm } from "@/components/appointments/AppointmentBookingForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -55,6 +56,7 @@ const BookAppointment = () => {
         </div>
       </main>
       <Footer />
+      <FloatingActions />
     </div>
   );
 };
