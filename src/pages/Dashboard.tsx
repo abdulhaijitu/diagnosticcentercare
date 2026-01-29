@@ -677,6 +677,27 @@ const Dashboard = () => {
                               </SelectContent>
                             </Select>
 
+                            {/* Upload Report - available for both Admin and Staff */}
+                            {(isAdmin || isStaff) && (
+                              <>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => openUploadReport(request.id, request.patient_id, request.full_name)}
+                                >
+                                  <FileUp className="h-4 w-4 mr-2" />
+                                  Upload Report
+                                </Button>
+                                {getReportsForRequest(request.id).length > 0 && (
+                                  <Badge variant="secondary" className="gap-1">
+                                    <FileText className="h-3 w-3" />
+                                    {getReportsForRequest(request.id).length} Report(s)
+                                  </Badge>
+                                )}
+                              </>
+                            )}
+
+                            {/* Admin-only actions */}
                             {isAdmin && (
                               <>
                                 <Button
@@ -696,20 +717,6 @@ const Dashboard = () => {
                                   <Calendar className="h-4 w-4 mr-2" />
                                   Reschedule
                                 </Button>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={() => openUploadReport(request.id, request.patient_id, request.full_name)}
-                                >
-                                  <FileUp className="h-4 w-4 mr-2" />
-                                  Upload Report
-                                </Button>
-                                {getReportsForRequest(request.id).length > 0 && (
-                                  <Badge variant="secondary" className="gap-1">
-                                    <FileText className="h-3 w-3" />
-                                    {getReportsForRequest(request.id).length} Report(s)
-                                  </Badge>
-                                )}
                               </>
                             )}
                           </div>
