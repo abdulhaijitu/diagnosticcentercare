@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { 
   Microscope, 
   Stethoscope, 
@@ -182,21 +183,34 @@ const Services = () => {
           </div>
         </section>
 
-        {/* Stats Section */}
+        {/* Stats Section with Animated Counters */}
         <section className="py-12 bg-card border-b border-border">
           <div className="container-custom">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {[
-                { value: "৫০+", label: "ধরনের টেস্ট" },
-                { value: "২০+", label: "বিশেষজ্ঞ ডাক্তার" },
-                { value: "১০,০০০+", label: "সন্তুষ্ট রোগী" },
-                { value: "৯৯%", label: "নির্ভুলতা" },
-              ].map((stat, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-primary mb-1">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-1">
+                  <AnimatedCounter end={50} duration={1500} suffix="+" />
                 </div>
-              ))}
+                <div className="text-sm text-muted-foreground">ধরনের টেস্ট</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-1">
+                  <AnimatedCounter end={20} duration={1500} suffix="+" />
+                </div>
+                <div className="text-sm text-muted-foreground">বিশেষজ্ঞ ডাক্তার</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-1">
+                  <AnimatedCounter end={10000} duration={2000} suffix="+" />
+                </div>
+                <div className="text-sm text-muted-foreground">সন্তুষ্ট রোগী</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-primary mb-1">
+                  <AnimatedCounter end={99} duration={1500} suffix="%" />
+                </div>
+                <div className="text-sm text-muted-foreground">নির্ভুলতা</div>
+              </div>
             </div>
           </div>
         </section>
