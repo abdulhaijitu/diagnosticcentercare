@@ -153,6 +153,88 @@ export type Database = {
         }
         Relationships: []
       }
+      doctor_education: {
+        Row: {
+          created_at: string
+          degree: string
+          description: string | null
+          doctor_id: string
+          id: string
+          institution: string
+          year: number | null
+        }
+        Insert: {
+          created_at?: string
+          degree: string
+          description?: string | null
+          doctor_id: string
+          id?: string
+          institution: string
+          year?: number | null
+        }
+        Update: {
+          created_at?: string
+          degree?: string
+          description?: string | null
+          doctor_id?: string
+          id?: string
+          institution?: string
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "doctor_education_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      doctor_experience: {
+        Row: {
+          created_at: string
+          description: string | null
+          doctor_id: string
+          end_year: number | null
+          id: string
+          is_current: boolean
+          organization: string
+          position: string
+          start_year: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          doctor_id: string
+          end_year?: number | null
+          id?: string
+          is_current?: boolean
+          organization: string
+          position: string
+          start_year: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          doctor_id?: string
+          end_year?: number | null
+          id?: string
+          is_current?: boolean
+          organization?: string
+          position?: string
+          start_year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "doctor_experience_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       doctors: {
         Row: {
           available_days: string[]
