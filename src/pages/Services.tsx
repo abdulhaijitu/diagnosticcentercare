@@ -25,8 +25,105 @@ import {
   Bone,
   Baby,
   Eye,
-  Activity
+  Activity,
+  Building2,
+  BadgeCheck,
+  Star,
+  Phone
 } from "lucide-react";
+
+const corporatePackages = [
+  {
+    id: "basic",
+    name: "বেসিক প্যাকেজ",
+    nameEn: "Basic Package",
+    price: 1500,
+    pricePerPerson: "প্রতি জন",
+    minEmployees: 20,
+    popular: false,
+    description: "ছোট প্রতিষ্ঠানের জন্য আদর্শ প্রাথমিক স্বাস্থ্য পরীক্ষা",
+    tests: [
+      "CBC (Complete Blood Count)",
+      "Blood Sugar (Fasting)",
+      "Lipid Profile",
+      "Urine Routine",
+      "Blood Pressure Check",
+      "BMI Assessment",
+    ],
+    features: [
+      "অন-সাইট কালেকশন",
+      "৪৮ ঘন্টায় রিপোর্ট",
+      "ডিজিটাল রিপোর্ট",
+    ],
+    color: "border-muted",
+  },
+  {
+    id: "standard",
+    name: "স্ট্যান্ডার্ড প্যাকেজ",
+    nameEn: "Standard Package",
+    price: 2500,
+    pricePerPerson: "প্রতি জন",
+    minEmployees: 30,
+    popular: true,
+    description: "মাঝারি প্রতিষ্ঠানের জন্য সম্পূর্ণ স্বাস্থ্য চেকআপ",
+    tests: [
+      "CBC (Complete Blood Count)",
+      "Blood Sugar (Fasting & PP)",
+      "HbA1c",
+      "Lipid Profile",
+      "Liver Function Test (LFT)",
+      "Kidney Function Test (KFT)",
+      "Thyroid Profile (TSH, T3, T4)",
+      "Urine Routine",
+      "ECG",
+      "Chest X-Ray",
+    ],
+    features: [
+      "অন-সাইট কালেকশন",
+      "২৪ ঘন্টায় রিপোর্ট",
+      "ডিজিটাল রিপোর্ট",
+      "ফ্রি ডক্টর কনসালটেশন",
+      "হেলথ সামারি রিপোর্ট",
+    ],
+    color: "border-primary ring-2 ring-primary/20",
+  },
+  {
+    id: "premium",
+    name: "প্রিমিয়াম প্যাকেজ",
+    nameEn: "Premium Package",
+    price: 4500,
+    pricePerPerson: "প্রতি জন",
+    minEmployees: 50,
+    popular: false,
+    description: "বড় প্রতিষ্ঠানের জন্য এক্সিকিউটিভ হেলথ চেকআপ",
+    tests: [
+      "CBC (Complete Blood Count)",
+      "Blood Sugar (Fasting, PP, HbA1c)",
+      "Complete Lipid Profile",
+      "Liver Function Test (LFT)",
+      "Kidney Function Test (KFT)",
+      "Complete Thyroid Profile",
+      "Vitamin D & B12",
+      "Uric Acid",
+      "Urine Routine & Culture",
+      "ECG",
+      "Chest X-Ray",
+      "Ultrasound Abdomen",
+      "Eye Checkup",
+      "Dental Checkup",
+    ],
+    features: [
+      "অন-সাইট কালেকশন",
+      "২৪ ঘন্টায় রিপোর্ট",
+      "ডিজিটাল রিপোর্ট",
+      "ফ্রি স্পেশালিস্ট কনসালটেশন",
+      "ডিটেইলড হেলথ সামারি",
+      "ফলো-আপ কনসালটেশন",
+      "ডেডিকেটেড কোঅর্ডিনেটর",
+    ],
+    color: "border-accent",
+  },
+];
 
 const services = [
   {
@@ -361,7 +458,155 @@ const Services = () => {
           </div>
         </section>
 
-        {/* Why Choose Us */}
+        {/* Corporate Health Checkup Packages */}
+        <section className="section-padding bg-gradient-to-b from-background to-muted/30">
+          <div className="container-custom">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+                <Building2 className="h-4 w-4" />
+                <span>কর্পোরেট সলিউশন</span>
+              </div>
+              <h2 className="text-display-sm font-bold text-foreground mb-4">
+                কর্পোরেট হেলথ চেকআপ প্যাকেজ
+              </h2>
+              <p className="text-muted-foreground">
+                আপনার প্রতিষ্ঠানের কর্মীদের স্বাস্থ্য সুরক্ষায় আমাদের বিশেষ প্যাকেজ। 
+                গ্রুপ বুকিংয়ে বিশেষ ছাড়।
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+              {corporatePackages.map((pkg) => (
+                <Card 
+                  key={pkg.id} 
+                  className={`relative overflow-hidden transition-all duration-300 hover:shadow-elevated ${pkg.color}`}
+                >
+                  {pkg.popular && (
+                    <div className="absolute top-4 right-4">
+                      <Badge className="bg-primary text-primary-foreground">
+                        <Star className="h-3 w-3 mr-1 fill-current" />
+                        জনপ্রিয়
+                      </Badge>
+                    </div>
+                  )}
+                  
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                        pkg.popular ? "bg-primary/10" : "bg-muted"
+                      }`}>
+                        <Building2 className={`h-6 w-6 ${pkg.popular ? "text-primary" : "text-muted-foreground"}`} />
+                      </div>
+                      <div>
+                        <CardTitle className="text-xl">{pkg.name}</CardTitle>
+                        <p className="text-sm text-muted-foreground">{pkg.nameEn}</p>
+                      </div>
+                    </div>
+                    <CardDescription>{pkg.description}</CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="space-y-6">
+                    {/* Pricing */}
+                    <div className="text-center py-4 bg-muted/50 rounded-xl">
+                      <div className="flex items-baseline justify-center gap-1">
+                        <span className="text-3xl font-bold text-foreground">৳{pkg.price.toLocaleString()}</span>
+                        <span className="text-muted-foreground">/{pkg.pricePerPerson}</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        ন্যূনতম {pkg.minEmployees} জন
+                      </p>
+                    </div>
+
+                    {/* Tests Included */}
+                    <div>
+                      <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                        <FlaskConical className="h-4 w-4 text-primary" />
+                        অন্তর্ভুক্ত টেস্ট
+                      </h4>
+                      <ul className="space-y-2">
+                        {pkg.tests.map((test, i) => (
+                          <li key={i} className="flex items-start gap-2 text-sm">
+                            <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                            <span className="text-muted-foreground">{test}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Features */}
+                    <div className="pt-4 border-t border-border">
+                      <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                        <BadgeCheck className="h-4 w-4 text-primary" />
+                        বিশেষ সুবিধা
+                      </h4>
+                      <ul className="space-y-2">
+                        {pkg.features.map((feature, i) => (
+                          <li key={i} className="flex items-center gap-2 text-sm">
+                            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                            <span className="text-muted-foreground">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* CTA */}
+                    <Button 
+                      className="w-full" 
+                      variant={pkg.popular ? "default" : "outline"}
+                      size="lg"
+                      asChild
+                    >
+                      <a href="tel:+8801345580203">
+                        <Phone className="h-4 w-4 mr-2" />
+                        যোগাযোগ করুন
+                      </a>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Corporate Benefits */}
+            <div className="mt-12 bg-card rounded-2xl p-6 md:p-8 border shadow-sm">
+              <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                  <h3 className="text-xl font-bold text-foreground mb-4">
+                    কর্পোরেট ক্লায়েন্টদের জন্য বিশেষ সুবিধা
+                  </h3>
+                  <ul className="space-y-3">
+                    {[
+                      "অফিসে বা ফ্যাক্টরিতে অন-সাইট স্যাম্পল কালেকশন",
+                      "কাস্টমাইজড প্যাকেজ তৈরির সুযোগ",
+                      "বার্ষিক চুক্তিতে অতিরিক্ত ১০% ছাড়",
+                      "ডেডিকেটেড অ্যাকাউন্ট ম্যানেজার",
+                      "প্রতিষ্ঠানের জন্য হেলথ অ্যানালিটিক্স রিপোর্ট",
+                      "এমপ্লয়ি হেলথ পোর্টাল অ্যাক্সেস",
+                    ].map((benefit, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="bg-gradient-hero rounded-xl p-6 text-center text-white">
+                  <Building2 className="h-12 w-12 mx-auto mb-4 opacity-80" />
+                  <h4 className="text-xl font-bold mb-2">কাস্টম প্যাকেজ দরকার?</h4>
+                  <p className="text-white/80 mb-4 text-sm">
+                    আপনার প্রতিষ্ঠানের চাহিদা অনুযায়ী প্যাকেজ ডিজাইন করুন
+                  </p>
+                  <Button variant="secondary" size="lg" asChild>
+                    <a href="tel:+8801345580203">
+                      <Phone className="h-4 w-4 mr-2" />
+                      ০১৩৪৫-৫৮০২০৩
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="section-padding">
           <div className="container-custom">
             <div className="text-center max-w-2xl mx-auto mb-12">
