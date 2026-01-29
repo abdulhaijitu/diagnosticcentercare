@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAppointments } from "@/hooks/useAppointments";
 import { Button } from "@/components/ui/button";
@@ -64,6 +65,13 @@ const MyAppointments = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEOHead 
+        title="My Appointments"
+        titleBn="আমার অ্যাপয়েন্টমেন্টস"
+        description="View and manage your doctor appointments at TrustCare."
+        descriptionBn="আপনার ডাক্তার অ্যাপয়েন্টমেন্ট দেখুন এবং ম্যানেজ করুন।"
+        noIndex={true}
+      />
       <Header />
       <main className="flex-1 section-padding">
         <div className="container-custom max-w-4xl">

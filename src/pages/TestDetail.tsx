@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/ui/FloatingActions";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -80,9 +81,16 @@ const TestDetail = () => {
     : 0;
 
   return (
+    <>
+      <SEOHead 
+        title={test.name_bn || test.name}
+        titleBn={test.name_bn}
+        description={`${test.name} - ${test.description || 'Book this test at TrustCare'}. Price: ৳${test.discounted_price || test.price}. ${test.report_time || 'Quick results'}.`}
+        descriptionBn={test.description_bn || `${test.name_bn || test.name} - দাম: ৳${test.discounted_price || test.price}।`}
+        url={`https://diagnosticcentercare.lovable.app/tests/${test.slug}`}
+      />
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      
       <main className="flex-1">
         {/* Breadcrumb */}
         <div className="bg-muted/30 border-b border-border py-4">
@@ -317,6 +325,7 @@ const TestDetail = () => {
       <Footer />
       <FloatingActions />
     </div>
+    </>
   );
 };
 
