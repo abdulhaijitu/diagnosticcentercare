@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/ui/FloatingActions";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -188,6 +189,13 @@ const DoctorProfile = () => {
   const averageRating = mockReviews.reduce((acc, r) => acc + r.rating, 0) / mockReviews.length;
 
   return (
+    <>
+      <SEOHead 
+        title={doctor.name}
+        description={`Book appointment with ${doctor.name}, ${doctor.specialty} specialist at TrustCare. ${doctor.experience_years || 10}+ years experience. Fee: ৳${doctor.consultation_fee}.`}
+        descriptionBn={`${doctor.name} - ${doctor.specialty} বিশেষজ্ঞ। অভিজ্ঞতা: ${doctor.experience_years || 10}+ বছর। ফি: ৳${doctor.consultation_fee}।`}
+        url={`https://diagnosticcentercare.lovable.app/doctors/${id}`}
+      />
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <main className="flex-1">
@@ -552,6 +560,7 @@ const DoctorProfile = () => {
       <Footer />
       <FloatingActions />
     </div>
+    </>
   );
 };
 
