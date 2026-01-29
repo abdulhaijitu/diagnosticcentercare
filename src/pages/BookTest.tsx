@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/ui/FloatingActions";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -306,6 +307,14 @@ const BookTest = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEOHead 
+        title="Book Diagnostic Test"
+        titleBn="ডায়াগনস্টিক টেস্ট বুক করুন"
+        description="Book blood tests, diabetes tests, thyroid tests and more online. Home sample collection available in Dhaka. Fast results, affordable prices."
+        descriptionBn="রক্ত পরীক্ষা, ডায়াবেটিস টেস্ট, থাইরয়েড টেস্ট অনলাইনে বুক করুন। ঢাকায় হোম স্যাম্পল কালেকশন। দ্রুত রিপোর্ট, সাশ্রয়ী মূল্য।"
+        keywords="book blood test dhaka, home sample collection, diagnostic test booking, CBC test, thyroid test, diabetes test, health checkup booking"
+        url="https://diagnosticcentercare.lovable.app/book-test"
+      />
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
