@@ -31,9 +31,10 @@ import {
   Calendar, Clock, MapPin, Phone, FlaskConical, User, 
   CheckCircle2, AlertCircle, ClipboardList, RefreshCw,
   TrendingUp, FileUp, UserPlus, Activity, Filter,
-  BarChart3, PieChart, ArrowUpRight, ArrowDownRight, FileText
+  BarChart3, PieChart, ArrowUpRight, ArrowDownRight, FileText, Users
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
+import { StaffManagement } from "@/components/admin/StaffManagement";
 import { format, isToday, isThisWeek, isThisMonth, subDays, startOfDay, endOfDay } from "date-fns";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -284,6 +285,12 @@ const Dashboard = () => {
                 <TrendingUp className="h-4 w-4" />
                 Analytics
               </TabsTrigger>
+              {isAdmin && (
+                <TabsTrigger value="staff" className="gap-2">
+                  <Users className="h-4 w-4" />
+                  Staff Management
+                </TabsTrigger>
+              )}
             </TabsList>
 
             {/* Overview Tab */}
@@ -812,6 +819,13 @@ const Dashboard = () => {
                 </Card>
               </div>
             </TabsContent>
+
+            {/* Staff Management Tab */}
+            {isAdmin && (
+              <TabsContent value="staff" className="space-y-6">
+                <StaffManagement />
+              </TabsContent>
+            )}
           </Tabs>
         </div>
       </main>
