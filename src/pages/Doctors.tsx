@@ -3,8 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Stethoscope } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Search, Stethoscope, SlidersHorizontal } from "lucide-react";
 import { useDoctors } from "@/hooks/useAppointments";
 import { DoctorCard, DoctorCardProps } from "@/components/doctors/DoctorCard";
 
@@ -256,8 +264,87 @@ const Doctors = () => {
         <section className="section-padding">
           <div className="container-custom">
             <div className="flex flex-col lg:flex-row gap-8">
-              {/* Sidebar - Filters */}
-              <aside className="lg:w-72 flex-shrink-0">
+              {/* Mobile Filter Button */}
+              <div className="lg:hidden">
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="outline" className="w-full gap-2">
+                      <SlidersHorizontal className="h-4 w-4" />
+                      ফিল্টার করুন
+                      {(selectedSpecialty !== "all" || selectedAvailability !== "all") && (
+                        <span className="ml-1 px-2 py-0.5 text-xs bg-primary text-primary-foreground rounded-full">
+                          {(selectedSpecialty !== "all" ? 1 : 0) + (selectedAvailability !== "all" ? 1 : 0)}
+                        </span>
+                      )}
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="left" className="w-80 overflow-y-auto">
+                    <SheetHeader>
+                      <SheetTitle>ফিল্টার</SheetTitle>
+                    </SheetHeader>
+                    <div className="mt-6 space-y-6">
+                      {/* Specialty Filter */}
+                      <div>
+                        <h3 className="font-semibold text-foreground mb-4">বিশেষত্ব</h3>
+                        <ul className="space-y-2">
+                          {specialties.map((specialty) => (
+                            <li key={specialty.id}>
+                              <button
+                                onClick={() => setSelectedSpecialty(specialty.id)}
+                                className={`w-full text-left px-4 py-2.5 rounded-lg transition-colors text-sm ${
+                                  selectedSpecialty === specialty.id
+                                    ? "bg-primary text-primary-foreground"
+                                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                }`}
+                              >
+                                {specialty.name}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Availability Filter */}
+                      <div className="pt-4 border-t border-border">
+                        <h3 className="font-semibold text-foreground mb-4">উপলব্ধতা</h3>
+                        <ul className="space-y-2">
+                          {availabilityOptions.map((option) => (
+                            <li key={option.id}>
+                              <button
+                                onClick={() => setSelectedAvailability(option.id)}
+                                className={`w-full text-left px-4 py-2.5 rounded-lg transition-colors text-sm ${
+                                  selectedAvailability === option.id
+                                    ? "bg-primary text-primary-foreground"
+                                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                }`}
+                              >
+                                {option.name}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {/* Clear Filters */}
+                      {(selectedSpecialty !== "all" || selectedAvailability !== "all") && (
+                        <Button
+                          variant="outline"
+                          className="w-full"
+                          onClick={() => {
+                            setSelectedSpecialty("all");
+                            setSelectedAvailability("all");
+                          }}
+                        >
+                          ফিল্টার মুছুন
+                        </Button>
+                      )}
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </div>
+
+              {/* Desktop Sidebar - Filters */}
+              <aside className="hidden lg:block lg:w-72 flex-shrink-0">
                 <div className="bg-card rounded-2xl p-6 shadow-card sticky top-24 space-y-6">
                   {/* Specialty Filter */}
                   <div>
