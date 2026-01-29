@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MessageCircle, X, Send, Bot, User } from "lucide-react";
+import { MessageCircle, X, Send, Bot, User, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface Message {
   id: string;
@@ -19,14 +20,7 @@ const quickReplies = [
   "রিপোর্ট কবে পাব?",
 ];
 
-const botResponses: Record<string, string> = {
-  "টেস্টের দাম জানতে চাই": "আমাদের সব টেস্টের দাম দেখতে 'Tests' পেজে যান অথবা 01345580203 নম্বরে কল করুন। আমরা সবসময় সাশ্রয়ী মূল্যে সেবা দিই।",
-  "হোম কালেকশন সম্পর্কে জানতে চাই": "আমরা ঢাকা শহরের সব এলাকায় হোম কালেকশন সেবা দিই। 'Book Test' পেজ থেকে বুক করুন। আমাদের ট্রেইনড ফ্লেবোটমিস্ট আপনার বাসায় এসে স্যাম্পল সংগ্রহ করবেন।",
-  "অ্যাপয়েন্টমেন্ট বুক করতে চাই": "অ্যাপয়েন্টমেন্ট বুক করতে 'Doctors' পেজে গিয়ে আপনার পছন্দের ডাক্তার সিলেক্ট করুন এবং সময় বেছে নিন।",
-  "রিপোর্ট কবে পাব?": "বেশিরভাগ টেস্টের রিপোর্ট ২৪-৪৮ ঘণ্টার মধ্যে পাওয়া যায়। কিছু স্পেশাল টেস্টে ৩-৫ দিন সময় লাগতে পারে। রিপোর্ট রেডি হলে SMS ও WhatsApp-এ নোটিফিকেশন পাবেন।",
-};
-
-const defaultResponse = "ধন্যবাদ আপনার মেসেজের জন্য! আমাদের একজন প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করবেন। জরুরি প্রয়োজনে 01345580203 নম্বরে কল করুন।";
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat-support`;
 
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,9 +33,93 @@ export function ChatWidget() {
     },
   ]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const handleSend = (text: string) => {
-    if (!text.trim()) return;
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const streamChat = async (userMessages: { role: string; content: string }[]) => {
+    const resp = await fetch(CHAT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+      },
+      body: JSON.stringify({ messages: userMessages }),
+    });
+
+    if (!resp.ok) {
+      const errorData = await resp.json().catch(() => ({}));
+      throw new Error(errorData.error || "Failed to get response");
+    }
+
+    if (!resp.body) throw new Error("No response body");
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let textBuffer = "";
+    let assistantContent = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      
+      textBuffer += decoder.decode(value, { stream: true });
+
+      let newlineIndex: number;
+      while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+        let line = textBuffer.slice(0, newlineIndex);
+        textBuffer = textBuffer.slice(newlineIndex + 1);
+
+        if (line.endsWith("\r")) line = line.slice(0, -1);
+        if (line.startsWith(":") || line.trim() === "") continue;
+        if (!line.startsWith("data: ")) continue;
+
+        const jsonStr = line.slice(6).trim();
+        if (jsonStr === "[DONE]") break;
+
+        try {
+          const parsed = JSON.parse(jsonStr);
+          const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+          if (content) {
+            assistantContent += content;
+            // Update the last assistant message
+            setMessages((prev) => {
+              const last = prev[prev.length - 1];
+              if (last?.role === "assistant" && last.id !== "welcome") {
+                return prev.map((m, i) =>
+                  i === prev.length - 1 ? { ...m, content: assistantContent } : m
+                );
+              }
+              return [
+                ...prev,
+                {
+                  id: Date.now().toString(),
+                  content: assistantContent,
+                  role: "assistant",
+                  timestamp: new Date(),
+                },
+              ];
+            });
+          }
+        } catch {
+          // Incomplete JSON, put it back
+          textBuffer = line + "\n" + textBuffer;
+          break;
+        }
+      }
+    }
+
+    return assistantContent;
+  };
+
+  const handleSend = async (text: string) => {
+    if (!text.trim() || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -52,18 +130,33 @@ export function ChatWidget() {
 
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    setIsLoading(true);
 
-    // Simulate bot response
-    setTimeout(() => {
-      const response = botResponses[text] || defaultResponse;
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: response,
-        role: "assistant",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, botMessage]);
-    }, 500);
+    try {
+      // Prepare messages for API (exclude welcome message)
+      const apiMessages = messages
+        .filter((m) => m.id !== "welcome")
+        .map((m) => ({ role: m.role, content: m.content }));
+      apiMessages.push({ role: "user", content: text });
+
+      await streamChat(apiMessages);
+    } catch (error) {
+      console.error("Chat error:", error);
+      toast.error(error instanceof Error ? error.message : "চ্যাটে সমস্যা হয়েছে");
+      
+      // Add fallback message
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          content: "দুঃখিত, এই মুহূর্তে সমস্যা হচ্ছে। অনুগ্রহ করে 01345580203 নম্বরে কল করুন।",
+          role: "assistant",
+          timestamp: new Date(),
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -104,14 +197,16 @@ export function ChatWidget() {
               <Bot className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-semibold">TrustCare Support</h3>
-              <p className="text-xs text-primary-foreground/80">সাধারণত কয়েক মিনিটে উত্তর দিই</p>
+              <h3 className="font-semibold">TrustCare AI Support</h3>
+              <p className="text-xs text-primary-foreground/80">
+                {isLoading ? "টাইপ করছে..." : "আপনার সেবায় প্রস্তুত"}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Messages */}
-        <ScrollArea className="h-[300px] p-4">
+        <ScrollArea className="h-[300px] p-4" ref={scrollRef}>
           <div className="space-y-4">
             {messages.map((message) => (
               <div
@@ -143,6 +238,16 @@ export function ChatWidget() {
                 )}
               </div>
             ))}
+            {isLoading && messages[messages.length - 1]?.role === "user" && (
+              <div className="flex gap-2 justify-start">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Bot className="h-4 w-4 text-primary" />
+                </div>
+                <div className="bg-muted rounded-2xl rounded-bl-md px-4 py-2">
+                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                </div>
+              </div>
+            )}
           </div>
         </ScrollArea>
 
@@ -153,7 +258,8 @@ export function ChatWidget() {
               <button
                 key={reply}
                 onClick={() => handleSend(reply)}
-                className="text-xs bg-secondary hover:bg-secondary/80 text-secondary-foreground px-3 py-1.5 rounded-full transition-colors"
+                disabled={isLoading}
+                className="text-xs bg-secondary hover:bg-secondary/80 text-secondary-foreground px-3 py-1.5 rounded-full transition-colors disabled:opacity-50"
               >
                 {reply}
               </button>
@@ -175,9 +281,14 @@ export function ChatWidget() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="মেসেজ লিখুন..."
               className="flex-1"
+              disabled={isLoading}
             />
-            <Button type="submit" size="icon" disabled={!input.trim()}>
-              <Send className="h-4 w-4" />
+            <Button type="submit" size="icon" disabled={!input.trim() || isLoading}>
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
             </Button>
           </form>
         </div>
