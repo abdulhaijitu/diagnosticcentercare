@@ -138,6 +138,12 @@ export function Header() {
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
+                      <Link to="/profile" className="flex items-center gap-2 cursor-pointer">
+                        <User className="h-4 w-4" />
+                        My Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                       <Link to="/my-appointments" className="flex items-center gap-2 cursor-pointer">
                         <CalendarCheck className="h-4 w-4" />
                         My Appointments
@@ -281,6 +287,13 @@ export function Header() {
                     <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
                     <p className="text-xs text-muted-foreground">{user.email}</p>
                   </div>
+                  <Link
+                    to="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  >
+                    My Profile
+                  </Link>
                   <Link
                     to="/my-appointments"
                     onClick={() => setMobileMenuOpen(false)}
