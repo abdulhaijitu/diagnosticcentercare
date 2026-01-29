@@ -100,7 +100,11 @@ export function Header() {
                 </Link>
               ))}
               {/* Highlighted Book Test CTA */}
-              <Button asChild size="sm" className="ml-2">
+              <Button 
+                asChild 
+                size="sm" 
+                className="ml-2 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105"
+              >
                 <Link to="/book-test">Book Test</Link>
               </Button>
             </div>
@@ -214,7 +218,10 @@ export function Header() {
                 </Link>
               ))}
               {/* Highlighted Book Test CTA for Mobile */}
-              <Button asChild className="w-full mt-2">
+              <Button 
+                asChild 
+                className="w-full mt-2 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg shadow-primary/25"
+              >
                 <Link to="/book-test" onClick={() => setMobileMenuOpen(false)}>
                   Book Test
                 </Link>
