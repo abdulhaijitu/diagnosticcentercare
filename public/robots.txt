@@ -1,8 +1,14 @@
+# TrustCare Diagnostic Center - robots.txt
+# https://diagnosticcentercare.lovable.app
+
+# Allow all major search engines
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Twitterbot
 Allow: /
@@ -10,5 +16,28 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+# General crawlers
 User-agent: *
 Allow: /
+Crawl-delay: 2
+
+# Disallow private/auth pages
+Disallow: /login
+Disallow: /register
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /my-requests
+Disallow: /my-appointments
+Disallow: /settings/*
+
+# Sitemap location
+Sitemap: https://diagnosticcentercare.lovable.app/sitemap.xml
