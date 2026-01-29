@@ -307,13 +307,6 @@ export function Header() {
                     My Appointments
                   </Link>
                   <Link
-                    to="/my-appointments"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                  >
-                    My Appointments
-                  </Link>
-                  <Link
                     to="/my-requests"
                     onClick={() => setMobileMenuOpen(false)}
                     className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
