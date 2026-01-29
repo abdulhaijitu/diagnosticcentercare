@@ -31,12 +31,13 @@ import {
   Calendar, Clock, MapPin, Phone, FlaskConical, User, 
   CheckCircle2, AlertCircle, ClipboardList, RefreshCw,
   TrendingUp, FileUp, UserPlus, Activity, Filter,
-  BarChart3, PieChart, ArrowUpRight, ArrowDownRight, FileText, Users, CalendarCheck, Stethoscope
+  BarChart3, PieChart, ArrowUpRight, ArrowDownRight, FileText, Users, CalendarCheck, Stethoscope, Mail
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { StaffManagement } from "@/components/admin/StaffManagement";
 import { AppointmentsManagement } from "@/components/admin/AppointmentsManagement";
 import { DoctorManagement } from "@/components/admin/DoctorManagement";
+import { ContactMessagesManagement } from "@/components/admin/ContactMessagesManagement";
 import { StaffDashboard } from "@/components/dashboard/StaffDashboard";
 import { format, isToday, isThisWeek, isThisMonth, subDays, startOfDay, endOfDay } from "date-fns";
 import { 
@@ -323,6 +324,12 @@ const Dashboard = () => {
                 <TabsTrigger value="staff" className="gap-2">
                   <Users className="h-4 w-4" />
                   Staff Management
+                </TabsTrigger>
+              )}
+              {isAdmin && (
+                <TabsTrigger value="messages" className="gap-2">
+                  <Mail className="h-4 w-4" />
+                  Messages
                 </TabsTrigger>
               )}
             </TabsList>
@@ -879,6 +886,13 @@ const Dashboard = () => {
             {isAdmin && (
               <TabsContent value="staff" className="space-y-6">
                 <StaffManagement />
+              </TabsContent>
+            )}
+
+            {/* Contact Messages Tab */}
+            {isAdmin && (
+              <TabsContent value="messages" className="space-y-6">
+                <ContactMessagesManagement />
               </TabsContent>
             )}
           </Tabs>
