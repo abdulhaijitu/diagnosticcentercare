@@ -283,16 +283,28 @@ export function Header() {
             >
               {user ? (
                 <>
-                  <div className="px-4 py-2">
-                    <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
-                    <p className="text-xs text-muted-foreground">{user.email}</p>
-                  </div>
                   <Link
                     to="/profile"
                     onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors"
+                  >
+                    <Avatar className="h-12 w-12 border-2 border-primary/20">
+                      <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || "User"} />
+                      <AvatarFallback className="text-lg bg-primary/10 text-primary">
+                        {(profile?.full_name || user.email || "U").charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                    </div>
+                  </Link>
+                  <Link
+                    to="/my-appointments"
+                    onClick={() => setMobileMenuOpen(false)}
                     className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                   >
-                    My Profile
+                    My Appointments
                   </Link>
                   <Link
                     to="/my-appointments"
