@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Menu, X, Phone, Mail, User, LogOut, LayoutDashboard, ClipboardList, Settings, CalendarCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import trustCareLogo from "@/assets/trust-care-logo.png";
@@ -118,8 +119,13 @@ export function Header() {
                   <NotificationBell />
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" className="gap-2">
-                        <User className="h-4 w-4" />
+                      <Button variant="outline" className="gap-2 pl-2">
+                        <Avatar className="h-7 w-7">
+                          <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || "User"} />
+                          <AvatarFallback className="text-xs bg-primary/10 text-primary">
+                            {(profile?.full_name || user.email || "U").charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
                         <span className="max-w-[120px] truncate">
                           {profile?.full_name || user.email?.split("@")[0]}
                         </span>
