@@ -153,6 +153,54 @@ export type Database = {
         }
         Relationships: []
       }
+      corporate_inquiries: {
+        Row: {
+          company_name: string
+          contact_person: string
+          created_at: string
+          email: string
+          employee_count: string
+          id: string
+          message: string | null
+          phone: string
+          preferred_package: string
+          responded_at: string | null
+          responded_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company_name: string
+          contact_person: string
+          created_at?: string
+          email: string
+          employee_count: string
+          id?: string
+          message?: string | null
+          phone: string
+          preferred_package: string
+          responded_at?: string | null
+          responded_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string
+          contact_person?: string
+          created_at?: string
+          email?: string
+          employee_count?: string
+          id?: string
+          message?: string | null
+          phone?: string
+          preferred_package?: string
+          responded_at?: string | null
+          responded_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       diagnostic_tests: {
         Row: {
           category: string
