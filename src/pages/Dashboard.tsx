@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { StaffManagement } from "@/components/admin/StaffManagement";
+import { StaffDashboard } from "@/components/dashboard/StaffDashboard";
 import { format, isToday, isThisWeek, isThisMonth, subDays, startOfDay, endOfDay } from "date-fns";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -192,6 +193,25 @@ const Dashboard = () => {
 
   if (!user || (!isAdmin && !isStaff)) {
     return <Navigate to="/" replace />;
+  }
+
+  // Show Staff-specific dashboard for staff-only users
+  if (isStaff && !isAdmin) {
+    return (
+      <div className="min-h-screen bg-muted/30 flex flex-col">
+        <Header />
+        <main className="flex-1 section-padding">
+          <div className="container-custom">
+            <div className="flex items-center gap-3 mb-6">
+              <h1 className="text-display-sm font-bold text-foreground">Dashboard</h1>
+              <Badge variant="secondary" className="font-medium">Staff</Badge>
+            </div>
+            <StaffDashboard />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   const handleStatusUpdate = async (requestId: string, newStatus: CollectionStatus) => {
