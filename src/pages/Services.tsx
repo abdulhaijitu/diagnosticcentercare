@@ -33,99 +33,8 @@ import {
 } from "lucide-react";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { CorporateInquiryForm } from "@/components/corporate/CorporateInquiryForm";
-
-const corporatePackages = [
-  {
-    id: "basic",
-    name: "বেসিক প্যাকেজ",
-    nameEn: "Basic Package",
-    price: 1500,
-    pricePerPerson: "প্রতি জন",
-    minEmployees: 20,
-    popular: false,
-    description: "ছোট প্রতিষ্ঠানের জন্য আদর্শ প্রাথমিক স্বাস্থ্য পরীক্ষা",
-    tests: [
-      "CBC (Complete Blood Count)",
-      "Blood Sugar (Fasting)",
-      "Lipid Profile",
-      "Urine Routine",
-      "Blood Pressure Check",
-      "BMI Assessment",
-    ],
-    features: [
-      "অন-সাইট কালেকশন",
-      "৪৮ ঘন্টায় রিপোর্ট",
-      "ডিজিটাল রিপোর্ট",
-    ],
-    color: "border-muted",
-  },
-  {
-    id: "standard",
-    name: "স্ট্যান্ডার্ড প্যাকেজ",
-    nameEn: "Standard Package",
-    price: 2500,
-    pricePerPerson: "প্রতি জন",
-    minEmployees: 30,
-    popular: true,
-    description: "মাঝারি প্রতিষ্ঠানের জন্য সম্পূর্ণ স্বাস্থ্য চেকআপ",
-    tests: [
-      "CBC (Complete Blood Count)",
-      "Blood Sugar (Fasting & PP)",
-      "HbA1c",
-      "Lipid Profile",
-      "Liver Function Test (LFT)",
-      "Kidney Function Test (KFT)",
-      "Thyroid Profile (TSH, T3, T4)",
-      "Urine Routine",
-      "ECG",
-      "Chest X-Ray",
-    ],
-    features: [
-      "অন-সাইট কালেকশন",
-      "২৪ ঘন্টায় রিপোর্ট",
-      "ডিজিটাল রিপোর্ট",
-      "ফ্রি ডক্টর কনসালটেশন",
-      "হেলথ সামারি রিপোর্ট",
-    ],
-    color: "border-primary ring-2 ring-primary/20",
-  },
-  {
-    id: "premium",
-    name: "প্রিমিয়াম প্যাকেজ",
-    nameEn: "Premium Package",
-    price: 4500,
-    pricePerPerson: "প্রতি জন",
-    minEmployees: 50,
-    popular: false,
-    description: "বড় প্রতিষ্ঠানের জন্য এক্সিকিউটিভ হেলথ চেকআপ",
-    tests: [
-      "CBC (Complete Blood Count)",
-      "Blood Sugar (Fasting, PP, HbA1c)",
-      "Complete Lipid Profile",
-      "Liver Function Test (LFT)",
-      "Kidney Function Test (KFT)",
-      "Complete Thyroid Profile",
-      "Vitamin D & B12",
-      "Uric Acid",
-      "Urine Routine & Culture",
-      "ECG",
-      "Chest X-Ray",
-      "Ultrasound Abdomen",
-      "Eye Checkup",
-      "Dental Checkup",
-    ],
-    features: [
-      "অন-সাইট কালেকশন",
-      "২৪ ঘন্টায় রিপোর্ট",
-      "ডিজিটাল রিপোর্ট",
-      "ফ্রি স্পেশালিস্ট কনসালটেশন",
-      "ডিটেইলড হেলথ সামারি",
-      "ফলো-আপ কনসালটেশন",
-      "ডেডিকেটেড কোঅর্ডিনেটর",
-    ],
-    color: "border-accent",
-  },
-];
+import { useCorporatePackages } from "@/hooks/useCorporatePackages";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const services = [
   {
@@ -247,6 +156,8 @@ const faqs = [
 ];
 
 const Services = () => {
+  const { data: corporatePackages, isLoading: packagesLoading } = useCorporatePackages();
+  
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
@@ -478,96 +389,121 @@ const Services = () => {
             </div>
 
             <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-              {corporatePackages.map((pkg) => (
-                <Card 
-                  key={pkg.id} 
-                  className={`relative overflow-hidden transition-all duration-300 hover:shadow-elevated ${pkg.color}`}
-                >
-                  {pkg.popular && (
-                    <div className="absolute top-4 right-4">
-                      <Badge className="bg-primary text-primary-foreground">
-                        <Star className="h-3 w-3 mr-1 fill-current" />
-                        জনপ্রিয়
-                      </Badge>
-                    </div>
-                  )}
-                  
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                        pkg.popular ? "bg-primary/10" : "bg-muted"
-                      }`}>
-                        <Building2 className={`h-6 w-6 ${pkg.popular ? "text-primary" : "text-muted-foreground"}`} />
+              {packagesLoading ? (
+                <>
+                  {[1, 2, 3].map((i) => (
+                    <Card key={i} className="overflow-hidden">
+                      <CardHeader>
+                        <Skeleton className="h-12 w-12 rounded-xl" />
+                        <Skeleton className="h-6 w-3/4 mt-2" />
+                        <Skeleton className="h-4 w-1/2" />
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <Skeleton className="h-20 w-full rounded-xl" />
+                        <Skeleton className="h-32 w-full" />
+                        <Skeleton className="h-10 w-full" />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </>
+              ) : corporatePackages && corporatePackages.length > 0 ? (
+                corporatePackages.map((pkg) => (
+                  <Card 
+                    key={pkg.id} 
+                    className={`relative overflow-hidden transition-all duration-300 hover:shadow-elevated ${
+                      pkg.is_popular ? "border-primary ring-2 ring-primary/20" : "border-muted"
+                    }`}
+                  >
+                    {pkg.is_popular && (
+                      <div className="absolute top-4 right-4">
+                        <Badge className="bg-primary text-primary-foreground">
+                          <Star className="h-3 w-3 mr-1 fill-current" />
+                          জনপ্রিয়
+                        </Badge>
                       </div>
+                    )}
+                    
+                    <CardHeader className="pb-4">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                          pkg.is_popular ? "bg-primary/10" : "bg-muted"
+                        }`}>
+                          <Building2 className={`h-6 w-6 ${pkg.is_popular ? "text-primary" : "text-muted-foreground"}`} />
+                        </div>
+                        <div>
+                          <CardTitle className="text-xl">{pkg.name}</CardTitle>
+                          <p className="text-sm text-muted-foreground">{pkg.name_en}</p>
+                        </div>
+                      </div>
+                      <CardDescription>{pkg.description}</CardDescription>
+                    </CardHeader>
+                    
+                    <CardContent className="space-y-6">
+                      {/* Pricing */}
+                      <div className="text-center py-4 bg-muted/50 rounded-xl">
+                        <div className="flex items-baseline justify-center gap-1">
+                          <span className="text-3xl font-bold text-foreground">৳{pkg.price.toLocaleString()}</span>
+                          <span className="text-muted-foreground">/{pkg.price_label}</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          ন্যূনতম {pkg.min_employees} জন
+                        </p>
+                      </div>
+
+                      {/* Tests Included */}
                       <div>
-                        <CardTitle className="text-xl">{pkg.name}</CardTitle>
-                        <p className="text-sm text-muted-foreground">{pkg.nameEn}</p>
+                        <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                          <FlaskConical className="h-4 w-4 text-primary" />
+                          অন্তর্ভুক্ত টেস্ট
+                        </h4>
+                        <ul className="space-y-2">
+                          {pkg.tests.map((test, i) => (
+                            <li key={i} className="flex items-start gap-2 text-sm">
+                              <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                              <span className="text-muted-foreground">{test}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                    </div>
-                    <CardDescription>{pkg.description}</CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent className="space-y-6">
-                    {/* Pricing */}
-                    <div className="text-center py-4 bg-muted/50 rounded-xl">
-                      <div className="flex items-baseline justify-center gap-1">
-                        <span className="text-3xl font-bold text-foreground">৳{pkg.price.toLocaleString()}</span>
-                        <span className="text-muted-foreground">/{pkg.pricePerPerson}</span>
+
+                      {/* Features */}
+                      <div className="pt-4 border-t border-border">
+                        <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                          <BadgeCheck className="h-4 w-4 text-primary" />
+                          বিশেষ সুবিধা
+                        </h4>
+                        <ul className="space-y-2">
+                          {pkg.features.map((feature, i) => (
+                            <li key={i} className="flex items-center gap-2 text-sm">
+                              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                              <span className="text-muted-foreground">{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        ন্যূনতম {pkg.minEmployees} জন
-                      </p>
-                    </div>
 
-                    {/* Tests Included */}
-                    <div>
-                      <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                        <FlaskConical className="h-4 w-4 text-primary" />
-                        অন্তর্ভুক্ত টেস্ট
-                      </h4>
-                      <ul className="space-y-2">
-                        {pkg.tests.map((test, i) => (
-                          <li key={i} className="flex items-start gap-2 text-sm">
-                            <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                            <span className="text-muted-foreground">{test}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Features */}
-                    <div className="pt-4 border-t border-border">
-                      <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                        <BadgeCheck className="h-4 w-4 text-primary" />
-                        বিশেষ সুবিধা
-                      </h4>
-                      <ul className="space-y-2">
-                        {pkg.features.map((feature, i) => (
-                          <li key={i} className="flex items-center gap-2 text-sm">
-                            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                            <span className="text-muted-foreground">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* CTA */}
-                    <CorporateInquiryForm 
-                      defaultPackage={pkg.id}
-                      trigger={
-                        <Button 
-                          className="w-full" 
-                          variant={pkg.popular ? "default" : "outline"}
-                          size="lg"
-                        >
-                          <Building2 className="h-4 w-4 mr-2" />
-                          অনুসন্ধান করুন
-                        </Button>
-                      }
-                    />
-                  </CardContent>
-                </Card>
-              ))}
+                      {/* CTA */}
+                      <CorporateInquiryForm 
+                        defaultPackage={pkg.id}
+                        trigger={
+                          <Button 
+                            className="w-full" 
+                            variant={pkg.is_popular ? "default" : "outline"}
+                            size="lg"
+                          >
+                            <Building2 className="h-4 w-4 mr-2" />
+                            অনুসন্ধান করুন
+                          </Button>
+                        }
+                      />
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <div className="col-span-3 text-center py-12 text-muted-foreground">
+                  কোনো প্যাকেজ পাওয়া যায়নি
+                </div>
+              )}
             </div>
 
             {/* Corporate Benefits */}
