@@ -76,6 +76,23 @@ const Contact = () => {
 
       if (error) throw error;
 
+      // Send email notification to admin (fire and forget - don't block on failure)
+      try {
+        await supabase.functions.invoke("send-contact-notification", {
+          body: {
+            name: result.data.name,
+            email: result.data.email,
+            phone: result.data.phone || null,
+            subject: result.data.subject,
+            message: result.data.message,
+            adminEmail: "trustcaredc@gmail.com",
+          },
+        });
+      } catch (emailError) {
+        // Log but don't fail the form submission if email fails
+        console.error("Failed to send admin notification email:", emailError);
+      }
+
       toast({
         title: "বার্তা পাঠানো হয়েছে!",
         description: "যোগাযোগ করার জন্য ধন্যবাদ। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।",
