@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { format, addDays, isSunday } from "date-fns";
+import { format, addDays } from "date-fns";
+import { useSearchParams } from "react-router-dom";
 import { CalendarIcon, Clock, User, Phone, Mail, FileText, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -56,16 +57,20 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
   const { user, profile } = useAuth();
   const { doctors, isLoading: doctorsLoading } = useDoctors();
   const { createAppointment, getBookedSlots } = useAppointments();
+  const [searchParams] = useSearchParams();
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
 
+  // Get doctor from URL query param
+  const doctorFromUrl = searchParams.get("doctor");
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      doctor_id: "",
+      doctor_id: doctorFromUrl || "",
       appointment_time: "",
       patient_name: profile?.full_name || "",
       patient_phone: profile?.phone || "",
@@ -76,6 +81,17 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
 
   const watchDoctorId = form.watch("doctor_id");
   const watchDate = form.watch("appointment_date");
+
+  // Pre-select doctor from URL param when doctors load
+  useEffect(() => {
+    if (doctorFromUrl && doctors.length > 0) {
+      const doctor = doctors.find((d) => d.id === doctorFromUrl);
+      if (doctor) {
+        form.setValue("doctor_id", doctorFromUrl);
+        setSelectedDoctor(doctor);
+      }
+    }
+  }, [doctorFromUrl, doctors, form]);
 
   // Update selected doctor when doctor_id changes
   useEffect(() => {
