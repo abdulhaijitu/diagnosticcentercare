@@ -31,10 +31,11 @@ import {
   Calendar, Clock, MapPin, Phone, FlaskConical, User, 
   CheckCircle2, AlertCircle, ClipboardList, RefreshCw,
   TrendingUp, FileUp, UserPlus, Activity, Filter,
-  BarChart3, PieChart, ArrowUpRight, ArrowDownRight, FileText, Users
+  BarChart3, PieChart, ArrowUpRight, ArrowDownRight, FileText, Users, CalendarCheck
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { StaffManagement } from "@/components/admin/StaffManagement";
+import { AppointmentsManagement } from "@/components/admin/AppointmentsManagement";
 import { StaffDashboard } from "@/components/dashboard/StaffDashboard";
 import { format, isToday, isThisWeek, isThisMonth, subDays, startOfDay, endOfDay } from "date-fns";
 import { 
@@ -301,6 +302,12 @@ const Dashboard = () => {
                 <ClipboardList className="h-4 w-4" />
                 Bookings
               </TabsTrigger>
+              {isAdmin && (
+                <TabsTrigger value="appointments" className="gap-2">
+                  <CalendarCheck className="h-4 w-4" />
+                  Appointments
+                </TabsTrigger>
+              )}
               <TabsTrigger value="analytics" className="gap-2">
                 <TrendingUp className="h-4 w-4" />
                 Analytics
@@ -846,6 +853,13 @@ const Dashboard = () => {
                 </Card>
               </div>
             </TabsContent>
+
+            {/* Appointments Management Tab */}
+            {isAdmin && (
+              <TabsContent value="appointments" className="space-y-6">
+                <AppointmentsManagement />
+              </TabsContent>
+            )}
 
             {/* Staff Management Tab */}
             {isAdmin && (
