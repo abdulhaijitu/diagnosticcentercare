@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/ui/FloatingActions";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -161,6 +162,14 @@ const Services = () => {
   
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEOHead 
+        title="Our Services"
+        titleBn="আমাদের সেবাসমূহ"
+        description="Diagnostic tests, doctor consultation, and home sample collection services. Blood tests, X-ray, ultrasound, ECG and health checkups in Dhaka."
+        descriptionBn="ডায়াগনস্টিক টেস্ট, ডক্টর কনসালটেশন এবং হোম স্যাম্পল কালেকশন সেবা। রক্ত পরীক্ষা, এক্স-রে, আল্ট্রাসাউন্ড, ইসিজি এবং হেলথ চেকআপ।"
+        keywords="diagnostic services dhaka, doctor consultation, home sample collection, blood test, x-ray, ultrasound, ECG, health checkup, corporate health packages"
+        url="https://diagnosticcentercare.lovable.app/services"
+      />
       <Header />
       <main className="flex-1">
         {/* Hero Section */}

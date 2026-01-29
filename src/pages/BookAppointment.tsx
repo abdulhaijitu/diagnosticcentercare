@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/ui/FloatingActions";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { AppointmentBookingForm } from "@/components/appointments/AppointmentBookingForm";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,14 @@ const BookAppointment = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEOHead 
+        title="Book Doctor Appointment"
+        titleBn="ডক্টর অ্যাপয়েন্টমেন্ট বুক করুন"
+        description="Book online appointment with experienced specialist doctors. Cardiology, medicine, orthopedics, gynecology and more. Same day appointments available."
+        descriptionBn="অভিজ্ঞ বিশেষজ্ঞ ডাক্তারদের সাথে অনলাইন অ্যাপয়েন্টমেন্ট বুক করুন। কার্ডিওলজি, মেডিসিন, অর্থোপেডিক্স, গাইনি এবং আরও। একই দিনে অ্যাপয়েন্টমেন্ট পাওয়া যায়।"
+        keywords="book doctor appointment dhaka, online doctor booking, specialist doctor, cardiologist, gynecologist, orthopedic, same day appointment"
+        url="https://diagnosticcentercare.lovable.app/book-appointment"
+      />
       <Header />
       <main className="flex-1 section-padding">
         <div className="container-custom">
