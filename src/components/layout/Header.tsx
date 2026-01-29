@@ -85,7 +85,7 @@ export function Header() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-1">
+            <div className="hidden lg:flex items-center gap-1">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
@@ -111,7 +111,7 @@ export function Header() {
             </div>
 
             {/* Desktop CTA / User Menu */}
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-3">
               {isLoading ? (
                 <div className="h-10 w-24 bg-muted animate-pulse rounded-lg" />
               ) : user ? (
@@ -192,7 +192,7 @@ export function Header() {
 
             {/* Mobile menu button */}
             <button
-              className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
+              className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             >
@@ -217,7 +217,7 @@ export function Header() {
         {/* Mobile Navigation */}
         <div 
           className={cn(
-            "md:hidden border-t border-border bg-card overflow-hidden transition-all duration-300 ease-out",
+            "lg:hidden border-t border-border bg-card overflow-hidden transition-all duration-300 ease-out",
             mobileMenuOpen 
               ? "max-h-[calc(100vh-80px)] opacity-100" 
               : "max-h-0 opacity-0"
