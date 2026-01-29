@@ -31,6 +31,7 @@ import {
   Star,
   Phone
 } from "lucide-react";
+import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 
 const corporatePackages = [
   {
@@ -687,6 +688,9 @@ const Services = () => {
             </div>
           </div>
         </section>
+
+        {/* Testimonials Section */}
+        <TestimonialsSection />
 
         {/* CTA Section */}
         <section className="py-16 bg-primary text-primary-foreground">
