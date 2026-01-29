@@ -188,114 +188,172 @@ export function Header() {
             <button
               className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             >
-              {mobileMenuOpen ? (
-                <X className="h-6 w-6 text-foreground" />
-              ) : (
-                <Menu className="h-6 w-6 text-foreground" />
-              )}
+              <div className="relative w-6 h-6">
+                <Menu 
+                  className={cn(
+                    "absolute inset-0 h-6 w-6 text-foreground transition-all duration-300",
+                    mobileMenuOpen ? "opacity-0 rotate-90 scale-75" : "opacity-100 rotate-0 scale-100"
+                  )} 
+                />
+                <X 
+                  className={cn(
+                    "absolute inset-0 h-6 w-6 text-foreground transition-all duration-300",
+                    mobileMenuOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-75"
+                  )} 
+                />
+              </div>
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-border bg-card animate-fade-in">
-            <div className="container-custom py-4 space-y-2">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(
-                    "block px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200",
-                    location.pathname === item.href
-                      ? "bg-secondary text-secondary-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  )}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              {/* Highlighted Book Test CTA for Mobile */}
-              <Button 
-                asChild 
-                className="w-full mt-2 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg shadow-primary/25"
-              >
-                <Link to="/book-test" onClick={() => setMobileMenuOpen(false)}>
-                  Book Test
-                </Link>
-              </Button>
-              <div className="pt-4 border-t border-border space-y-2">
-                {user ? (
-                  <>
-                    <div className="px-4 py-2">
-                      <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
-                    </div>
-                    <Link
-                      to="/my-requests"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted"
-                    >
-                      My Requests
-                    </Link>
-                    {(isAdmin || isStaff) && (
-                      <Link
-                        to="/dashboard"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted"
-                      >
-                        Dashboard
-                      </Link>
-                    )}
-                    <Button
-                      variant="outline"
-                      className="w-full text-destructive"
-                      onClick={() => {
-                        handleSignOut();
-                        setMobileMenuOpen(false);
-                      }}
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button variant="outline" className="w-full" asChild>
-                      <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                        Log In
-                      </Link>
-                    </Button>
-                    <Button className="w-full" asChild>
-                      <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                        Get Started
-                      </Link>
-                    </Button>
-                  </>
+        <div 
+          className={cn(
+            "md:hidden border-t border-border bg-card overflow-hidden transition-all duration-300 ease-out",
+            mobileMenuOpen 
+              ? "max-h-[calc(100vh-80px)] opacity-100" 
+              : "max-h-0 opacity-0"
+          )}
+        >
+          <div className="container-custom py-4 space-y-2">
+            {navigation.map((item, index) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  "block px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200",
+                  "transform transition-all",
+                  mobileMenuOpen 
+                    ? "translate-x-0 opacity-100" 
+                    : "-translate-x-4 opacity-0",
+                  location.pathname === item.href
+                    ? "bg-secondary text-secondary-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 )}
-              </div>
-              {/* Mobile contact info */}
-              <div className="pt-4 border-t border-border space-y-2 text-sm text-muted-foreground">
-                <a 
-                  href="tel:01345580203" 
-                  className="flex items-center gap-2 hover:text-foreground transition-colors"
-                >
-                  <Phone className="h-4 w-4" />
-                  <span>01345580203</span>
-                </a>
-                <a 
-                  href="mailto:trustcaredc@gmail.com" 
-                  className="flex items-center gap-2 hover:text-foreground transition-colors"
-                >
-                  <Mail className="h-4 w-4" />
-                  <span>trustcaredc@gmail.com</span>
-                </a>
-              </div>
+                style={{ 
+                  transitionDelay: mobileMenuOpen ? `${index * 50}ms` : "0ms" 
+                }}
+              >
+                {item.name}
+              </Link>
+            ))}
+            {/* Highlighted Book Test CTA for Mobile */}
+            <Button 
+              asChild 
+              className={cn(
+                "w-full mt-2 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg shadow-primary/25",
+                "transform transition-all duration-300",
+                mobileMenuOpen 
+                  ? "translate-y-0 opacity-100" 
+                  : "translate-y-4 opacity-0"
+              )}
+              style={{ 
+                transitionDelay: mobileMenuOpen ? `${navigation.length * 50}ms` : "0ms" 
+              }}
+            >
+              <Link to="/book-test" onClick={() => setMobileMenuOpen(false)}>
+                Book Test
+              </Link>
+            </Button>
+            <div 
+              className={cn(
+                "pt-4 border-t border-border space-y-2 transition-all duration-300",
+                mobileMenuOpen 
+                  ? "translate-y-0 opacity-100" 
+                  : "translate-y-4 opacity-0"
+              )}
+              style={{ 
+                transitionDelay: mobileMenuOpen ? `${(navigation.length + 1) * 50}ms` : "0ms" 
+              }}
+            >
+              {user ? (
+                <>
+                  <div className="px-4 py-2">
+                    <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
+                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                  </div>
+                  <Link
+                    to="/my-appointments"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  >
+                    My Appointments
+                  </Link>
+                  <Link
+                    to="/my-requests"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  >
+                    My Requests
+                  </Link>
+                  {(isAdmin || isStaff) && (
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    >
+                      Dashboard
+                    </Link>
+                  )}
+                  <Button
+                    variant="outline"
+                    className="w-full text-destructive hover:text-destructive"
+                    onClick={() => {
+                      handleSignOut();
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                      Log In
+                    </Link>
+                  </Button>
+                  <Button className="w-full" asChild>
+                    <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
+                      Get Started
+                    </Link>
+                  </Button>
+                </>
+              )}
+            </div>
+            {/* Mobile contact info */}
+            <div 
+              className={cn(
+                "pt-4 border-t border-border space-y-2 text-sm text-muted-foreground transition-all duration-300",
+                mobileMenuOpen 
+                  ? "translate-y-0 opacity-100" 
+                  : "translate-y-4 opacity-0"
+              )}
+              style={{ 
+                transitionDelay: mobileMenuOpen ? `${(navigation.length + 2) * 50}ms` : "0ms" 
+              }}
+            >
+              <a 
+                href="tel:01345580203" 
+                className="flex items-center gap-2 hover:text-foreground transition-colors"
+              >
+                <Phone className="h-4 w-4" />
+                <span>01345580203</span>
+              </a>
+              <a 
+                href="mailto:trustcaredc@gmail.com" 
+                className="flex items-center gap-2 hover:text-foreground transition-colors"
+              >
+                <Mail className="h-4 w-4" />
+                <span>trustcaredc@gmail.com</span>
+              </a>
             </div>
           </div>
-        )}
+        </div>
       </nav>
     </header>
   );
