@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   Heart, Target, Eye, Shield, Users, Award, 
   Clock, CheckCircle2, Building2, Microscope,
-  Linkedin, Mail, Phone
+  Linkedin, Mail, Trophy, Medal, BadgeCheck, Star
 } from "lucide-react";
 
 const stats = [
@@ -101,6 +101,51 @@ const teamMembers = [
     avatar: null,
     email: "nazma@trustcaredc.com",
     linkedin: "#",
+  },
+];
+
+const achievements = [
+  {
+    icon: Trophy,
+    year: "২০২৩",
+    title: "সেরা ডায়াগনস্টিক সেন্টার পুরস্কার",
+    organization: "বাংলাদেশ মেডিকেল অ্যাসোসিয়েশন",
+    description: "মোহাম্মদপুর এলাকায় সেরা ডায়াগনস্টিক সেবা প্রদানের জন্য।",
+  },
+  {
+    icon: Medal,
+    year: "২০২২",
+    title: "ISO 15189:2012 সার্টিফিকেশন",
+    organization: "International Accreditation Forum",
+    description: "মেডিকেল ল্যাবরেটরির জন্য আন্তর্জাতিক মান অর্জন।",
+  },
+  {
+    icon: BadgeCheck,
+    year: "২০২২",
+    title: "NABL অ্যাক্রিডিটেশন",
+    organization: "National Accreditation Board for Testing",
+    description: "ল্যাবরেটরি টেস্টিংয়ে জাতীয় মানদণ্ড পূরণ।",
+  },
+  {
+    icon: Star,
+    year: "২০২১",
+    title: "কাস্টমার এক্সিলেন্স অ্যাওয়ার্ড",
+    organization: "ঢাকা চেম্বার অফ কমার্স",
+    description: "৯৯% কাস্টমার সন্তুষ্টি অর্জনের স্বীকৃতি।",
+  },
+  {
+    icon: Award,
+    year: "২০২০",
+    title: "ডিজিটাল ইনোভেশন অ্যাওয়ার্ড",
+    organization: "বাংলাদেশ আইসিটি মন্ত্রণালয়",
+    description: "অনলাইন রিপোর্ট ও বুকিং সিস্টেম চালুর জন্য।",
+  },
+  {
+    icon: Heart,
+    year: "২০১৯",
+    title: "কমিউনিটি হেলথ চ্যাম্পিয়ন",
+    organization: "মোহাম্মদপুর সিটি কর্পোরেশন",
+    description: "বিনামূল্যে স্বাস্থ্য ক্যাম্প আয়োজনের স্বীকৃতি।",
   },
 ];
 
@@ -301,6 +346,53 @@ const About = () => {
                         >
                           <Linkedin className="h-4 w-4" />
                         </a>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Achievements Section */}
+        <section className="section-padding bg-gradient-to-br from-primary/5 via-background to-accent/5">
+          <div className="container-custom">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Trophy className="h-5 w-5 text-primary" />
+                <span className="text-sm font-medium text-primary uppercase tracking-wider">অর্জন ও পুরস্কার</span>
+              </div>
+              <h2 className="text-display-sm md:text-display-md font-bold text-foreground mb-4">
+                আমাদের সাফল্যের স্বীকৃতি
+              </h2>
+              <p className="text-muted-foreground">
+                মানসম্মত সেবা প্রদানের জন্য আমরা যে সম্মান ও স্বীকৃতি অর্জন করেছি
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {achievements.map((achievement, index) => (
+                <Card key={index} className="group relative overflow-hidden hover:shadow-xl transition-all duration-300">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full" />
+                  <CardContent className="pt-6 pb-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <achievement.icon className="h-7 w-7 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="inline-block px-2 py-0.5 text-xs font-medium bg-primary/10 text-primary rounded-full mb-2">
+                          {achievement.year}
+                        </span>
+                        <h3 className="text-lg font-semibold text-foreground mb-1 leading-tight">
+                          {achievement.title}
+                        </h3>
+                        <p className="text-sm text-primary/80 font-medium mb-2">
+                          {achievement.organization}
+                        </p>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {achievement.description}
+                        </p>
                       </div>
                     </div>
                   </CardContent>
