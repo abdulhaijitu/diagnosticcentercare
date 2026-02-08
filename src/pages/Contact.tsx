@@ -122,10 +122,10 @@ const Contact = () => {
       icon: MapPin,
       title: t("contactPage.address"),
       details: [
-        "প্লট-০৪, ব্লক-এফ",
-        "ঢাকা উদ্দান সমবায় আবাসন সমিতি লিমিটেড",
-        "চন্দ্রিমা মডেল টাউন, অ্যাভিনিউ-১ গেট চৌরাস্তা",
-        "মোহাম্মদপুর, ঢাকা-১২০৭",
+        t("contactPage.addressLine1"),
+        t("contactPage.addressLine2"),
+        t("contactPage.addressLine3"),
+        t("contactPage.addressLine4"),
       ],
       action: "https://maps.google.com/?q=23.7595,90.3600",
       actionText: t("contactPage.getDirections"),
@@ -134,8 +134,8 @@ const Contact = () => {
       icon: Clock,
       title: t("contactPage.workingHours"),
       details: [
-        "শনি - বৃহস্পতি: সকাল ৭:০০ - রাত ১০:০০",
-        "শুক্রবার: বিকাল ৩:০০ - রাত ১০:০০",
+        t("contactPage.workingHoursLine1"),
+        t("contactPage.workingHoursLine2"),
       ],
       action: null,
       actionText: null,
@@ -241,8 +241,7 @@ const Contact = () => {
                     <div className="flex items-start gap-3">
                       <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                       <p className="text-muted-foreground">
-                        প্লট-০৪, ব্লক-এফ, ঢাকা উদ্দান সমবায় আবাসন সমিতি লিমিটেড,
-                        চন্দ্রিমা মডেল টাউন, অ্যাভিনিউ-১ গেট চৌরাস্তা, মোহাম্মদপুর, ঢাকা-১২০৭
+                        {t("contactPage.fullAddress")}
                       </p>
                     </div>
                     <div className="flex items-center gap-3">
