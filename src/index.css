@@ -9,6 +9,10 @@
 
 @layer base {
   :root {
+    /* Typography - default English */
+    --font-family: 'Inter', system-ui, sans-serif;
+    --line-height-body: 1.6;
+    --line-height-heading: 1.2;
     /* Core Brand Colors - Based on TrustCare Logo */
     --background: 170 15% 99%;
     --foreground: 200 40% 12%;
@@ -126,8 +130,29 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: var(--font-family);
+    line-height: var(--line-height-body);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Bangla typography - switch font when lang=bn */
+  html[lang="bn"] {
+    --font-family: 'Hind Siliguri', system-ui, sans-serif;
+    --line-height-body: 1.7;
+    --line-height-heading: 1.35;
+  }
+
+  html[lang="bn"] body {
+    font-feature-settings: normal;
+    letter-spacing: 0.01em;
+  }
+
+  /* Slightly larger base for Bangla readability on mobile */
+  @media (max-width: 640px) {
+    html[lang="bn"] body {
+      font-size: 16.5px;
+    }
   }
 
   /* Smooth scrolling */
