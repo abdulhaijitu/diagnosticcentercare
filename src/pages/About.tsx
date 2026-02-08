@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingActions } from "@/components/ui/FloatingActions";
@@ -10,148 +11,50 @@ import {
   Linkedin, Mail, Trophy, Medal, BadgeCheck, Star
 } from "lucide-react";
 
-const stats = [
-  { value: "10,000+", label: "রোগী সেবা", icon: Users },
-  { value: "50+", label: "ডায়াগনস্টিক টেস্ট", icon: Microscope },
-  { value: "20+", label: "বিশেষজ্ঞ ডাক্তার", icon: Award },
-  { value: "99%", label: "সন্তুষ্টির হার", icon: Heart },
-];
-
-const values = [
-  {
-    icon: Shield,
-    title: "বিশ্বাসযোগ্যতা",
-    description: "প্রতিটি রিপোর্টে সঠিকতা এবং স্বচ্ছতা নিশ্চিত করি।",
-  },
-  {
-    icon: Heart,
-    title: "যত্নশীলতা",
-    description: "রোগীদের প্রতি সহানুভূতিশীল এবং মানবিক সেবা প্রদান করি।",
-  },
-  {
-    icon: Clock,
-    title: "সময়নিষ্ঠা",
-    description: "দ্রুত এবং সময়মতো রিপোর্ট ডেলিভারি নিশ্চিত করি।",
-  },
-  {
-    icon: CheckCircle2,
-    title: "গুণমান",
-    description: "আন্তর্জাতিক মানের যন্ত্রপাতি ও প্রযুক্তি ব্যবহার করি।",
-  },
-];
-
-const milestones = [
-  { year: "২০১৮", event: "TrustCare ডায়াগনস্টিক সেন্টার প্রতিষ্ঠা" },
-  { year: "২০১৯", event: "হোম স্যাম্পল কালেকশন সার্ভিস চালু" },
-  { year: "২০২০", event: "ডিজিটাল রিপোর্ট সিস্টেম চালু" },
-  { year: "২০২১", event: "বিশেষজ্ঞ ডাক্তার কনসালটেশন সার্ভিস চালু" },
-  { year: "২০২২", event: "অনলাইন অ্যাপয়েন্টমেন্ট বুকিং সিস্টেম চালু" },
-  { year: "২০২৩", event: "১০,০০০+ রোগী সেবার মাইলফলক অর্জন" },
-];
-
-const teamMembers = [
-  {
-    name: "ডা. আহমেদ করিম",
-    role: "প্রতিষ্ঠাতা ও ব্যবস্থাপনা পরিচালক",
-    qualification: "MBBS, FCPS (Pathology)",
-    bio: "২০+ বছরের অভিজ্ঞতাসম্পন্ন প্যাথলজিস্ট। সঠিক রোগ নির্ণয়ের মাধ্যমে রোগীদের সুস্থতায় অবদান রাখা তাঁর জীবনের লক্ষ্য।",
-    avatar: null,
-    email: "ahmed.karim@trustcaredc.com",
-    linkedin: "#",
-  },
-  {
-    name: "ডা. ফাতেমা নাসরিন",
-    role: "প্রধান প্যাথলজিস্ট",
-    qualification: "MBBS, MD (Clinical Pathology)",
-    bio: "১৫ বছরের অভিজ্ঞতা। ক্লিনিক্যাল প্যাথলজিতে বিশেষজ্ঞ এবং কোয়ালিটি কন্ট্রোল বিভাগের প্রধান।",
-    avatar: null,
-    email: "fatema.nasrin@trustcaredc.com",
-    linkedin: "#",
-  },
-  {
-    name: "মোহাম্মদ রাফি",
-    role: "অপারেশনস ম্যানেজার",
-    qualification: "MBA, Healthcare Management",
-    bio: "১০ বছরের হেলথকেয়ার অপারেশনস অভিজ্ঞতা। হোম কালেকশন সার্ভিস ও ডিজিটাল ট্রান্সফর্মেশনের নেতৃত্ব দিচ্ছেন।",
-    avatar: null,
-    email: "rafi@trustcaredc.com",
-    linkedin: "#",
-  },
-  {
-    name: "সাবরিনা আক্তার",
-    role: "প্রধান ল্যাব টেকনোলজিস্ট",
-    qualification: "BSc MLT, Diploma in Lab Medicine",
-    bio: "১২ বছরের ল্যাবরেটরি অভিজ্ঞতা। আধুনিক যন্ত্রপাতি পরিচালনা ও টিম ট্রেনিংয়ে বিশেষজ্ঞ।",
-    avatar: null,
-    email: "sabrina@trustcaredc.com",
-    linkedin: "#",
-  },
-  {
-    name: "ডা. তানভীর হাসান",
-    role: "কনসালট্যান্ট রেডিওলজিস্ট",
-    qualification: "MBBS, MD (Radiology)",
-    bio: "১৮ বছরের রেডিওলজি অভিজ্ঞতা। আল্ট্রাসাউন্ড, এক্স-রে ও ডায়াগনস্টিক ইমেজিংয়ে বিশেষজ্ঞ।",
-    avatar: null,
-    email: "tanvir@trustcaredc.com",
-    linkedin: "#",
-  },
-  {
-    name: "নাজমা বেগম",
-    role: "কাস্টমার কেয়ার প্রধান",
-    qualification: "BA, Customer Service Certified",
-    bio: "৮ বছরের কাস্টমার সার্ভিস অভিজ্ঞতা। রোগীদের সন্তুষ্টি নিশ্চিত করা তাঁর প্রধান দায়িত্ব।",
-    avatar: null,
-    email: "nazma@trustcaredc.com",
-    linkedin: "#",
-  },
-];
-
-const achievements = [
-  {
-    icon: Trophy,
-    year: "২০২৩",
-    title: "সেরা ডায়াগনস্টিক সেন্টার পুরস্কার",
-    organization: "বাংলাদেশ মেডিকেল অ্যাসোসিয়েশন",
-    description: "মোহাম্মদপুর এলাকায় সেরা ডায়াগনস্টিক সেবা প্রদানের জন্য।",
-  },
-  {
-    icon: Medal,
-    year: "২০২২",
-    title: "ISO 15189:2012 সার্টিফিকেশন",
-    organization: "International Accreditation Forum",
-    description: "মেডিকেল ল্যাবরেটরির জন্য আন্তর্জাতিক মান অর্জন।",
-  },
-  {
-    icon: BadgeCheck,
-    year: "২০২২",
-    title: "NABL অ্যাক্রিডিটেশন",
-    organization: "National Accreditation Board for Testing",
-    description: "ল্যাবরেটরি টেস্টিংয়ে জাতীয় মানদণ্ড পূরণ।",
-  },
-  {
-    icon: Star,
-    year: "২০২১",
-    title: "কাস্টমার এক্সিলেন্স অ্যাওয়ার্ড",
-    organization: "ঢাকা চেম্বার অফ কমার্স",
-    description: "৯৯% কাস্টমার সন্তুষ্টি অর্জনের স্বীকৃতি।",
-  },
-  {
-    icon: Award,
-    year: "২০২০",
-    title: "ডিজিটাল ইনোভেশন অ্যাওয়ার্ড",
-    organization: "বাংলাদেশ আইসিটি মন্ত্রণালয়",
-    description: "অনলাইন রিপোর্ট ও বুকিং সিস্টেম চালুর জন্য।",
-  },
-  {
-    icon: Heart,
-    year: "২০১৯",
-    title: "কমিউনিটি হেলথ চ্যাম্পিয়ন",
-    organization: "মোহাম্মদপুর সিটি কর্পোরেশন",
-    description: "বিনামূল্যে স্বাস্থ্য ক্যাম্প আয়োজনের স্বীকৃতি।",
-  },
-];
-
 const About = () => {
+  const { t } = useTranslation();
+
+  const stats = [
+    { value: "10,000+", labelKey: "about.stats.patientsServed", icon: Users },
+    { value: "50+", labelKey: "about.stats.diagnosticTests", icon: Microscope },
+    { value: "20+", labelKey: "about.stats.expertDoctors", icon: Award },
+    { value: "99%", labelKey: "about.stats.satisfactionRate", icon: Heart },
+  ];
+
+  const milestones = [
+    { year: "২০১৮", eventKey: "about.milestones.m1" },
+    { year: "২০১৯", eventKey: "about.milestones.m2" },
+    { year: "২০২০", eventKey: "about.milestones.m3" },
+    { year: "২০২১", eventKey: "about.milestones.m4" },
+    { year: "২০২২", eventKey: "about.milestones.m5" },
+    { year: "২০২৩", eventKey: "about.milestones.m6" },
+  ];
+
+  const teamMembers = [
+    { nameKey: "about.teamMembers.m1Name", roleKey: "about.teamMembers.m1Role", qualification: "MBBS, FCPS (Pathology)", bioKey: "about.teamMembers.m1Bio", email: "ahmed.karim@trustcaredc.com", linkedin: "#" },
+    { nameKey: "about.teamMembers.m2Name", roleKey: "about.teamMembers.m2Role", qualification: "MBBS, MD (Clinical Pathology)", bioKey: "about.teamMembers.m2Bio", email: "fatema.nasrin@trustcaredc.com", linkedin: "#" },
+    { nameKey: "about.teamMembers.m3Name", roleKey: "about.teamMembers.m3Role", qualification: "MBA, Healthcare Management", bioKey: "about.teamMembers.m3Bio", email: "rafi@trustcaredc.com", linkedin: "#" },
+    { nameKey: "about.teamMembers.m4Name", roleKey: "about.teamMembers.m4Role", qualification: "BSc MLT, Diploma in Lab Medicine", bioKey: "about.teamMembers.m4Bio", email: "sabrina@trustcaredc.com", linkedin: "#" },
+    { nameKey: "about.teamMembers.m5Name", roleKey: "about.teamMembers.m5Role", qualification: "MBBS, MD (Radiology)", bioKey: "about.teamMembers.m5Bio", email: "tanvir@trustcaredc.com", linkedin: "#" },
+    { nameKey: "about.teamMembers.m6Name", roleKey: "about.teamMembers.m6Role", qualification: "BA, Customer Service Certified", bioKey: "about.teamMembers.m6Bio", email: "nazma@trustcaredc.com", linkedin: "#" },
+  ];
+
+  const achievements = [
+    { icon: Trophy, year: "২০২৩", titleKey: "about.achievementsList.a1Title", orgKey: "about.achievementsList.a1Org", descKey: "about.achievementsList.a1Desc" },
+    { icon: Medal, year: "২০২২", titleKey: "about.achievementsList.a2Title", orgKey: "about.achievementsList.a2Org", descKey: "about.achievementsList.a2Desc" },
+    { icon: BadgeCheck, year: "২০২২", titleKey: "about.achievementsList.a3Title", orgKey: "about.achievementsList.a3Org", descKey: "about.achievementsList.a3Desc" },
+    { icon: Star, year: "২০২১", titleKey: "about.achievementsList.a4Title", orgKey: "about.achievementsList.a4Org", descKey: "about.achievementsList.a4Desc" },
+    { icon: Award, year: "২০২০", titleKey: "about.achievementsList.a5Title", orgKey: "about.achievementsList.a5Org", descKey: "about.achievementsList.a5Desc" },
+    { icon: Heart, year: "২০১৯", titleKey: "about.achievementsList.a6Title", orgKey: "about.achievementsList.a6Org", descKey: "about.achievementsList.a6Desc" },
+  ];
+
+  const values = [
+    { icon: Shield, titleKey: "about.values.trust", descKey: "about.values.trustDesc" },
+    { icon: Heart, titleKey: "about.values.care", descKey: "about.values.careDesc" },
+    { icon: Clock, titleKey: "about.values.punctuality", descKey: "about.values.punctualityDesc" },
+    { icon: CheckCircle2, titleKey: "about.values.quality", descKey: "about.values.qualityDesc" },
+  ];
+
   return (
     <>
       <SEOHead
@@ -170,11 +73,10 @@ const About = () => {
           <div className="container-custom">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-display-md md:text-display-lg font-bold text-foreground mb-6">
-                আমাদের সম্পর্কে
+                {t("about.heroTitle")}
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                TrustCare ডায়াগনস্টিক এন্ড কনসালটেশন সেন্টার লিমিটেড - আপনার বিশ্বস্ত স্বাস্থ্য সেবা প্রদানকারী। 
-                আমরা দ্রুত, সঠিক এবং সাশ্রয়ী মূল্যে ল্যাব টেস্ট ও ডাক্তার কনসালটেশন সেবা প্রদান করি।
+                {t("about.heroSubtitle")}
               </p>
             </div>
           </div>
@@ -185,12 +87,12 @@ const About = () => {
           <div className="container-custom">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {stats.map((stat) => (
-                <div key={stat.label} className="text-center">
+                <div key={stat.labelKey} className="text-center">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
                     <stat.icon className="h-6 w-6 text-primary" />
                   </div>
                   <p className="text-3xl md:text-4xl font-bold text-foreground">{stat.value}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{t(stat.labelKey)}</p>
                 </div>
               ))}
             </div>
@@ -204,24 +106,15 @@ const About = () => {
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <Building2 className="h-5 w-5 text-primary" />
-                  <span className="text-sm font-medium text-primary uppercase tracking-wider">আমাদের ইতিহাস</span>
+                  <span className="text-sm font-medium text-primary uppercase tracking-wider">{t("about.history.badge")}</span>
                 </div>
                 <h2 className="text-display-sm md:text-display-md font-bold text-foreground mb-6">
-                  বিশ্বস্ত সেবার যাত্রা
+                  {t("about.history.title")}
                 </h2>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
-                  <p>
-                    ২০১৮ সালে ঢাকার মোহাম্মদপুরে TrustCare ডায়াগনস্টিক সেন্টার প্রতিষ্ঠিত হয়। 
-                    শুরু থেকেই আমাদের লক্ষ্য ছিল সাধারণ মানুষের কাছে মানসম্মত ডায়াগনস্টিক সেবা সহজলভ্য করা।
-                  </p>
-                  <p>
-                    আধুনিক যন্ত্রপাতি, অভিজ্ঞ ল্যাব টেকনিশিয়ান এবং বিশেষজ্ঞ প্যাথলজিস্টদের সমন্বয়ে 
-                    আমরা প্রতিদিন শত শত রোগীকে সেবা প্রদান করছি।
-                  </p>
-                  <p>
-                    হোম স্যাম্পল কালেকশন সার্ভিস চালু করে আমরা বয়স্ক ও অসুস্থ রোগীদের ঘরে বসেই 
-                    টেস্ট করার সুবিধা দিচ্ছি, যা আমাদের সেবার পরিধি আরও বিস্তৃত করেছে।
-                  </p>
+                  <p>{t("about.history.p1")}</p>
+                  <p>{t("about.history.p2")}</p>
+                  <p>{t("about.history.p3")}</p>
                 </div>
               </div>
 
@@ -236,7 +129,7 @@ const About = () => {
                       </div>
                       <div className="bg-card border border-border rounded-lg p-4">
                         <span className="text-sm font-semibold text-primary">{milestone.year}</span>
-                        <p className="text-foreground mt-1">{milestone.event}</p>
+                        <p className="text-foreground mt-1">{t(milestone.eventKey)}</p>
                       </div>
                     </div>
                   ))}
@@ -256,24 +149,17 @@ const About = () => {
                   <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
                     <Target className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-4">আমাদের মিশন</h3>
+                  <h3 className="text-2xl font-bold text-foreground mb-4">{t("about.mission.title")}</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    বাংলাদেশের প্রতিটি মানুষের কাছে সাশ্রয়ী মূল্যে আন্তর্জাতিক মানের ডায়াগনস্টিক 
-                    সেবা পৌঁছে দেওয়া। আমরা বিশ্বাস করি, সঠিক রোগ নির্ণয়ই সুস্থতার প্রথম পদক্ষেপ।
+                    {t("about.mission.description")}
                   </p>
                   <ul className="mt-6 space-y-3">
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">দ্রুত ও সঠিক রিপোর্ট প্রদান</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">সাশ্রয়ী মূল্যে সেবা</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">ঘরে বসে স্যাম্পল কালেকশন</span>
-                    </li>
+                    {["about.mission.f1", "about.mission.f2", "about.mission.f3"].map((key) => (
+                      <li key={key} className="flex items-start gap-3">
+                        <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span className="text-muted-foreground">{t(key)}</span>
+                      </li>
+                    ))}
                   </ul>
                 </CardContent>
               </Card>
@@ -284,24 +170,17 @@ const About = () => {
                   <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
                     <Eye className="h-8 w-8 text-accent" />
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-4">আমাদের ভিশন</h3>
+                  <h3 className="text-2xl font-bold text-foreground mb-4">{t("about.vision.title")}</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    বাংলাদেশের সবচেয়ে বিশ্বস্ত এবং প্রযুক্তি-সমৃদ্ধ ডায়াগনস্টিক নেটওয়ার্ক হিসেবে 
-                    পরিচিত হওয়া। আমাদের লক্ষ্য প্রতিটি জেলায় মানসম্মত সেবা পৌঁছে দেওয়া।
+                    {t("about.vision.description")}
                   </p>
                   <ul className="mt-6 space-y-3">
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-accent mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">সারাদেশে সেবা নেটওয়ার্ক সম্প্রসারণ</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-accent mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">AI-ভিত্তিক রোগ নির্ণয় সিস্টেম</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-accent mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">টেলিমেডিসিন সেবা সম্প্রসারণ</span>
-                    </li>
+                    {["about.vision.f1", "about.vision.f2", "about.vision.f3"].map((key) => (
+                      <li key={key} className="flex items-start gap-3">
+                        <CheckCircle2 className="h-5 w-5 text-accent mt-0.5 flex-shrink-0" />
+                        <span className="text-muted-foreground">{t(key)}</span>
+                      </li>
+                    ))}
                   </ul>
                 </CardContent>
               </Card>
@@ -315,52 +194,54 @@ const About = () => {
             <div className="text-center max-w-2xl mx-auto mb-12">
               <div className="flex items-center justify-center gap-2 mb-4">
                 <Users className="h-5 w-5 text-primary" />
-                <span className="text-sm font-medium text-primary uppercase tracking-wider">আমাদের টিম</span>
+                <span className="text-sm font-medium text-primary uppercase tracking-wider">{t("about.team.badge")}</span>
               </div>
               <h2 className="text-display-sm md:text-display-md font-bold text-foreground mb-4">
-                অভিজ্ঞ পেশাদার দল
+                {t("about.team.title")}
               </h2>
               <p className="text-muted-foreground">
-                আমাদের দক্ষ ও অভিজ্ঞ টিম আপনার সেবায় সর্বদা প্রস্তুত
+                {t("about.team.subtitle")}
               </p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {teamMembers.map((member) => (
-                <Card key={member.name} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
-                  <CardContent className="pt-8 pb-6">
-                    <div className="text-center">
-                      <Avatar className="h-24 w-24 mx-auto mb-4 ring-4 ring-primary/10 group-hover:ring-primary/20 transition-all">
-                        <AvatarImage src={member.avatar || undefined} alt={member.name} />
-                        <AvatarFallback className="text-xl bg-gradient-to-br from-primary/20 to-accent/20 text-primary font-semibold">
-                          {member.name.split(" ").slice(-1)[0].charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <h3 className="text-lg font-semibold text-foreground mb-1">{member.name}</h3>
-                      <p className="text-sm font-medium text-primary mb-1">{member.role}</p>
-                      <p className="text-xs text-muted-foreground mb-3">{member.qualification}</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed mb-4">{member.bio}</p>
-                      
-                      <div className="flex items-center justify-center gap-3 pt-4 border-t border-border">
-                        <a 
-                          href={`mailto:${member.email}`}
-                          className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
-                          title="ইমেইল করুন"
-                        >
-                          <Mail className="h-4 w-4" />
-                        </a>
-                        <a 
-                          href={member.linkedin}
-                          className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
-                          title="LinkedIn প্রোফাইল"
-                        >
-                          <Linkedin className="h-4 w-4" />
-                        </a>
+              {teamMembers.map((member) => {
+                const name = t(member.nameKey);
+                return (
+                  <Card key={member.nameKey} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
+                    <CardContent className="pt-8 pb-6">
+                      <div className="text-center">
+                        <Avatar className="h-24 w-24 mx-auto mb-4 ring-4 ring-primary/10 group-hover:ring-primary/20 transition-all">
+                          <AvatarFallback className="text-xl bg-gradient-to-br from-primary/20 to-accent/20 text-primary font-semibold">
+                            {name.split(" ").slice(-1)[0].charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <h3 className="text-lg font-semibold text-foreground mb-1">{name}</h3>
+                        <p className="text-sm font-medium text-primary mb-1">{t(member.roleKey)}</p>
+                        <p className="text-xs text-muted-foreground mb-3">{member.qualification}</p>
+                        <p className="text-sm text-muted-foreground leading-relaxed mb-4">{t(member.bioKey)}</p>
+                        
+                        <div className="flex items-center justify-center gap-3 pt-4 border-t border-border">
+                          <a 
+                            href={`mailto:${member.email}`}
+                            className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
+                            title={t("about.emailTooltip")}
+                          >
+                            <Mail className="h-4 w-4" />
+                          </a>
+                          <a 
+                            href={member.linkedin}
+                            className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
+                            title={t("about.linkedinTooltip")}
+                          >
+                            <Linkedin className="h-4 w-4" />
+                          </a>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -371,13 +252,13 @@ const About = () => {
             <div className="text-center max-w-2xl mx-auto mb-12">
               <div className="flex items-center justify-center gap-2 mb-4">
                 <Trophy className="h-5 w-5 text-primary" />
-                <span className="text-sm font-medium text-primary uppercase tracking-wider">অর্জন ও পুরস্কার</span>
+                <span className="text-sm font-medium text-primary uppercase tracking-wider">{t("about.achievements.badge")}</span>
               </div>
               <h2 className="text-display-sm md:text-display-md font-bold text-foreground mb-4">
-                আমাদের সাফল্যের স্বীকৃতি
+                {t("about.achievements.title")}
               </h2>
               <p className="text-muted-foreground">
-                মানসম্মত সেবা প্রদানের জন্য আমরা যে সম্মান ও স্বীকৃতি অর্জন করেছি
+                {t("about.achievements.subtitle")}
               </p>
             </div>
 
@@ -395,13 +276,13 @@ const About = () => {
                           {achievement.year}
                         </span>
                         <h3 className="text-lg font-semibold text-foreground mb-1 leading-tight">
-                          {achievement.title}
+                          {t(achievement.titleKey)}
                         </h3>
                         <p className="text-sm text-primary/80 font-medium mb-2">
-                          {achievement.organization}
+                          {t(achievement.orgKey)}
                         </p>
                         <p className="text-sm text-muted-foreground leading-relaxed">
-                          {achievement.description}
+                          {t(achievement.descKey)}
                         </p>
                       </div>
                     </div>
@@ -417,22 +298,22 @@ const About = () => {
           <div className="container-custom">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-display-sm md:text-display-md font-bold text-foreground mb-4">
-                আমাদের মূল্যবোধ
+                {t("about.values.title")}
               </h2>
               <p className="text-muted-foreground">
-                এই মূল্যবোধগুলো আমাদের প্রতিদিনের কাজে পথ দেখায়
+                {t("about.values.subtitle")}
               </p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {values.map((value) => (
-                <Card key={value.title} className="text-center hover:shadow-lg transition-shadow">
+                <Card key={value.titleKey} className="text-center hover:shadow-lg transition-shadow">
                   <CardContent className="pt-8 pb-8">
                     <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
                       <value.icon className="h-7 w-7 text-primary" />
                     </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-2">{value.title}</h3>
-                    <p className="text-sm text-muted-foreground">{value.description}</p>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">{t(value.titleKey)}</h3>
+                    <p className="text-sm text-muted-foreground">{t(value.descKey)}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -444,23 +325,23 @@ const About = () => {
         <section className="section-padding bg-primary text-primary-foreground">
           <div className="container-custom text-center">
             <h2 className="text-display-sm font-bold mb-4">
-              আপনার স্বাস্থ্য আমাদের অগ্রাধিকার
+              {t("about.cta.title")}
             </h2>
             <p className="text-primary-foreground/80 max-w-2xl mx-auto mb-8">
-              আজই আমাদের সাথে যোগাযোগ করুন এবং বিশ্বস্ত স্বাস্থ্য সেবার অভিজ্ঞতা নিন।
+              {t("about.cta.subtitle")}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
                 href="/book-test"
                 className="inline-flex items-center justify-center px-6 py-3 bg-background text-foreground font-medium rounded-lg hover:bg-background/90 transition-colors"
               >
-                টেস্ট বুক করুন
+                {t("about.cta.bookTest")}
               </a>
               <a
                 href="/contact"
                 className="inline-flex items-center justify-center px-6 py-3 border-2 border-primary-foreground text-primary-foreground font-medium rounded-lg hover:bg-primary-foreground/10 transition-colors"
               >
-                যোগাযোগ করুন
+                {t("about.cta.contactUs")}
               </a>
             </div>
           </div>
