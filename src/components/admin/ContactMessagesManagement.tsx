@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useContactMessages, ContactMessage } from "@/hooks/useContactMessages";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,19 +41,20 @@ const statusColors: Record<string, string> = {
   responded: "bg-green-100 text-green-800",
 };
 
-const statusLabels: Record<string, string> = {
-  unread: "অপঠিত",
-  read: "পঠিত",
-  responded: "উত্তর দেওয়া হয়েছে",
-};
-
 export function ContactMessagesManagement() {
+  const { t, i18n } = useTranslation();
   const { messages, isLoading, updateMessageStatus, deleteMessage, refetch } = useContactMessages();
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
+
+  const statusLabels: Record<string, string> = {
+    unread: t("messagesMgmt.unread"),
+    read: t("messagesMgmt.read"),
+    responded: t("messagesMgmt.responded"),
+  };
 
   // Stats
   const stats = useMemo(() => ({
@@ -119,7 +121,7 @@ export function ContactMessagesManagement() {
                 <MessageSquare className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">মোট মেসেজ</p>
+                <p className="text-sm text-muted-foreground">{t("messagesMgmt.total")}</p>
                 <p className="text-2xl font-bold">{stats.total}</p>
               </div>
             </div>
@@ -133,7 +135,7 @@ export function ContactMessagesManagement() {
                 <Clock className="h-5 w-5 text-yellow-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">অপঠিত</p>
+                <p className="text-sm text-muted-foreground">{t("messagesMgmt.unread")}</p>
                 <p className="text-2xl font-bold">{stats.unread}</p>
               </div>
             </div>
@@ -147,7 +149,7 @@ export function ContactMessagesManagement() {
                 <Eye className="h-5 w-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">পঠিত</p>
+                <p className="text-sm text-muted-foreground">{t("messagesMgmt.read")}</p>
                 <p className="text-2xl font-bold">{stats.read}</p>
               </div>
             </div>
@@ -161,7 +163,7 @@ export function ContactMessagesManagement() {
                 <CheckCircle2 className="h-5 w-5 text-green-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">উত্তর দেওয়া</p>
+                <p className="text-sm text-muted-foreground">{t("messagesMgmt.responded")}</p>
                 <p className="text-2xl font-bold">{stats.responded}</p>
               </div>
             </div>
@@ -176,22 +178,22 @@ export function ContactMessagesManagement() {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Mail className="h-5 w-5 text-primary" />
-                যোগাযোগ বার্তা
+                {t("messagesMgmt.title")}
               </CardTitle>
               <CardDescription>
-                গ্রাহকদের কাছ থেকে আসা সব বার্তা
+                {t("messagesMgmt.subtitle")}
               </CardDescription>
             </div>
             <div className="flex items-center gap-2">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-[160px]">
-                  <SelectValue placeholder="ফিল্টার করুন" />
+                  <SelectValue placeholder={t("messagesMgmt.filter")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">সব স্ট্যাটাস</SelectItem>
-                  <SelectItem value="unread">অপঠিত</SelectItem>
-                  <SelectItem value="read">পঠিত</SelectItem>
-                  <SelectItem value="responded">উত্তর দেওয়া</SelectItem>
+                  <SelectItem value="all">{t("dashboard.allStatus")}</SelectItem>
+                  <SelectItem value="unread">{t("messagesMgmt.unread")}</SelectItem>
+                  <SelectItem value="read">{t("messagesMgmt.read")}</SelectItem>
+                  <SelectItem value="responded">{t("messagesMgmt.responded")}</SelectItem>
                 </SelectContent>
               </Select>
               <Button variant="outline" size="icon" onClick={() => refetch()}>
@@ -205,10 +207,10 @@ export function ContactMessagesManagement() {
             <div className="text-center py-12">
               <MessageSquare className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium text-muted-foreground mb-2">
-                কোনো বার্তা নেই
+                {t("messagesMgmt.noMessages")}
               </h3>
               <p className="text-sm text-muted-foreground">
-                এখনো কোনো যোগাযোগ বার্তা আসেনি।
+                {t("messagesMgmt.noMessagesYet")}
               </p>
             </div>
           ) : (
@@ -248,12 +250,12 @@ export function ContactMessagesManagement() {
                           )}
                           <div className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
-                            {format(new Date(message.created_at), "dd MMM yyyy, hh:mm a", { locale: bn })}
+                            {format(new Date(message.created_at), "dd MMM yyyy, hh:mm a", { locale: i18n.language === 'bn' ? bn : undefined })}
                           </div>
                         </div>
 
                         <p className="text-sm font-medium text-foreground">
-                          বিষয়: {message.subject}
+                          {t("messagesMgmt.subject")}: {message.subject}
                         </p>
                         <p className="text-sm text-muted-foreground line-clamp-2">
                           {message.message}
@@ -270,9 +272,9 @@ export function ContactMessagesManagement() {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="unread">অপঠিত</SelectItem>
-                            <SelectItem value="read">পঠিত</SelectItem>
-                            <SelectItem value="responded">উত্তর দেওয়া</SelectItem>
+                            <SelectItem value="unread">{t("messagesMgmt.unread")}</SelectItem>
+                            <SelectItem value="read">{t("messagesMgmt.read")}</SelectItem>
+                            <SelectItem value="responded">{t("messagesMgmt.responded")}</SelectItem>
                           </SelectContent>
                         </Select>
                         <Button
@@ -297,39 +299,39 @@ export function ContactMessagesManagement() {
       <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>বার্তার বিস্তারিত</DialogTitle>
+            <DialogTitle>{t("messagesMgmt.viewDetails")}</DialogTitle>
             <DialogDescription>
-              গ্রাহকের পাঠানো বার্তা
+              {t("messagesMgmt.customerMessage")}
             </DialogDescription>
           </DialogHeader>
           {selectedMessage && (
             <div className="space-y-4 pt-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">নাম</p>
+                  <p className="text-sm text-muted-foreground">{t("messagesMgmt.name")}</p>
                   <p className="font-medium">{selectedMessage.name}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">ইমেইল</p>
+                  <p className="text-sm text-muted-foreground">{t("messagesMgmt.email")}</p>
                   <p className="font-medium">{selectedMessage.email}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">ফোন</p>
+                  <p className="text-sm text-muted-foreground">{t("messagesMgmt.phone")}</p>
                   <p className="font-medium">{selectedMessage.phone || "N/A"}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">তারিখ</p>
+                  <p className="text-sm text-muted-foreground">{t("messagesMgmt.date")}</p>
                   <p className="font-medium">
-                    {format(new Date(selectedMessage.created_at), "dd MMM yyyy, hh:mm a", { locale: bn })}
+                    {format(new Date(selectedMessage.created_at), "dd MMM yyyy, hh:mm a", { locale: i18n.language === 'bn' ? bn : undefined })}
                   </p>
                 </div>
               </div>
               <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">বিষয়</p>
+                <p className="text-sm text-muted-foreground">{t("messagesMgmt.subject")}</p>
                 <p className="font-medium">{selectedMessage.subject}</p>
               </div>
               <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">বার্তা</p>
+                <p className="text-sm text-muted-foreground">{t("messagesMgmt.message")}</p>
                 <div className="p-4 bg-muted rounded-lg">
                   <p className="whitespace-pre-wrap">{selectedMessage.message}</p>
                 </div>
@@ -341,7 +343,7 @@ export function ContactMessagesManagement() {
                   onClick={() => handleStatusUpdate(selectedMessage.id, "responded")}
                 >
                   <CheckCircle2 className="h-4 w-4 mr-2" />
-                  উত্তর দেওয়া হয়েছে
+                  {t("messagesMgmt.markResponded")}
                 </Button>
                 <Button
                   variant="outline"
@@ -349,7 +351,7 @@ export function ContactMessagesManagement() {
                 >
                   <a href={`mailto:${selectedMessage.email}?subject=Re: ${selectedMessage.subject}`}>
                     <Mail className="h-4 w-4 mr-2" />
-                    ইমেইল পাঠান
+                    {t("messagesMgmt.sendEmail")}
                   </a>
                 </Button>
               </div>
@@ -362,18 +364,18 @@ export function ContactMessagesManagement() {
       <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>মেসেজ ডিলিট করবেন?</AlertDialogTitle>
+            <AlertDialogTitle>{t("messagesMgmt.deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              এই মেসেজটি স্থায়ীভাবে ডিলিট হয়ে যাবে। এটি আর ফেরত আনা যাবে না।
+              {t("messagesMgmt.deleteDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>বাতিল</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleDeleteConfirm}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              ডিলিট করুন
+              {t("common.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

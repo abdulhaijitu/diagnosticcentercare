@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -66,6 +67,7 @@ const roleBadgeColors: Record<AppRole, string> = {
 };
 
 export function StaffManagement() {
+  const { t } = useTranslation();
   const { user, isAdmin } = useAuth();
   const { toast } = useToast();
   const [users, setUsers] = useState<UserWithRoles[]>([]);
@@ -109,8 +111,8 @@ export function StaffManagement() {
     } catch (error) {
       console.error("Error fetching users:", error);
       toast({
-        title: "Error",
-        description: "Failed to load users",
+        title: t("common.error"),
+        description: t("staffMgmt.failedLoadUsers"),
         variant: "destructive",
       });
     } finally {
@@ -155,8 +157,8 @@ export function StaffManagement() {
       if (error) {
         if (error.code === "23505") {
           toast({
-            title: "Already Exists",
-            description: "This user already has this role",
+            title: t("staffMgmt.alreadyExists"),
+            description: t("staffMgmt.alreadyHasRole"),
             variant: "destructive",
           });
         } else {
@@ -164,16 +166,16 @@ export function StaffManagement() {
         }
       } else {
         toast({
-          title: "Success!",
-          description: `${roleLabels[selectedRole]} role added to ${selectedUser.full_name || selectedUser.email}`,
+          title: t("common.success"),
+          description: `${roleLabels[selectedRole]} ${t("staffMgmt.roleAdded")} ${selectedUser.full_name || selectedUser.email}`,
         });
         await fetchUsers();
       }
     } catch (error) {
       console.error("Error adding role:", error);
       toast({
-        title: "Error",
-        description: "Failed to add role",
+        title: t("common.error"),
+        description: t("staffMgmt.failedAddRole"),
         variant: "destructive",
       });
     } finally {
@@ -203,15 +205,15 @@ export function StaffManagement() {
       if (error) throw error;
 
       toast({
-        title: "Success!",
-        description: `${roleLabels[roleToRemove]} role removed from ${selectedUser.full_name || selectedUser.email}`,
+        title: t("common.success"),
+        description: `${roleLabels[roleToRemove]} ${t("staffMgmt.roleRemoved")} ${selectedUser.full_name || selectedUser.email}`,
       });
       await fetchUsers();
     } catch (error) {
       console.error("Error removing role:", error);
       toast({
-        title: "Error",
-        description: "Failed to remove role",
+        title: t("common.error"),
+        description: t("staffMgmt.failedRemoveRole"),
         variant: "destructive",
       });
     } finally {
@@ -235,7 +237,7 @@ export function StaffManagement() {
       <Card>
         <CardContent className="py-12 text-center">
           <Shield className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-          <p className="text-muted-foreground">You don't have permission to access this section.</p>
+          <p className="text-muted-foreground">{t("staffMgmt.noPermission")}</p>
         </CardContent>
       </Card>
     );
@@ -304,13 +306,13 @@ export function StaffManagement() {
         <CardHeader>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <CardTitle>User Management</CardTitle>
-              <CardDescription>Manage user roles and permissions</CardDescription>
+              <CardTitle>{t("staffMgmt.userManagement")}</CardTitle>
+              <CardDescription>{t("staffMgmt.userManagementDesc")}</CardDescription>
             </div>
             <div className="relative w-full md:w-72">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search by name, email, phone..."
+                placeholder={t("staffMgmt.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -323,17 +325,17 @@ export function StaffManagement() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>User</TableHead>
-                  <TableHead>Contact</TableHead>
-                  <TableHead>Roles</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t("staffMgmt.userCol")}</TableHead>
+                  <TableHead>{t("staffMgmt.contactCol")}</TableHead>
+                  <TableHead>{t("staffMgmt.rolesCol")}</TableHead>
+                  <TableHead className="text-right">{t("staffMgmt.actionsCol")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredUsers.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                      No users found
+                      {t("staffMgmt.noUsersFound")}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -347,7 +349,7 @@ export function StaffManagement() {
                             </span>
                           </div>
                           <div>
-                            <p className="font-medium">{userItem.full_name || "No Name"}</p>
+                            <p className="font-medium">{userItem.full_name || t("staffMgmt.noName")}</p>
                             <p className="text-sm text-muted-foreground">{userItem.email}</p>
                           </div>
                         </div>
@@ -383,7 +385,7 @@ export function StaffManagement() {
                             </Badge>
                           ))}
                           {userItem.roles.length === 0 && (
-                            <span className="text-sm text-muted-foreground">No roles</span>
+                            <span className="text-sm text-muted-foreground">{t("staffMgmt.noRoles")}</span>
                           )}
                         </div>
                       </TableCell>
@@ -395,7 +397,7 @@ export function StaffManagement() {
                           disabled={getAvailableRoles(userItem).length === 0}
                         >
                           <UserPlus className="h-4 w-4 mr-1" />
-                          Add Role
+                          {t("staffMgmt.addRole")}
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -411,15 +413,15 @@ export function StaffManagement() {
       <Dialog open={isAddRoleOpen} onOpenChange={setIsAddRoleOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Role</DialogTitle>
+            <DialogTitle>{t("staffMgmt.addRole")}</DialogTitle>
             <DialogDescription>
-              Add a new role to {selectedUser?.full_name || selectedUser?.email}
+              {t("staffMgmt.addRoleDesc")} {selectedUser?.full_name || selectedUser?.email}
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
             <Select value={selectedRole} onValueChange={(val) => setSelectedRole(val as AppRole)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select a role" />
+                <SelectValue placeholder={t("staffMgmt.selectRole")} />
               </SelectTrigger>
               <SelectContent>
                 {selectedUser && getAvailableRoles(selectedUser).map((role) => (
@@ -436,18 +438,18 @@ export function StaffManagement() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsAddRoleOpen(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button onClick={handleAddRole} disabled={!selectedRole || isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Adding...
+                  {t("staffMgmt.adding")}
                 </>
               ) : (
                 <>
                   <CheckCircle2 className="h-4 w-4 mr-2" />
-                  Add Role
+                  {t("staffMgmt.addRole")}
                 </>
               )}
             </Button>
@@ -459,25 +461,25 @@ export function StaffManagement() {
       <Dialog open={isRemoveRoleOpen} onOpenChange={setIsRemoveRoleOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Remove Role</DialogTitle>
+            <DialogTitle>{t("staffMgmt.removeRole")}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to remove the <strong>{roleToRemove && roleLabels[roleToRemove]}</strong> role from {selectedUser?.full_name || selectedUser?.email}?
+              {t("staffMgmt.removeRoleDesc")} <strong>{roleToRemove && roleLabels[roleToRemove]}</strong> {t("staffMgmt.roleFrom")} {selectedUser?.full_name || selectedUser?.email}?
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsRemoveRoleOpen(false)}>
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button variant="destructive" onClick={handleRemoveRole} disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Removing...
+                  {t("staffMgmt.removing")}
                 </>
               ) : (
                 <>
                   <XCircle className="h-4 w-4 mr-2" />
-                  Remove Role
+                  {t("staffMgmt.removeRole")}
                 </>
               )}
             </Button>
