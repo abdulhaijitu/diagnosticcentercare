@@ -13,12 +13,14 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Camera, Loader2, User, Mail, Phone, MapPin, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Profile = () => {
   const { user, profile, isLoading, refreshProfile } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useTranslation();
   
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -29,7 +31,6 @@ const Profile = () => {
   });
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || "");
 
-  // Update form when profile loads
   useEffect(() => {
     if (profile) {
       setFormData({
@@ -66,21 +67,19 @@ const Profile = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       toast({
-        title: "Invalid file type",
-        description: "Please select an image file",
+        title: t("profilePage.invalidFile"),
+        description: t("profilePage.selectImage"),
         variant: "destructive",
       });
       return;
     }
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       toast({
-        title: "File too large",
-        description: "Please select an image under 5MB",
+        title: t("profilePage.fileTooLarge"),
+        description: t("profilePage.selectUnder5MB"),
         variant: "destructive",
       });
       return;
@@ -92,19 +91,16 @@ const Profile = () => {
       const fileExt = file.name.split(".").pop();
       const fileName = `${user.id}/avatar.${fileExt}`;
 
-      // Upload to Supabase Storage
       const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(fileName, file, { upsert: true });
 
       if (uploadError) throw uploadError;
 
-      // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from("avatars")
         .getPublicUrl(fileName);
 
-      // Update profile with new avatar URL
       const { error: updateError } = await supabase
         .from("profiles")
         .update({ avatar_url: publicUrl })
@@ -115,14 +111,14 @@ const Profile = () => {
       setAvatarUrl(publicUrl);
       await refreshProfile();
       toast({
-        title: "Avatar updated",
-        description: "Your profile picture has been updated successfully",
+        title: t("profilePage.avatarUpdated"),
+        description: t("profilePage.avatarSuccess"),
       });
     } catch (error: any) {
       console.error("Error uploading avatar:", error);
       toast({
-        title: "Upload failed",
-        description: error.message || "Failed to upload avatar",
+        title: t("profilePage.uploadFailed"),
+        description: error.message || t("profilePage.uploadFailed"),
         variant: "destructive",
       });
     } finally {
@@ -148,14 +144,14 @@ const Profile = () => {
 
       await refreshProfile();
       toast({
-        title: "Profile updated",
-        description: "Your profile has been updated successfully",
+        title: t("profilePage.profileUpdated"),
+        description: t("profilePage.profileSuccess"),
       });
     } catch (error: any) {
       console.error("Error updating profile:", error);
       toast({
-        title: "Update failed",
-        description: error.message || "Failed to update profile",
+        title: t("profilePage.updateFailed"),
+        description: error.message || t("profilePage.updateFailed"),
         variant: "destructive",
       });
     } finally {
@@ -184,26 +180,23 @@ const Profile = () => {
       />
       <Header />
       <main className="flex-1">
-        {/* Hero Section */}
         <section className="bg-gradient-hero text-white py-12 md:py-16">
           <div className="container-custom">
             <div className="text-center">
               <h1 className="text-display-sm md:text-display-md font-bold mb-2">
-                My Profile
+                {t("profilePage.title")}
               </h1>
               <p className="text-white/80">
-                Manage your personal information and settings
+                {t("profilePage.subtitle")}
               </p>
             </div>
           </div>
         </section>
 
-        {/* Profile Content */}
         <section className="section-padding">
           <div className="container-custom max-w-2xl">
             <Card className="shadow-card">
               <CardHeader className="text-center pb-0">
-                {/* Avatar Section */}
                 <div className="relative inline-block mx-auto mb-4">
                   <Avatar className="h-32 w-32 border-4 border-background shadow-elevated">
                     <AvatarImage src={avatarUrl} alt={formData.full_name || "User"} />
@@ -236,11 +229,10 @@ const Profile = () => {
 
               <CardContent className="pt-6">
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Full Name */}
                   <div className="space-y-2">
                     <Label htmlFor="full_name" className="flex items-center gap-2">
                       <User className="h-4 w-4 text-muted-foreground" />
-                      Full Name
+                      {t("profilePage.fullName")}
                     </Label>
                     <Input
                       id="full_name"
@@ -248,15 +240,14 @@ const Profile = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, full_name: e.target.value })
                       }
-                      placeholder="Enter your full name"
+                      placeholder={t("profilePage.fullNamePlaceholder")}
                     />
                   </div>
 
-                  {/* Email (read-only) */}
                   <div className="space-y-2">
                     <Label htmlFor="email" className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-muted-foreground" />
-                      Email
+                      {t("profilePage.email")}
                     </Label>
                     <Input
                       id="email"
@@ -266,11 +257,10 @@ const Profile = () => {
                     />
                   </div>
 
-                  {/* Phone */}
                   <div className="space-y-2">
                     <Label htmlFor="phone" className="flex items-center gap-2">
                       <Phone className="h-4 w-4 text-muted-foreground" />
-                      Phone Number
+                      {t("profilePage.phoneNumber")}
                     </Label>
                     <Input
                       id="phone"
@@ -278,15 +268,14 @@ const Profile = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, phone: e.target.value })
                       }
-                      placeholder="Enter your phone number"
+                      placeholder={t("profilePage.phonePlaceholder")}
                     />
                   </div>
 
-                  {/* Address */}
                   <div className="space-y-2">
                     <Label htmlFor="address" className="flex items-center gap-2">
                       <MapPin className="h-4 w-4 text-muted-foreground" />
-                      Address
+                      {t("profilePage.address")}
                     </Label>
                     <Textarea
                       id="address"
@@ -294,22 +283,21 @@ const Profile = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, address: e.target.value })
                       }
-                      placeholder="Enter your address"
+                      placeholder={t("profilePage.addressPlaceholder")}
                       rows={3}
                     />
                   </div>
 
-                  {/* Submit Button */}
                   <Button type="submit" className="w-full" disabled={isSaving}>
                     {isSaving ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Saving...
+                        {t("profilePage.saving")}
                       </>
                     ) : (
                       <>
                         <Save className="h-4 w-4 mr-2" />
-                        Save Changes
+                        {t("profilePage.saveChanges")}
                       </>
                     )}
                   </Button>

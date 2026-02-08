@@ -56,6 +56,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useHomeCollectionRequests } from "@/hooks/useHomeCollectionRequests";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 // Mock data for diagnostic tests
 const testCategories = [
@@ -218,6 +219,7 @@ const BookTest = () => {
   const { createRequest } = useHomeCollectionRequests();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   // Auto-fill from profile when booking dialog opens
   const handleOpenBooking = () => {
@@ -256,8 +258,8 @@ const BookTest = () => {
 
     if (!user) {
       toast({
-        title: "Login Required",
-        description: "Please login to book a test",
+        title: t("bookTestPage.loginRequired"),
+        description: t("bookTestPage.pleaseLogin"),
         variant: "destructive",
       });
       navigate("/login");
@@ -297,8 +299,8 @@ const BookTest = () => {
     } else {
       // For center visits, just show confirmation
       toast({
-        title: "Booking Confirmed!",
-        description: "Please visit our center on the selected date and time.",
+        title: t("bookTestPage.bookingConfirmed"),
+        description: t("bookTestPage.visitCenter"),
       });
       setIsBookingOpen(false);
       setSelectedTests([]);
@@ -322,14 +324,13 @@ const BookTest = () => {
           <div className="container-custom">
             <div className="text-center max-w-3xl mx-auto">
               <span className="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-sm font-medium mb-4">
-                100+ Tests Available
+                {t("bookTestPage.badge")}
               </span>
               <h1 className="text-display-sm md:text-display-md font-bold mb-4">
-                Book Your Diagnostic Test
+                {t("bookTestPage.title")}
               </h1>
               <p className="text-white/80 text-lg mb-8">
-                Browse our comprehensive range of diagnostic tests and book online. 
-                Get accurate results with fast turnaround times.
+                {t("bookTestPage.subtitle")}
               </p>
               
               {/* Search Bar */}
@@ -337,7 +338,7 @@ const BookTest = () => {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   type="text"
-                  placeholder="Search for tests... (e.g., CBC, Thyroid, Diabetes)"
+                  placeholder={t("bookTestPage.searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-12 h-14 rounded-xl bg-white text-foreground border-0 shadow-elevated"
@@ -409,7 +410,7 @@ const BookTest = () => {
               {/* Desktop Sidebar - Categories */}
               <aside className="hidden lg:block lg:w-64 flex-shrink-0">
                 <div className="bg-card rounded-2xl p-6 shadow-card sticky top-24">
-                  <h3 className="font-semibold text-foreground mb-4">Categories</h3>
+                  <h3 className="font-semibold text-foreground mb-4">{t("bookTestPage.categories")}</h3>
                   <ul className="space-y-2">
                     {testCategories.map((category) => (
                       <li key={category.id}>
@@ -433,7 +434,7 @@ const BookTest = () => {
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-6">
                   <p className="text-muted-foreground">
-                    Showing <span className="font-semibold text-foreground">{filteredTests.length}</span> tests
+                    {t("bookTestPage.showing")} <span className="font-semibold text-foreground">{filteredTests.length}</span> {t("bookTestPage.tests")}
                   </p>
                 </div>
 
@@ -464,7 +465,7 @@ const BookTest = () => {
                         </div>
                         {test.popular && (
                           <Badge variant="secondary" className="bg-accent/10 text-accent">
-                            Popular
+                            {t("bookTestPage.popular")}
                           </Badge>
                         )}
                       </div>
@@ -499,12 +500,12 @@ const BookTest = () => {
                             className="text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
                           >
                             <X className="h-4 w-4 mr-1" />
-                            Remove
+                            {t("common.delete")}
                           </Button>
                         ) : (
                           <Button size="sm" onClick={() => handleAddTest(test)}>
-                            <CheckCircle2 className="h-4 w-4 mr-1" />
-                            Add Test
+                             <CheckCircle2 className="h-4 w-4 mr-1" />
+                             {t("bookTestPage.addToCart")}
                           </Button>
                         )}
                       </div>
@@ -515,9 +516,9 @@ const BookTest = () => {
                 {filteredTests.length === 0 && (
                   <div className="text-center py-16">
                     <FlaskConical className="h-16 w-16 text-muted-foreground/30 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-foreground mb-2">No tests found</h3>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">{t("bookTestPage.loginRequired")}</h3>
                     <p className="text-muted-foreground">
-                      Try adjusting your search or filter criteria
+                      {t("doctorsPage.noResultsDesc")}
                     </p>
                   </div>
                 )}
@@ -533,7 +534,7 @@ const BookTest = () => {
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4 overflow-x-auto">
                   <span className="text-sm text-muted-foreground whitespace-nowrap">
-                    {selectedTests.length} test{selectedTests.length > 1 ? "s" : ""} selected
+                    {selectedTests.length} {t("bookTestPage.selected")}
                   </span>
                   <div className="flex gap-2">
                     {selectedTests.map((test) => (
@@ -551,11 +552,11 @@ const BookTest = () => {
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right">
-                    <p className="text-sm text-muted-foreground">Total</p>
+                    <p className="text-sm text-muted-foreground">{t("bookTestPage.totalPrice")}</p>
                     <p className="text-xl font-bold text-foreground">৳{totalPrice}</p>
                   </div>
                   <Button size="lg" onClick={handleOpenBooking}>
-                    Book Now
+                    {t("bookTestPage.proceedToBook")}
                     <ArrowRight className="h-4 w-4 ml-1" />
                   </Button>
                 </div>

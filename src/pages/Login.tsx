@@ -10,6 +10,7 @@ import { Eye, EyeOff, Mail, Lock, ArrowRight, CheckCircle2, Loader2 } from "luci
 import trustCareLogo from "@/assets/trust-care-logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,6 +20,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { signIn } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,8 +30,8 @@ const Login = () => {
 
     if (error) {
       toast({
-        title: "Login Failed",
-        description: error.message || "Invalid email or password",
+        title: t("login.loginFailed"),
+        description: error.message || t("login.invalidCredentials"),
         variant: "destructive",
       });
       setIsLoading(false);
@@ -37,8 +39,8 @@ const Login = () => {
     }
 
     toast({
-      title: "Welcome back!",
-      description: "You have successfully logged in.",
+      title: t("login.welcomeBackSuccess"),
+      description: t("login.loginSuccess"),
     });
 
     navigate("/");
@@ -56,9 +58,7 @@ const Login = () => {
       <Header />
       <main className="flex-1 flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
-          {/* Login Card */}
           <div className="bg-card rounded-3xl shadow-elevated p-8 md:p-10 border border-border">
-            {/* Header */}
             <div className="text-center mb-8">
               <img 
                 src={trustCareLogo} 
@@ -66,25 +66,24 @@ const Login = () => {
                 className="h-16 w-auto mx-auto mb-4"
               />
               <h1 className="text-2xl font-bold text-foreground mb-2">
-                Welcome Back
+                {t("login.welcomeBack")}
               </h1>
               <p className="text-muted-foreground">
-                Sign in to access your TrustCare account
+                {t("login.signInDesc")}
               </p>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
-                  Email Address
+                  {t("login.emailAddress")}
                 </Label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input
                     id="email"
                     type="email"
-                    placeholder="you@example.com"
+                    placeholder={t("login.emailPlaceholder")}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-12 h-12 rounded-xl"
@@ -96,13 +95,13 @@ const Login = () => {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password" className="text-sm font-medium">
-                    Password
+                    {t("login.password")}
                   </Label>
                   <Link
                     to="/forgot-password"
                     className="text-sm text-primary hover:underline"
                   >
-                    Forgot password?
+                    {t("login.forgotPassword")}
                   </Link>
                 </div>
                 <div className="relative">
@@ -110,7 +109,7 @@ const Login = () => {
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder={t("login.passwordPlaceholder")}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-12 pr-12 h-12 rounded-xl"
@@ -134,42 +133,39 @@ const Login = () => {
                 {isLoading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Signing In...
+                    {t("login.signingIn")}
                   </>
                 ) : (
                   <>
-                    Sign In
+                    {t("login.signIn")}
                     <ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </Button>
             </form>
 
-            {/* Divider */}
             <div className="my-8 flex items-center gap-4">
               <div className="flex-1 h-px bg-border" />
-              <span className="text-sm text-muted-foreground">or</span>
+              <span className="text-sm text-muted-foreground">{t("login.or")}</span>
               <div className="flex-1 h-px bg-border" />
             </div>
 
-            {/* Register Link */}
             <p className="text-center text-muted-foreground">
-              Don't have an account?{" "}
+              {t("login.noAccount")}{" "}
               <Link to="/register" className="text-primary font-semibold hover:underline">
-                Create Account
+                {t("login.createAccount")}
               </Link>
             </p>
           </div>
 
-          {/* Trust indicators */}
           <div className="mt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-primary" />
-              <span>Secure Login</span>
+              <span>{t("login.secureLogin")}</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-primary" />
-              <span>256-bit SSL</span>
+              <span>{t("login.sslEncryption")}</span>
             </div>
           </div>
         </div>
