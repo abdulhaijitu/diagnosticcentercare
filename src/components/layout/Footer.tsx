@@ -1,21 +1,7 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Phone, Mail, MapPin, Clock, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 import trustCareLogo from "@/assets/trust-care-logo.png";
-
-const services = [
-  { name: "Diagnostic Tests", href: "/services#diagnostic" },
-  { name: "Doctor Consultation", href: "/services#consultation" },
-  { name: "Home Sample Collection", href: "/services#home-collection" },
-  { name: "Health Packages", href: "/services#packages" },
-];
-
-const quickLinks = [
-  { name: "About Us", href: "/about" },
-  { name: "Our Doctors", href: "/doctors" },
-  { name: "Book a Test", href: "/book-test" },
-  { name: "Download Reports", href: "/my-requests" },
-  { name: "Contact Us", href: "/contact" },
-];
 
 const socials = [
   { icon: Facebook, href: "#", label: "Facebook" },
@@ -25,6 +11,23 @@ const socials = [
 ];
 
 export function Footer() {
+  const { t } = useTranslation();
+
+  const services = [
+    { name: t("footer.diagnosticTests"), href: "/services#diagnostic" },
+    { name: t("footer.doctorConsultation"), href: "/services#consultation" },
+    { name: t("footer.homeSampleCollection"), href: "/services#home-collection" },
+    { name: t("footer.healthPackages"), href: "/services#packages" },
+  ];
+
+  const quickLinks = [
+    { name: t("footer.aboutUs"), href: "/about" },
+    { name: t("footer.ourDoctors"), href: "/doctors" },
+    { name: t("footer.bookATest"), href: "/book-test" },
+    { name: t("footer.downloadReports"), href: "/my-requests" },
+    { name: t("footer.contactUs"), href: "/contact" },
+  ];
+
   return (
     <footer className="bg-foreground text-background" role="contentinfo">
       {/* Main Footer */}
@@ -46,23 +49,22 @@ export function Footer() {
               </div>
             </Link>
             <p className="text-background/70 text-sm leading-relaxed mb-4">
-              TrustCare Diagnostic & Consultation Center Limited provides fast and accurate 
-              lab services with compassionate care you can trust.
+              {t("footer.brandDesc")}
             </p>
             <p className="text-sm font-medium text-primary mb-2">
-              "Your Trust, Your Care"
+              {t("footer.brandSlogan")}
             </p>
             <p className="text-sm text-background/70">
-              ট্রাস্ট কেয়ার ডায়াগনোস্টিক এন্ড কনসালটেশন সেন্টার লিমিটেড
+              {t("footer.brandNameBn")}
             </p>
           </div>
 
           {/* Services Column */}
           <div>
-            <h3 className="font-semibold text-lg mb-6">Our Services</h3>
+            <h3 className="font-semibold text-lg mb-6">{t("footer.ourServices")}</h3>
             <ul className="space-y-3">
               {services.map((service) => (
-                <li key={service.name}>
+                <li key={service.href}>
                   <Link 
                     to={service.href} 
                     className="text-background/70 hover:text-primary transition-colors duration-200 text-sm"
@@ -76,10 +78,10 @@ export function Footer() {
 
           {/* Quick Links Column */}
           <div>
-            <h3 className="font-semibold text-lg mb-6">Quick Links</h3>
+            <h3 className="font-semibold text-lg mb-6">{t("footer.quickLinks")}</h3>
             <ul className="space-y-3">
               {quickLinks.map((link) => (
-                <li key={link.name}>
+                <li key={link.href}>
                   <Link 
                     to={link.href} 
                     className="text-background/70 hover:text-primary transition-colors duration-200 text-sm"
@@ -93,7 +95,7 @@ export function Footer() {
 
           {/* Contact Column */}
           <div>
-            <h3 className="font-semibold text-lg mb-6">Contact Us</h3>
+            <h3 className="font-semibold text-lg mb-6">{t("footer.contactUs")}</h3>
             <address className="not-italic">
               <ul className="space-y-4">
                 <li>
@@ -123,7 +125,7 @@ export function Footer() {
                 </li>
                 <li className="flex items-start gap-3 text-background/70">
                   <Clock className="h-5 w-5 mt-0.5 flex-shrink-0" aria-hidden="true" />
-                  <span className="text-sm">Open 24/7</span>
+                  <span className="text-sm">{t("footer.open247")}</span>
                 </li>
               </ul>
             </address>
@@ -149,19 +151,19 @@ export function Footer() {
       <div className="border-t border-background/10">
         <div className="container-custom py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-background/60">
-            <p>© {new Date().getFullYear()} TrustCare Diagnostic & Consultation Center Limited. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} {t("footer.copyright")}</p>
             <div className="flex items-center gap-6">
               <Link to="/privacy" className="hover:text-primary transition-colors">
-                Privacy Policy
+                {t("footer.privacyPolicy")}
               </Link>
               <Link to="/terms" className="hover:text-primary transition-colors">
-                Terms of Service
+                {t("footer.termsOfService")}
               </Link>
             </div>
           </div>
           <div className="text-center mt-4 pt-4 border-t border-background/10">
             <p className="text-xs text-background/50">
-              Design and Developed:{" "}
+              {t("footer.designedBy")}{" "}
               <a 
                 href="http://creationtechbd.com/" 
                 target="_blank" 
