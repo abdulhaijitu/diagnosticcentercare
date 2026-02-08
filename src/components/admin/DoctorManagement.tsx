@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -106,13 +107,7 @@ const doctorSchema = z.object({
 });
 
 const DAYS_OF_WEEK = [
-  { id: "saturday", label: "শনিবার" },
-  { id: "sunday", label: "রবিবার" },
-  { id: "monday", label: "সোমবার" },
-  { id: "tuesday", label: "মঙ্গলবার" },
-  { id: "wednesday", label: "বুধবার" },
-  { id: "thursday", label: "বৃহস্পতিবার" },
-  { id: "friday", label: "শুক্রবার" },
+  "saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday",
 ];
 
 const SPECIALTIES = [
@@ -131,6 +126,7 @@ const SPECIALTIES = [
 ];
 
 export function DoctorManagement() {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
@@ -236,15 +232,15 @@ export function DoctorManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-doctors"] });
-      toast({ title: "সফল!", description: "ডাক্তার সফলভাবে যোগ করা হয়েছে।" });
+      toast({ title: t("doctorMgmt.successAdd"), description: t("doctorMgmt.successAddDesc") });
       resetForm();
       setIsAddDialogOpen(false);
     },
     onError: (error) => {
       console.error("Create error:", error);
       toast({
-        title: "ত্রুটি",
-        description: "ডাক্তার যোগ করতে সমস্যা হয়েছে।",
+        title: t("doctorMgmt.error"),
+        description: t("doctorMgmt.errorAddDesc"),
         variant: "destructive",
       });
     },
@@ -306,7 +302,7 @@ export function DoctorManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-doctors"] });
-      toast({ title: "সফল!", description: "ডাক্তারের তথ্য আপডেট হয়েছে।" });
+      toast({ title: t("doctorMgmt.successUpdate"), description: t("doctorMgmt.successUpdateDesc") });
       resetForm();
       setIsEditDialogOpen(false);
       setSelectedDoctor(null);
@@ -314,8 +310,8 @@ export function DoctorManagement() {
     onError: (error) => {
       console.error("Update error:", error);
       toast({
-        title: "ত্রুটি",
-        description: "আপডেট করতে সমস্যা হয়েছে।",
+        title: t("doctorMgmt.error"),
+        description: t("doctorMgmt.errorUpdateDesc"),
         variant: "destructive",
       });
     },
@@ -329,15 +325,15 @@ export function DoctorManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-doctors"] });
-      toast({ title: "সফল!", description: "ডাক্তার মুছে ফেলা হয়েছে।" });
+      toast({ title: t("doctorMgmt.successDelete"), description: t("doctorMgmt.successDeleteDesc") });
       setIsDeleteDialogOpen(false);
       setSelectedDoctor(null);
     },
     onError: (error) => {
       console.error("Delete error:", error);
       toast({
-        title: "ত্রুটি",
-        description: "মুছতে সমস্যা হয়েছে।",
+        title: t("doctorMgmt.error"),
+        description: t("doctorMgmt.errorDeleteDesc"),
         variant: "destructive",
       });
     },
@@ -442,8 +438,8 @@ export function DoctorManagement() {
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast({
-          title: "ভ্যালিডেশন ত্রুটি",
-          description: error.errors[0]?.message || "ফর্ম সঠিকভাবে পূরণ করুন।",
+          title: t("doctorMgmt.validationError"),
+          description: error.errors[0]?.message || t("doctorMgmt.validationErrorDesc"),
           variant: "destructive",
         });
       }
@@ -528,12 +524,12 @@ export function DoctorManagement() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">ডাক্তার ম্যানেজমেন্ট</h2>
-          <p className="text-muted-foreground">মোট {doctors.length} জন ডাক্তার</p>
+          <h2 className="text-2xl font-bold text-foreground">{t("doctorMgmt.title")}</h2>
+          <p className="text-muted-foreground">{t("doctorMgmt.totalDoctors", { count: doctors.length })}</p>
         </div>
         <Button onClick={() => { resetForm(); setIsAddDialogOpen(true); }}>
           <Plus className="h-4 w-4 mr-2" />
-          নতুন ডাক্তার যোগ করুন
+          {t("doctorMgmt.addDoctor")}
         </Button>
       </div>
 
@@ -541,7 +537,7 @@ export function DoctorManagement() {
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="নাম বা বিশেষত্ব দিয়ে খুঁজুন..."
+          placeholder={t("doctorMgmt.searchPlaceholder")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10"
@@ -554,12 +550,12 @@ export function DoctorManagement() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>নাম</TableHead>
-                <TableHead>বিশেষত্ব</TableHead>
-                <TableHead>অভিজ্ঞতা</TableHead>
-                <TableHead>ফি</TableHead>
-                <TableHead>স্ট্যাটাস</TableHead>
-                <TableHead className="text-right">অ্যাকশন</TableHead>
+                <TableHead>{t("doctorMgmt.name")}</TableHead>
+                <TableHead>{t("doctorMgmt.specialty")}</TableHead>
+                <TableHead>{t("doctorMgmt.experience")}</TableHead>
+                <TableHead>{t("doctorMgmt.fee")}</TableHead>
+                <TableHead>{t("doctorMgmt.status")}</TableHead>
+                <TableHead className="text-right">{t("doctorMgmt.actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -581,19 +577,19 @@ export function DoctorManagement() {
                       <div>
                         <p className="font-medium">{doctor.name}</p>
                         <p className="text-xs text-muted-foreground">
-                          {doctor.qualification || "N/A"}
+                          {doctor.qualification || t("doctorMgmt.na")}
                         </p>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>{doctor.specialty}</TableCell>
                   <TableCell>
-                    {doctor.experience_years ? `${doctor.experience_years} বছর` : "N/A"}
+                    {doctor.experience_years ? t("doctorMgmt.yearsExp", { count: doctor.experience_years }) : t("doctorMgmt.na")}
                   </TableCell>
                   <TableCell>৳{doctor.consultation_fee}</TableCell>
                   <TableCell>
                     <Badge variant={doctor.is_active ? "default" : "secondary"}>
-                      {doctor.is_active ? "সক্রিয়" : "নিষ্ক্রিয়"}
+                      {doctor.is_active ? t("doctorMgmt.active") : t("doctorMgmt.inactive")}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -619,7 +615,7 @@ export function DoctorManagement() {
               {filteredDoctors.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    কোনো ডাক্তার পাওয়া যায়নি
+                    {t("doctorMgmt.noDoctorsFound")}
                   </TableCell>
                 </TableRow>
               )}
@@ -643,10 +639,10 @@ export function DoctorManagement() {
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {selectedDoctor ? "ডাক্তার সম্পাদনা করুন" : "নতুন ডাক্তার যোগ করুন"}
+              {selectedDoctor ? t("doctorMgmt.editDoctor") : t("doctorMgmt.addDoctorTitle")}
             </DialogTitle>
             <DialogDescription>
-              ডাক্তারের সকল তথ্য সঠিকভাবে পূরণ করুন
+              {t("doctorMgmt.dialogDesc")}
             </DialogDescription>
           </DialogHeader>
 
@@ -658,7 +654,7 @@ export function DoctorManagement() {
               onClick={() => setActiveSection("basic")}
             >
               <Stethoscope className="h-4 w-4 mr-2" />
-              মৌলিক তথ্য
+              {t("doctorMgmt.basicInfo")}
             </Button>
             <Button
               variant={activeSection === "education" ? "default" : "ghost"}
@@ -666,7 +662,7 @@ export function DoctorManagement() {
               onClick={() => setActiveSection("education")}
             >
               <GraduationCap className="h-4 w-4 mr-2" />
-              শিক্ষা ({educationList.length})
+              {t("doctorMgmt.education")} ({educationList.length})
             </Button>
             <Button
               variant={activeSection === "experience" ? "default" : "ghost"}
@@ -674,7 +670,7 @@ export function DoctorManagement() {
               onClick={() => setActiveSection("experience")}
             >
               <Briefcase className="h-4 w-4 mr-2" />
-              অভিজ্ঞতা ({experienceList.length})
+              {t("doctorMgmt.experienceTab")} ({experienceList.length})
             </Button>
           </div>
 
@@ -683,21 +679,21 @@ export function DoctorManagement() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>নাম *</Label>
+                  <Label>{t("doctorMgmt.nameLabel")}</Label>
                   <Input
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Dr. মোহাম্মদ রহমান"
+                    placeholder={t("doctorMgmt.namePlaceholder")}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>বিশেষত্ব *</Label>
+                  <Label>{t("doctorMgmt.specialtyLabel")}</Label>
                   <Select
                     value={formData.specialty}
                     onValueChange={(v) => setFormData({ ...formData, specialty: v })}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="বিশেষত্ব নির্বাচন করুন" />
+                      <SelectValue placeholder={t("doctorMgmt.specialtyPlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
                       {SPECIALTIES.map((s) => (
@@ -712,7 +708,7 @@ export function DoctorManagement() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>যোগ্যতা</Label>
+                  <Label>{t("doctorMgmt.qualificationLabel")}</Label>
                   <Input
                     value={formData.qualification}
                     onChange={(e) => setFormData({ ...formData, qualification: e.target.value })}
@@ -720,7 +716,7 @@ export function DoctorManagement() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>অভিজ্ঞতা (বছর)</Label>
+                  <Label>{t("doctorMgmt.experienceYearsLabel")}</Label>
                   <Input
                     type="number"
                     value={formData.experience_years}
@@ -735,7 +731,7 @@ export function DoctorManagement() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>কনসালটেশন ফি (৳) *</Label>
+                  <Label>{t("doctorMgmt.consultationFeeLabel")}</Label>
                   <Input
                     type="number"
                     value={formData.consultation_fee}
@@ -746,7 +742,7 @@ export function DoctorManagement() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>ছবির URL</Label>
+                  <Label>{t("doctorMgmt.avatarUrlLabel")}</Label>
                   <Input
                     value={formData.avatar_url}
                     onChange={(e) => setFormData({ ...formData, avatar_url: e.target.value })}
@@ -756,26 +752,26 @@ export function DoctorManagement() {
               </div>
 
               <div className="space-y-2">
-                <Label>বায়ো</Label>
+                <Label>{t("doctorMgmt.bioLabel")}</Label>
                 <Textarea
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                  placeholder="ডাক্তার সম্পর্কে সংক্ষিপ্ত বিবরণ..."
+                  placeholder={t("doctorMgmt.bioPlaceholder")}
                   rows={3}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label>উপলব্ধ দিন</Label>
+                <Label>{t("doctorMgmt.availableDays")}</Label>
                 <div className="flex flex-wrap gap-2">
                   {DAYS_OF_WEEK.map((day) => (
                     <Badge
-                      key={day.id}
-                      variant={formData.available_days.includes(day.id) ? "default" : "outline"}
+                      key={day}
+                      variant={formData.available_days.includes(day) ? "default" : "outline"}
                       className="cursor-pointer"
-                      onClick={() => toggleDay(day.id)}
+                      onClick={() => toggleDay(day)}
                     >
-                      {day.label}
+                      {t(`doctorMgmt.days.${day}`)}
                     </Badge>
                   ))}
                 </div>
@@ -783,7 +779,7 @@ export function DoctorManagement() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>শুরুর সময়</Label>
+                  <Label>{t("doctorMgmt.startTime")}</Label>
                   <Input
                     type="time"
                     value={formData.available_from}
@@ -791,7 +787,7 @@ export function DoctorManagement() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>শেষ সময়</Label>
+                  <Label>{t("doctorMgmt.endTime")}</Label>
                   <Input
                     type="time"
                     value={formData.available_to}
@@ -802,7 +798,7 @@ export function DoctorManagement() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>স্লট সময়কাল (মিনিট)</Label>
+                  <Label>{t("doctorMgmt.slotDuration")}</Label>
                   <Input
                     type="number"
                     value={formData.slot_duration}
@@ -814,7 +810,7 @@ export function DoctorManagement() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>প্রতি স্লটে সর্বোচ্চ রোগী</Label>
+                  <Label>{t("doctorMgmt.maxPatientsPerSlot")}</Label>
                   <Input
                     type="number"
                     value={formData.max_patients_per_slot}
@@ -835,7 +831,7 @@ export function DoctorManagement() {
                   checked={formData.is_active}
                   onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
                 />
-                <Label>সক্রিয় ডাক্তার</Label>
+                <Label>{t("doctorMgmt.activeDoctor")}</Label>
               </div>
             </div>
           )}
@@ -847,7 +843,7 @@ export function DoctorManagement() {
                 <Card key={index}>
                   <CardHeader className="py-3 px-4">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm">শিক্ষাগত যোগ্যতা #{index + 1}</CardTitle>
+                      <CardTitle className="text-sm">{t("doctorMgmt.eduTitle", { num: index + 1 })}</CardTitle>
                       <Button
                         variant="ghost"
                         size="icon"
@@ -860,7 +856,7 @@ export function DoctorManagement() {
                   <CardContent className="space-y-3 pt-0">
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <Label className="text-xs">ডিগ্রি *</Label>
+                        <Label className="text-xs">{t("doctorMgmt.degreeLabel")}</Label>
                         <Input
                           value={edu.degree}
                           onChange={(e) => updateEducation(index, "degree", e.target.value)}
@@ -868,7 +864,7 @@ export function DoctorManagement() {
                         />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-xs">সাল</Label>
+                        <Label className="text-xs">{t("doctorMgmt.yearLabel")}</Label>
                         <Input
                           type="number"
                           value={edu.year || ""}
@@ -880,19 +876,19 @@ export function DoctorManagement() {
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-xs">প্রতিষ্ঠান *</Label>
+                      <Label className="text-xs">{t("doctorMgmt.institutionLabel")}</Label>
                       <Input
                         value={edu.institution}
                         onChange={(e) => updateEducation(index, "institution", e.target.value)}
-                        placeholder="ঢাকা মেডিকেল কলেজ"
+                        placeholder={t("doctorMgmt.institutionPlaceholder")}
                       />
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-xs">বিবরণ</Label>
+                      <Label className="text-xs">{t("doctorMgmt.descriptionLabel")}</Label>
                       <Input
                         value={edu.description}
                         onChange={(e) => updateEducation(index, "description", e.target.value)}
-                        placeholder="ঐচ্ছিক বিবরণ"
+                        placeholder={t("doctorMgmt.descriptionPlaceholder")}
                       />
                     </div>
                   </CardContent>
@@ -900,7 +896,7 @@ export function DoctorManagement() {
               ))}
               <Button variant="outline" onClick={addEducation} className="w-full">
                 <Plus className="h-4 w-4 mr-2" />
-                শিক্ষাগত যোগ্যতা যোগ করুন
+                {t("doctorMgmt.addEducation")}
               </Button>
             </div>
           )}
@@ -912,7 +908,7 @@ export function DoctorManagement() {
                 <Card key={index}>
                   <CardHeader className="py-3 px-4">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm">কাজের অভিজ্ঞতা #{index + 1}</CardTitle>
+                      <CardTitle className="text-sm">{t("doctorMgmt.expTitle", { num: index + 1 })}</CardTitle>
                       <Button
                         variant="ghost"
                         size="icon"
@@ -925,7 +921,7 @@ export function DoctorManagement() {
                   <CardContent className="space-y-3 pt-0">
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <Label className="text-xs">পদবী *</Label>
+                        <Label className="text-xs">{t("doctorMgmt.positionLabel")}</Label>
                         <Input
                           value={exp.position}
                           onChange={(e) => updateExperience(index, "position", e.target.value)}
@@ -933,7 +929,7 @@ export function DoctorManagement() {
                         />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-xs">প্রতিষ্ঠান *</Label>
+                        <Label className="text-xs">{t("doctorMgmt.organizationLabel")}</Label>
                         <Input
                           value={exp.organization}
                           onChange={(e) => updateExperience(index, "organization", e.target.value)}
@@ -943,7 +939,7 @@ export function DoctorManagement() {
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <Label className="text-xs">শুরুর বছর *</Label>
+                        <Label className="text-xs">{t("doctorMgmt.startYearLabel")}</Label>
                         <Input
                           type="number"
                           value={exp.start_year}
@@ -953,7 +949,7 @@ export function DoctorManagement() {
                         />
                       </div>
                       <div className="space-y-1">
-                        <Label className="text-xs">শেষ বছর</Label>
+                        <Label className="text-xs">{t("doctorMgmt.endYearLabel")}</Label>
                         <Input
                           type="number"
                           value={exp.end_year || ""}
@@ -965,7 +961,7 @@ export function DoctorManagement() {
                             )
                           }
                           disabled={exp.is_current}
-                          placeholder={exp.is_current ? "বর্তমান" : ""}
+                          placeholder={exp.is_current ? t("doctorMgmt.current") : ""}
                         />
                       </div>
                     </div>
@@ -976,14 +972,14 @@ export function DoctorManagement() {
                           updateExperience(index, "is_current", !!checked)
                         }
                       />
-                      <Label className="text-xs">বর্তমানে কর্মরত</Label>
+                      <Label className="text-xs">{t("doctorMgmt.currentlyWorking")}</Label>
                     </div>
                     <div className="space-y-1">
-                      <Label className="text-xs">বিবরণ</Label>
+                      <Label className="text-xs">{t("doctorMgmt.descriptionLabel")}</Label>
                       <Input
                         value={exp.description}
                         onChange={(e) => updateExperience(index, "description", e.target.value)}
-                        placeholder="ঐচ্ছিক বিবরণ"
+                        placeholder={t("doctorMgmt.descriptionPlaceholder")}
                       />
                     </div>
                   </CardContent>
@@ -991,7 +987,7 @@ export function DoctorManagement() {
               ))}
               <Button variant="outline" onClick={addExperience} className="w-full">
                 <Plus className="h-4 w-4 mr-2" />
-                অভিজ্ঞতা যোগ করুন
+                {t("doctorMgmt.addExperience")}
               </Button>
             </div>
           )}
@@ -1005,15 +1001,15 @@ export function DoctorManagement() {
                 resetForm();
               }}
             >
-              বাতিল
+              {t("doctorMgmt.cancel")}
             </Button>
             <Button
               onClick={handleSubmit}
               disabled={createDoctor.isPending || updateDoctor.isPending}
             >
               {createDoctor.isPending || updateDoctor.isPending
-                ? "সংরক্ষণ করা হচ্ছে..."
-                : "সংরক্ষণ করুন"}
+                ? t("doctorMgmt.saving")
+                : t("doctorMgmt.save")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1023,18 +1019,18 @@ export function DoctorManagement() {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>আপনি কি নিশ্চিত?</AlertDialogTitle>
+            <AlertDialogTitle>{t("doctorMgmt.deleteConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              "{selectedDoctor?.name}" মুছে ফেলা হবে। এই ক্রিয়াটি পূর্বাবস্থায় ফেরানো যাবে না।
+              {t("doctorMgmt.deleteConfirmDesc", { name: selectedDoctor?.name })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>বাতিল</AlertDialogCancel>
+            <AlertDialogCancel>{t("doctorMgmt.deleteCancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => selectedDoctor && deleteDoctor.mutate(selectedDoctor.id)}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {deleteDoctor.isPending ? "মুছছে..." : "মুছে ফেলুন"}
+              {deleteDoctor.isPending ? t("doctorMgmt.deleting") : t("doctorMgmt.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
