@@ -960,6 +960,21 @@ const bn = {
     messageRequired: "বার্তা আবশ্যক",
     messageMax: "বার্তা ২০০০ অক্ষরের মধ্যে হতে হবে",
   },
+
+  // Chat Widget
+  chatWidget: {
+    welcome: "স্বাগতম! TrustCare Diagnostic Center-এ। আমি আপনাকে কীভাবে সাহায্য করতে পারি?",
+    title: "TrustCare AI সাপোর্ট",
+    typing: "টাইপ করছে...",
+    ready: "আপনার সেবায় প্রস্তুত",
+    placeholder: "মেসেজ লিখুন...",
+    errorGeneric: "চ্যাটে সমস্যা হয়েছে",
+    errorFallback: "দুঃখিত, এই মুহূর্তে সমস্যা হচ্ছে। অনুগ্রহ করে 01345580203 নম্বরে কল করুন।",
+    quickTestPrice: "টেস্টের দাম জানতে চাই",
+    quickHomeCollection: "হোম কালেকশন সম্পর্কে জানতে চাই",
+    quickBookAppointment: "অ্যাপয়েন্টমেন্ট বুক করতে চাই",
+    quickReportTime: "রিপোর্ট কবে পাব?",
+  },
 };
 
 export default bn;

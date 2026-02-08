@@ -958,6 +958,21 @@ const en = {
     messageRequired: "Message is required",
     messageMax: "Message must be within 2000 characters",
   },
+
+  // Chat Widget
+  chatWidget: {
+    welcome: "Welcome! How can I help you at TrustCare Diagnostic Center?",
+    title: "TrustCare AI Support",
+    typing: "Typing...",
+    ready: "Ready to help",
+    placeholder: "Type a message...",
+    errorGeneric: "Something went wrong with the chat",
+    errorFallback: "Sorry, there is a problem right now. Please call 01345580203.",
+    quickTestPrice: "I want to know test prices",
+    quickHomeCollection: "I want to know about home collection",
+    quickBookAppointment: "I want to book an appointment",
+    quickReportTime: "When will I get my report?",
+  },
 };
 
 export default en;
