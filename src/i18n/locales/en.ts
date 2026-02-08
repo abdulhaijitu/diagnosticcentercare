@@ -359,6 +359,13 @@ const en = {
     messageSentDesc: "Thank you for reaching out. We will get back to you soon.",
     errorOccurred: "Error Occurred",
     errorDesc: "Failed to send message. Please try again.",
+    addressLine1: "Plot-04, Block-F",
+    addressLine2: "Dhaka Uddan Co-operative Housing Society Limited",
+    addressLine3: "Chandrima Model Town, Avenue-1 Gate Crossing",
+    addressLine4: "Mohammadpur, Dhaka-1207",
+    workingHoursLine1: "Sat - Thu: 7:00 AM - 10:00 PM",
+    workingHoursLine2: "Friday: 3:00 PM - 10:00 PM",
+    fullAddress: "Plot-04, Block-F, Dhaka Uddan Co-operative Housing Society Limited, Chandrima Model Town, Avenue-1 Gate Crossing, Mohammadpur, Dhaka-1207",
   },
 
 
