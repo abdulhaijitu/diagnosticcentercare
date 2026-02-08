@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,6 +26,7 @@ const Register = () => {
   const navigate = useNavigate();
   const { signUp } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,8 +45,8 @@ const Register = () => {
 
     if (error) {
       toast({
-        title: "Registration Failed",
-        description: error.message || "Failed to create account",
+        title: t("register.registrationFailed"),
+        description: error.message || t("register.failedToCreate"),
         variant: "destructive",
       });
       setIsLoading(false);
@@ -52,17 +54,17 @@ const Register = () => {
     }
 
     toast({
-      title: "Account Created!",
-      description: "You have successfully registered. Welcome to TrustCare!",
+      title: t("register.accountCreated"),
+      description: t("register.registerSuccess"),
     });
 
     navigate("/");
   };
 
   const benefits = [
-    { icon: Shield, text: "Secure health records" },
-    { icon: Clock, text: "Quick online booking" },
-    { icon: Award, text: "Easy report access" },
+    { icon: Shield, text: t("register.secureRecords") },
+    { icon: Clock, text: t("register.quickBooking") },
+    { icon: Award, text: t("register.easyAccess") },
   ];
 
   return (
@@ -81,14 +83,13 @@ const Register = () => {
             {/* Benefits Section */}
             <div className="hidden lg:block">
               <span className="inline-block px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-sm font-medium mb-6">
-                Join TrustCare
+                {t("register.joinTrustCare")}
               </span>
               <h1 className="text-display-sm font-bold text-foreground mb-6">
-                Your Health Journey Starts Here
+                {t("register.healthJourney")}
               </h1>
               <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
-                Create your TrustCare account to book diagnostic tests, schedule 
-                doctor consultations, and access your health reports anytime, anywhere.
+                {t("register.healthJourneyDesc")}
               </p>
 
               <div className="space-y-6">
@@ -102,19 +103,18 @@ const Register = () => {
                 ))}
               </div>
 
-              {/* Stats */}
               <div className="mt-12 pt-8 border-t border-border grid grid-cols-3 gap-6">
                 <div>
                   <p className="text-2xl font-bold text-primary">10,000+</p>
-                  <p className="text-sm text-muted-foreground">Patients</p>
+                  <p className="text-sm text-muted-foreground">{t("register.patients")}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-primary">100+</p>
-                  <p className="text-sm text-muted-foreground">Tests</p>
+                  <p className="text-sm text-muted-foreground">{t("register.tests")}</p>
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-primary">20+</p>
-                  <p className="text-sm text-muted-foreground">Doctors</p>
+                  <p className="text-sm text-muted-foreground">{t("doctorsSection.badge")}</p>
                 </div>
               </div>
             </div>
@@ -122,21 +122,19 @@ const Register = () => {
             {/* Registration Form */}
             <div className="w-full max-w-md mx-auto lg:max-w-none">
               <div className="bg-card rounded-3xl shadow-elevated p-8 md:p-10 border border-border">
-                {/* Header */}
                 <div className="text-center mb-8 lg:text-left">
                   <h2 className="text-2xl font-bold text-foreground mb-2">
-                    Create Account
+                    {t("register.createAccount")}
                   </h2>
                   <p className="text-muted-foreground">
-                    Fill in your details to get started
+                    {t("register.fillDetails")}
                   </p>
                 </div>
 
-                {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-sm font-medium">
-                      Full Name
+                      {t("register.fullName")}
                     </Label>
                     <div className="relative">
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -144,7 +142,7 @@ const Register = () => {
                         id="name"
                         name="name"
                         type="text"
-                        placeholder="Enter your full name"
+                        placeholder={t("register.fullNamePlaceholder")}
                         value={formData.name}
                         onChange={handleChange}
                         className="pl-12 h-12 rounded-xl"
@@ -155,7 +153,7 @@ const Register = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-medium">
-                      Email Address
+                      {t("register.emailAddress")}
                     </Label>
                     <div className="relative">
                       <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -174,7 +172,7 @@ const Register = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="phone" className="text-sm font-medium">
-                      Phone Number
+                      {t("register.phoneNumber")}
                     </Label>
                     <div className="relative">
                       <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -182,7 +180,7 @@ const Register = () => {
                         id="phone"
                         name="phone"
                         type="tel"
-                        placeholder="01XXXXXXXXX"
+                        placeholder={t("register.phonePlaceholder")}
                         value={formData.phone}
                         onChange={handleChange}
                         className="pl-12 h-12 rounded-xl"
@@ -193,7 +191,7 @@ const Register = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="password" className="text-sm font-medium">
-                      Password
+                      {t("register.password")}
                     </Label>
                     <div className="relative">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -201,7 +199,7 @@ const Register = () => {
                         id="password"
                         name="password"
                         type={showPassword ? "text" : "password"}
-                        placeholder="Create a strong password"
+                        placeholder={t("register.passwordPlaceholder")}
                         value={formData.password}
                         onChange={handleChange}
                         className="pl-12 pr-12 h-12 rounded-xl"
@@ -221,7 +219,7 @@ const Register = () => {
                       </button>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Must be at least 8 characters
+                      {t("register.passwordHint")}
                     </p>
                   </div>
 
@@ -229,53 +227,50 @@ const Register = () => {
                     {isLoading ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        Creating Account...
+                        {t("register.creatingAccount")}
                       </>
                     ) : (
                       <>
-                        Create Account
+                        {t("register.createAccount")}
                         <ArrowRight className="h-4 w-4" />
                       </>
                     )}
                   </Button>
 
                   <p className="text-xs text-center text-muted-foreground">
-                    By creating an account, you agree to our{" "}
+                    {t("register.agreeTerms")}{" "}
                     <Link to="/terms" className="text-primary hover:underline">
-                      Terms of Service
+                      {t("register.termsOfService")}
                     </Link>{" "}
-                    and{" "}
+                    {t("register.and")}{" "}
                     <Link to="/privacy" className="text-primary hover:underline">
-                      Privacy Policy
+                      {t("register.privacyPolicy")}
                     </Link>
                   </p>
                 </form>
 
-                {/* Divider */}
                 <div className="my-8 flex items-center gap-4">
                   <div className="flex-1 h-px bg-border" />
-                  <span className="text-sm text-muted-foreground">or</span>
+                  <span className="text-sm text-muted-foreground">{t("register.or")}</span>
                   <div className="flex-1 h-px bg-border" />
                 </div>
 
-                {/* Login Link */}
                 <p className="text-center text-muted-foreground">
-                  Already have an account?{" "}
+                  {t("register.haveAccount")}{" "}
                   <Link to="/login" className="text-primary font-semibold hover:underline">
-                    Sign In
+                    {t("register.signIn")}
                   </Link>
                 </p>
               </div>
 
-              {/* Trust indicators */}
               <div className="mt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-primary" />
-                  <span>Free Registration</span>
+                  <span>{t("register.freeRegistration")}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-primary" />
-                  <span>Data Protected</span>
+                  <span>{t("register.dataProtected")}</span>
                 </div>
               </div>
             </div>

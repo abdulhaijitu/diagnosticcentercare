@@ -11,30 +11,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 import { 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Clock, 
-  Send, 
-  MessageSquare,
-  Building2,
-  ArrowRight,
-  Facebook,
-  MessageCircle
+  Phone, Mail, MapPin, Clock, Send, MessageSquare,
+  Building2, ArrowRight, Facebook, MessageCircle
 } from "lucide-react";
-
-// Validation schema
-const contactSchema = z.object({
-  name: z.string().trim().min(1, "নাম আবশ্যক").max(100, "নাম ১০০ অক্ষরের মধ্যে হতে হবে"),
-  email: z.string().trim().email("সঠিক ইমেইল দিন").max(255, "ইমেইল ২৫৫ অক্ষরের মধ্যে হতে হবে"),
-  phone: z.string().trim().max(20, "ফোন নম্বর ২০ অক্ষরের মধ্যে হতে হবে").optional().or(z.literal("")),
-  subject: z.string().trim().min(1, "বিষয় আবশ্যক").max(200, "বিষয় ২০০ অক্ষরের মধ্যে হতে হবে"),
-  message: z.string().trim().min(1, "বার্তা আবশ্যক").max(2000, "বার্তা ২০০০ অক্ষরের মধ্যে হতে হবে"),
-});
 
 const Contact = () => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
@@ -45,11 +30,19 @@ const Contact = () => {
     message: "",
   });
 
+  // Dynamic validation schema using translations
+  const contactSchema = z.object({
+    name: z.string().trim().min(1, t("validation.nameRequired")).max(100, t("validation.nameMax")),
+    email: z.string().trim().email(t("validation.emailInvalid")).max(255, t("validation.emailMax")),
+    phone: z.string().trim().max(20, t("validation.phoneMax")).optional().or(z.literal("")),
+    subject: z.string().trim().min(1, t("validation.subjectRequired")).max(200, t("validation.subjectMax")),
+    message: z.string().trim().min(1, t("validation.messageRequired")).max(2000, t("validation.messageMax")),
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
 
-    // Validate form data
     const result = contactSchema.safeParse(formData);
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
@@ -65,7 +58,6 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // Save to database
       const { error } = await supabase
         .from("contact_messages")
         .insert({
@@ -78,7 +70,6 @@ const Contact = () => {
 
       if (error) throw error;
 
-      // Send email notification to admin (fire and forget - don't block on failure)
       try {
         await supabase.functions.invoke("send-contact-notification", {
           body: {
@@ -91,27 +82,20 @@ const Contact = () => {
           },
         });
       } catch (emailError) {
-        // Log but don't fail the form submission if email fails
         console.error("Failed to send admin notification email:", emailError);
       }
 
       toast({
-        title: "বার্তা পাঠানো হয়েছে!",
-        description: "যোগাযোগ করার জন্য ধন্যবাদ। আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।",
+        title: t("contactPage.messageSent"),
+        description: t("contactPage.messageSentDesc"),
       });
 
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        subject: "",
-        message: "",
-      });
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (error) {
       console.error("Error submitting contact form:", error);
       toast({
-        title: "ত্রুটি হয়েছে",
-        description: "বার্তা পাঠাতে সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+        title: t("contactPage.errorOccurred"),
+        description: t("contactPage.errorDesc"),
         variant: "destructive",
       });
     } finally {
@@ -122,24 +106,21 @@ const Contact = () => {
   const contactInfo = [
     {
       icon: Phone,
-      title: "ফোন",
-      titleEn: "Phone",
+      title: t("contactPage.phone"),
       details: ["+880 1345-580203"],
       action: "tel:+8801345580203",
-      actionText: "এখনই কল করুন",
+      actionText: t("contactPage.callNow"),
     },
     {
       icon: Mail,
-      title: "ইমেইল",
-      titleEn: "Email",
+      title: t("contactPage.email"),
       details: ["trustcaredc@gmail.com"],
       action: "mailto:trustcaredc@gmail.com",
-      actionText: "ইমেইল পাঠান",
+      actionText: t("contactPage.sendEmail"),
     },
     {
       icon: MapPin,
-      title: "ঠিকানা",
-      titleEn: "Address",
+      title: t("contactPage.address"),
       details: [
         "প্লট-০৪, ব্লক-এফ",
         "ঢাকা উদ্দান সমবায় আবাসন সমিতি লিমিটেড",
@@ -147,12 +128,11 @@ const Contact = () => {
         "মোহাম্মদপুর, ঢাকা-১২০৭",
       ],
       action: "https://maps.google.com/?q=23.7595,90.3600",
-      actionText: "দিকনির্দেশনা নিন",
+      actionText: t("contactPage.getDirections"),
     },
     {
       icon: Clock,
-      title: "কাজের সময়",
-      titleEn: "Working Hours",
+      title: t("contactPage.workingHours"),
       details: [
         "শনি - বৃহস্পতি: সকাল ৭:০০ - রাত ১০:০০",
         "শুক্রবার: বিকাল ৩:০০ - রাত ১০:০০",
@@ -179,14 +159,13 @@ const Contact = () => {
           <div className="container-custom">
             <div className="text-center max-w-3xl mx-auto">
               <span className="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-sm font-medium mb-4">
-                যোগাযোগ করুন
+                {t("contactPage.badge")}
               </span>
               <h1 className="text-display-sm md:text-display-md font-bold mb-4">
-                আমাদের সাথে যোগাযোগ করুন
+                {t("contactPage.title")}
               </h1>
               <p className="text-white/80 text-lg">
-                কোনো প্রশ্ন বা সহায়তা প্রয়োজন? আমরা সাহায্য করতে এখানে আছি। নিচের যেকোনো 
-                মাধ্যমে আমাদের সাথে যোগাযোগ করুন অথবা ফর্ম পূরণ করুন।
+                {t("contactPage.subtitle")}
               </p>
             </div>
           </div>
@@ -202,13 +181,10 @@ const Contact = () => {
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                       <info.icon className="h-6 w-6 text-primary" />
                     </div>
-                    <h3 className="font-semibold text-foreground mb-1">{info.title}</h3>
-                    <p className="text-xs text-muted-foreground mb-3">{info.titleEn}</p>
+                    <h3 className="font-semibold text-foreground mb-3">{info.title}</h3>
                     <div className="space-y-1 mb-4">
                       {info.details.map((detail, i) => (
-                        <p key={i} className="text-sm text-muted-foreground">
-                          {detail}
-                        </p>
+                        <p key={i} className="text-sm text-muted-foreground">{detail}</p>
                       ))}
                     </div>
                     {info.action && (
@@ -240,8 +216,8 @@ const Contact = () => {
                     <Building2 className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-foreground">আমাদের অবস্থান</h2>
-                    <p className="text-sm text-muted-foreground">মানচিত্রে আমাদের খুঁজুন</p>
+                    <h2 className="text-xl font-bold text-foreground">{t("contactPage.ourLocation")}</h2>
+                    <p className="text-sm text-muted-foreground">{t("contactPage.findOnMap")}</p>
                   </div>
                 </div>
                 
@@ -259,9 +235,8 @@ const Contact = () => {
                   />
                 </div>
 
-                {/* Quick Info Below Map */}
                 <div className="mt-6 p-6 bg-primary/5 rounded-2xl">
-                  <h3 className="font-semibold text-foreground mb-4">আমাদের সেন্টারে আসুন</h3>
+                  <h3 className="font-semibold text-foreground mb-4">{t("contactPage.visitUs")}</h3>
                   <div className="space-y-3 text-sm">
                     <div className="flex items-start gap-3">
                       <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
@@ -285,9 +260,8 @@ const Contact = () => {
                   </div>
                 </div>
 
-                {/* Social Links */}
                 <div className="mt-6">
-                  <h3 className="font-semibold text-foreground mb-4">সোশ্যাল মিডিয়ায় আমরা</h3>
+                  <h3 className="font-semibold text-foreground mb-4">{t("contactPage.socialMedia")}</h3>
                   <div className="flex gap-3">
                     <a 
                       href="https://facebook.com" 
@@ -316,157 +290,95 @@ const Contact = () => {
                     <MessageSquare className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-foreground">বার্তা পাঠান</h2>
-                    <p className="text-sm text-muted-foreground">২৪ ঘন্টার মধ্যে উত্তর দেব</p>
+                    <h2 className="text-xl font-bold text-foreground">{t("contactPage.sendMessage")}</h2>
+                    <p className="text-sm text-muted-foreground">{t("contactPage.replyIn24")}</p>
                   </div>
                 </div>
 
                 <Card className="shadow-card">
                   <CardHeader>
-                    <CardTitle>যোগাযোগ ফর্ম</CardTitle>
-                    <CardDescription>
-                      নিচের ফর্মটি পূরণ করুন এবং আমাদের দল যত তাড়াতাড়ি সম্ভব আপনার সাথে যোগাযোগ করবে।
-                    </CardDescription>
+                    <CardTitle>{t("contactPage.contactForm")}</CardTitle>
+                    <CardDescription>{t("contactPage.contactFormDesc")}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="name">পুরো নাম *</Label>
+                          <Label htmlFor="name">{t("contactPage.fullName")}</Label>
                           <Input
                             id="name"
-                            placeholder="আপনার নাম লিখুন"
+                            placeholder={t("contactPage.namePlaceholder")}
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             className={errors.name ? "border-destructive" : ""}
                           />
-                          {errors.name && (
-                            <p className="text-xs text-destructive">{errors.name}</p>
-                          )}
+                          {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="email">ইমেইল *</Label>
+                          <Label htmlFor="email">{t("contactPage.emailLabel")}</Label>
                           <Input
                             id="email"
                             type="email"
-                            placeholder="আপনার ইমেইল লিখুন"
+                            placeholder={t("contactPage.emailPlaceholder")}
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             className={errors.email ? "border-destructive" : ""}
                           />
-                          {errors.email && (
-                            <p className="text-xs text-destructive">{errors.email}</p>
-                          )}
+                          {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
                         </div>
                       </div>
 
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="phone">ফোন নম্বর</Label>
+                          <Label htmlFor="phone">{t("contactPage.phoneLabel")}</Label>
                           <Input
                             id="phone"
-                            placeholder="আপনার ফোন নম্বর"
+                            placeholder={t("contactPage.phonePlaceholder")}
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                             className={errors.phone ? "border-destructive" : ""}
                           />
-                          {errors.phone && (
-                            <p className="text-xs text-destructive">{errors.phone}</p>
-                          )}
+                          {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="subject">বিষয় *</Label>
+                          <Label htmlFor="subject">{t("contactPage.subject")}</Label>
                           <Input
                             id="subject"
-                            placeholder="কি বিষয়ে জানতে চান?"
+                            placeholder={t("contactPage.subjectPlaceholder")}
                             value={formData.subject}
                             onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                             className={errors.subject ? "border-destructive" : ""}
                           />
-                          {errors.subject && (
-                            <p className="text-xs text-destructive">{errors.subject}</p>
-                          )}
+                          {errors.subject && <p className="text-xs text-destructive">{errors.subject}</p>}
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="message">বার্তা *</Label>
+                        <Label htmlFor="message">{t("contactPage.message")}</Label>
                         <Textarea
                           id="message"
-                          placeholder="আপনার বার্তা এখানে লিখুন..."
-                          rows={5}
+                          placeholder={t("contactPage.messagePlaceholder")}
                           value={formData.message}
                           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                          rows={5}
                           className={errors.message ? "border-destructive" : ""}
                         />
-                        {errors.message && (
-                          <p className="text-xs text-destructive">{errors.message}</p>
-                        )}
+                        {errors.message && <p className="text-xs text-destructive">{errors.message}</p>}
                       </div>
 
                       <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
                         {isSubmitting ? (
-                          <>পাঠানো হচ্ছে...</>
+                          <>{t("contactPage.sending")}</>
                         ) : (
                           <>
                             <Send className="h-4 w-4 mr-2" />
-                            বার্তা পাঠান
+                            {t("contactPage.send")}
                           </>
                         )}
                       </Button>
                     </form>
                   </CardContent>
                 </Card>
-
-                {/* FAQ Teaser */}
-                <div className="mt-6 p-6 bg-accent/10 rounded-2xl border border-accent/20">
-                  <h3 className="font-semibold text-foreground mb-2">সাধারণ জিজ্ঞাসা</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    হোম কালেকশন, রিপোর্ট সংগ্রহ এবং অ্যাপয়েন্টমেন্ট সম্পর্কে প্রশ্ন আছে?
-                  </p>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary font-bold">•</span>
-                      হোম কালেকশন সেবা সকাল ৭টা থেকে রাত ১০টা পর্যন্ত পাওয়া যায়
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary font-bold">•</span>
-                      রিপোর্ট সাধারণত ২৪-৪৮ ঘন্টার মধ্যে তৈরি হয়
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-primary font-bold">•</span>
-                      অনলাইনে রিপোর্ট ডাউনলোড করতে পারবেন
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Emergency Contact Banner */}
-        <section className="py-12 bg-primary text-primary-foreground">
-          <div className="container-custom">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div>
-                <h2 className="text-2xl font-bold mb-2">জরুরি সহায়তা প্রয়োজন?</h2>
-                <p className="text-primary-foreground/80">
-                  হোম কালেকশন সেবা এবং জরুরি প্রশ্নের জন্য আমাদের দল সবসময় প্রস্তুত।
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center gap-4">
-                <a href="tel:+8801345580203">
-                  <Button variant="secondary" size="lg">
-                    <Phone className="h-5 w-5 mr-2" />
-                    কল করুন: ০১৩৪৫-৫৮০২০৩
-                  </Button>
-                </a>
-                <a href="https://wa.me/8801345580203" target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="lg" className="bg-white/10 border-white/20 hover:bg-white/20">
-                    <MessageCircle className="h-5 w-5 mr-2" />
-                    WhatsApp
-                  </Button>
-                </a>
               </div>
             </div>
           </div>
