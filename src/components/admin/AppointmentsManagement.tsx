@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useAppointments, useDoctors, Appointment } from "@/hooks/useAppointments";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -37,14 +38,8 @@ const statusColors: Record<string, string> = {
   cancelled: "bg-red-100 text-red-800",
 };
 
-const statusLabels: Record<string, string> = {
-  pending: "অপেক্ষমাণ",
-  confirmed: "নিশ্চিত",
-  completed: "সম্পন্ন",
-  cancelled: "বাতিল",
-};
-
 export function AppointmentsManagement() {
+  const { t } = useTranslation();
   const { appointments, isLoading, refetch } = useAppointments();
   const { doctors } = useDoctors();
   const { toast } = useToast();
@@ -56,6 +51,13 @@ export function AppointmentsManagement() {
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [notes, setNotes] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+
+  const statusLabels: Record<string, string> = {
+    pending: t("appointmentsMgmt.pending"),
+    confirmed: t("appointmentsMgmt.confirmed"),
+    completed: t("appointmentsMgmt.completed"),
+    cancelled: t("appointmentsMgmt.cancelled"),
+  };
 
   // Stats
   const stats = useMemo(() => {
@@ -105,8 +107,8 @@ export function AppointmentsManagement() {
       if (error) throw error;
 
       toast({
-        title: "স্ট্যাটাস আপডেট হয়েছে",
-        description: `অ্যাপয়েন্টমেন্ট ${statusLabels[status]} করা হয়েছে।`,
+        title: t("appointmentsMgmt.updateStatus"),
+        description: t("appointmentsMgmt.updateStatusDesc", { status: statusLabels[status] }),
       });
 
       refetch();
@@ -117,7 +119,7 @@ export function AppointmentsManagement() {
     } catch (error) {
       console.error("Error updating appointment:", error);
       toast({
-        title: "Error",
+        title: t("common.error"),
         description: "Failed to update appointment status",
         variant: "destructive",
       });
@@ -157,7 +159,7 @@ export function AppointmentsManagement() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">আজকের অ্যাপয়েন্টমেন্ট</p>
+                <p className="text-sm text-muted-foreground mb-1">{t("appointmentsMgmt.todayAppointments")}</p>
                 <p className="text-3xl font-bold text-foreground">{stats.today}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -171,7 +173,7 @@ export function AppointmentsManagement() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">অপেক্ষমাণ</p>
+                <p className="text-sm text-muted-foreground mb-1">{t("appointmentsMgmt.pending")}</p>
                 <p className="text-3xl font-bold text-yellow-600">{stats.pending}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-yellow-100 flex items-center justify-center">
@@ -185,7 +187,7 @@ export function AppointmentsManagement() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">নিশ্চিত</p>
+                <p className="text-sm text-muted-foreground mb-1">{t("appointmentsMgmt.confirmed")}</p>
                 <p className="text-3xl font-bold text-blue-600">{stats.confirmed}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
@@ -199,7 +201,7 @@ export function AppointmentsManagement() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">সম্পন্ন</p>
+                <p className="text-sm text-muted-foreground mb-1">{t("appointmentsMgmt.completed")}</p>
                 <p className="text-3xl font-bold text-green-600">{stats.completed}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
@@ -216,12 +218,12 @@ export function AppointmentsManagement() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <CardTitle className="flex items-center gap-2">
               <Stethoscope className="h-5 w-5" />
-              অ্যাপয়েন্টমেন্ট তালিকা
+              {t("appointmentsMgmt.title")}
             </CardTitle>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={() => refetch()}>
                 <RefreshCw className="h-4 w-4 mr-1" />
-                রিফ্রেশ
+                {t("common.tryAgain")}
               </Button>
             </div>
           </div>
@@ -231,39 +233,39 @@ export function AppointmentsManagement() {
           <div className="flex flex-wrap gap-3 mb-6">
             <div className="flex items-center gap-2">
               <Filter className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">ফিল্টার:</span>
+              <span className="text-sm text-muted-foreground">{t("appointmentsMgmt.filter")}</span>
             </div>
             
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="স্ট্যাটাস" />
+                <SelectValue placeholder={t("appointmentsMgmt.status")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">সব স্ট্যাটাস</SelectItem>
-                <SelectItem value="pending">অপেক্ষমাণ</SelectItem>
-                <SelectItem value="confirmed">নিশ্চিত</SelectItem>
-                <SelectItem value="completed">সম্পন্ন</SelectItem>
-                <SelectItem value="cancelled">বাতিল</SelectItem>
+                <SelectItem value="all">{t("dashboard.allStatus")}</SelectItem>
+                <SelectItem value="pending">{t("appointmentsMgmt.pending")}</SelectItem>
+                <SelectItem value="confirmed">{t("appointmentsMgmt.confirmed")}</SelectItem>
+                <SelectItem value="completed">{t("appointmentsMgmt.completed")}</SelectItem>
+                <SelectItem value="cancelled">{t("appointmentsMgmt.cancelled")}</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={dateFilter} onValueChange={setDateFilter}>
               <SelectTrigger className="w-[140px]">
-                <SelectValue placeholder="তারিখ" />
+                <SelectValue placeholder={t("appointmentsMgmt.date")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">সব তারিখ</SelectItem>
-                <SelectItem value="today">আজ</SelectItem>
-                <SelectItem value="week">এই সপ্তাহ</SelectItem>
+                <SelectItem value="all">{t("dashboard.allTime")}</SelectItem>
+                <SelectItem value="today">{t("dashboard.today")}</SelectItem>
+                <SelectItem value="week">{t("dashboard.thisWeekFilter")}</SelectItem>
               </SelectContent>
             </Select>
 
             <Select value={doctorFilter} onValueChange={setDoctorFilter}>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="ডাক্তার" />
+                <SelectValue placeholder={t("appointmentsMgmt.doctor")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">সব ডাক্তার</SelectItem>
+                <SelectItem value="all">{t("appointmentsMgmt.allDoctors")}</SelectItem>
                 {doctors.map((doctor) => (
                   <SelectItem key={doctor.id} value={doctor.id}>
                     {doctor.name}
@@ -277,11 +279,11 @@ export function AppointmentsManagement() {
           {filteredAppointments.length === 0 ? (
             <div className="text-center py-12">
               <CalendarCheck className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-foreground mb-2">কোনো অ্যাপয়েন্টমেন্ট নেই</h3>
+              <h3 className="text-lg font-medium text-foreground mb-2">{t("appointmentsMgmt.noAppointments")}</h3>
               <p className="text-muted-foreground">
                 {statusFilter !== "all" || dateFilter !== "all" || doctorFilter !== "all"
-                  ? "ফিল্টার পরিবর্তন করে দেখুন"
-                  : "এখনো কোনো অ্যাপয়েন্টমেন্ট বুক করা হয়নি"}
+                  ? t("appointmentsMgmt.tryFilter")
+                  : t("appointmentsMgmt.noAppointmentsYet")}
               </p>
             </div>
           ) : (
@@ -347,7 +349,7 @@ export function AppointmentsManagement() {
                             disabled={isUpdating}
                           >
                             <CheckCircle2 className="h-4 w-4 mr-1" />
-                            নিশ্চিত করুন
+                            {t("appointmentsMgmt.confirm")}
                           </Button>
                         )}
                         {appointment.status === "confirmed" && (
@@ -359,7 +361,7 @@ export function AppointmentsManagement() {
                             disabled={isUpdating}
                           >
                             <CheckCircle2 className="h-4 w-4 mr-1" />
-                            সম্পন্ন করুন
+                            {t("appointmentsMgmt.complete")}
                           </Button>
                         )}
                         <Button
@@ -370,7 +372,7 @@ export function AppointmentsManagement() {
                           disabled={isUpdating}
                         >
                           <XCircle className="h-4 w-4 mr-1" />
-                          বাতিল
+                          {t("appointmentsMgmt.cancel")}
                         </Button>
                       </div>
                     )}
@@ -386,32 +388,32 @@ export function AppointmentsManagement() {
       <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>অ্যাপয়েন্টমেন্ট সম্পন্ন করুন</DialogTitle>
+            <DialogTitle>{t("appointmentsMgmt.completeTitle")}</DialogTitle>
             <DialogDescription>
               {selectedAppointment?.patient_name} - {selectedAppointment?.doctor?.name}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="notes">নোট (ঐচ্ছিক)</Label>
+              <Label htmlFor="notes">{t("appointmentsMgmt.notes")}</Label>
               <Textarea
                 id="notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="কনসালটেশন সম্পর্কে নোট লিখুন..."
+                placeholder={t("appointmentsMgmt.notesPlaceholder")}
                 className="mt-1.5"
               />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsUpdateDialogOpen(false)}>
-              বাতিল
+              {t("common.cancel")}
             </Button>
             <Button
               onClick={() => selectedAppointment && updateAppointmentStatus(selectedAppointment.id, "completed")}
               disabled={isUpdating}
             >
-              {isUpdating ? "আপডেট হচ্ছে..." : "সম্পন্ন করুন"}
+              {isUpdating ? t("common.loading") : t("appointmentsMgmt.complete")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -421,33 +423,33 @@ export function AppointmentsManagement() {
       <Dialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>অ্যাপয়েন্টমেন্ট বাতিল করুন</DialogTitle>
+            <DialogTitle>{t("appointmentsMgmt.cancelTitle")}</DialogTitle>
             <DialogDescription>
-              আপনি কি নিশ্চিত যে এই অ্যাপয়েন্টমেন্ট বাতিল করতে চান?
+              {t("appointmentsMgmt.cancelDesc")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="cancel-reason">বাতিলের কারণ (ঐচ্ছিক)</Label>
+              <Label htmlFor="cancel-reason">{t("appointmentsMgmt.reason")}</Label>
               <Textarea
                 id="cancel-reason"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="বাতিলের কারণ লিখুন..."
+                placeholder={t("appointmentsMgmt.reasonPlaceholder")}
                 className="mt-1.5"
               />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsCancelDialogOpen(false)}>
-              ফিরে যান
+              {t("common.cancel")}
             </Button>
             <Button
               variant="destructive"
               onClick={() => selectedAppointment && updateAppointmentStatus(selectedAppointment.id, "cancelled")}
               disabled={isUpdating}
             >
-              {isUpdating ? "বাতিল হচ্ছে..." : "বাতিল করুন"}
+              {isUpdating ? t("common.loading") : t("appointmentsMgmt.cancel")}
             </Button>
           </DialogFooter>
         </DialogContent>
