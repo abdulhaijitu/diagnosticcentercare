@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format, addDays } from "date-fns";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { CalendarIcon, Clock, User, Phone, Mail, FileText, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -35,25 +36,24 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDoctors, useAppointments, generateTimeSlots, Doctor } from "@/hooks/useAppointments";
 
-const formSchema = z.object({
-  doctor_id: z.string().min(1, "Please select a doctor"),
-  appointment_date: z.date({
-    required_error: "Please select a date",
-  }),
-  appointment_time: z.string().min(1, "Please select a time slot"),
-  patient_name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
-  patient_phone: z.string().trim().min(10, "Phone number must be at least 10 digits").max(15),
-  patient_email: z.string().email("Invalid email").optional().or(z.literal("")),
-  reason: z.string().max(500).optional(),
-});
+// Schema is created inside the component to use translated messages
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = {
+  doctor_id: string;
+  appointment_date: Date;
+  appointment_time: string;
+  patient_name: string;
+  patient_phone: string;
+  patient_email?: string;
+  reason?: string;
+};
 
 interface AppointmentBookingFormProps {
   onSuccess?: () => void;
 }
 
 export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProps) {
+  const { t } = useTranslation();
   const { user, profile } = useAuth();
   const { doctors, isLoading: doctorsLoading } = useDoctors();
   const { createAppointment, getBookedSlots } = useAppointments();
@@ -63,6 +63,18 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+
+  const formSchema = z.object({
+    doctor_id: z.string().min(1, t("bookAppointmentPage.selectDoctorError")),
+    appointment_date: z.date({
+      required_error: t("bookAppointmentPage.selectDateError"),
+    }),
+    appointment_time: z.string().min(1, t("bookAppointmentPage.selectTimeError")),
+    patient_name: z.string().trim().min(2, t("bookAppointmentPage.nameMinError")).max(100),
+    patient_phone: z.string().trim().min(10, t("bookAppointmentPage.phoneMinError")).max(15),
+    patient_email: z.string().email(t("bookAppointmentPage.emailError")).optional().or(z.literal("")),
+    reason: z.string().max(500).optional(),
+  });
 
   // Get doctor from URL query param
   const doctorFromUrl = searchParams.get("doctor");
@@ -168,19 +180,19 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
             <Check className="h-8 w-8 text-primary" />
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            Appointment Booked Successfully!
+            {t("bookAppointmentPage.successTitle")}
           </h2>
           <p className="text-muted-foreground mb-6">
-            Your appointment has been confirmed. You will receive a notification with the details.
+            {t("bookAppointmentPage.successDesc")}
           </p>
           <div className="bg-muted rounded-lg p-4 text-left max-w-sm mx-auto space-y-2">
-            <p><strong>Doctor:</strong> {selectedDoctor?.name}</p>
-            <p><strong>Date:</strong> {watchDate && format(watchDate, "PPP")}</p>
-            <p><strong>Time:</strong> {form.getValues("appointment_time")}</p>
-            <p><strong>Fee:</strong> ৳{selectedDoctor?.consultation_fee}</p>
+            <p><strong>{t("bookAppointmentPage.doctorLabel")}:</strong> {selectedDoctor?.name}</p>
+            <p><strong>{t("bookAppointmentPage.dateLabel")}:</strong> {watchDate && format(watchDate, "PPP")}</p>
+            <p><strong>{t("bookAppointmentPage.timeLabel")}:</strong> {form.getValues("appointment_time")}</p>
+            <p><strong>{t("bookAppointmentPage.feeLabel")}:</strong> ৳{selectedDoctor?.consultation_fee}</p>
           </div>
           <Button className="mt-6" onClick={() => setBookingSuccess(false)}>
-            Book Another Appointment
+            {t("bookAppointmentPage.bookAnother")}
           </Button>
         </CardContent>
       </Card>
@@ -200,9 +212,9 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Book an Appointment</CardTitle>
+        <CardTitle>{t("bookAppointmentPage.formTitle")}</CardTitle>
         <CardDescription>
-          Select a doctor, date, and time to schedule your consultation
+          {t("bookAppointmentPage.formDesc")}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -214,11 +226,11 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
               name="doctor_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Select Doctor</FormLabel>
+                  <FormLabel>{t("bookAppointmentPage.selectDoctor")}</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Choose a doctor" />
+                        <SelectValue placeholder={t("bookAppointmentPage.chooseDoctorPlaceholder")} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -247,10 +259,10 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
                   {selectedDoctor.specialty} • {selectedDoctor.qualification}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {selectedDoctor.experience_years} years experience
+                  {selectedDoctor.experience_years} {t("bookAppointmentPage.yearsExperience")}
                 </p>
                 <p className="text-sm font-medium text-primary mt-2">
-                  Consultation Fee: ৳{selectedDoctor.consultation_fee}
+                  {t("bookAppointmentPage.consultationFeeLabel")}: ৳{selectedDoctor.consultation_fee}
                 </p>
               </div>
             )}
@@ -261,7 +273,7 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
               name="appointment_date"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Appointment Date</FormLabel>
+                  <FormLabel>{t("bookAppointmentPage.appointmentDate")}</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -276,7 +288,7 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
                           {field.value ? (
                             format(field.value, "PPP")
                           ) : (
-                            <span>Pick a date</span>
+                            <span>{t("bookAppointmentPage.pickDate")}</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -299,7 +311,7 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
                   </Popover>
                   {selectedDoctor && (
                     <p className="text-xs text-muted-foreground">
-                      Available: {selectedDoctor.available_days.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(", ")}
+                      {t("bookAppointmentPage.availableDays")}: {selectedDoctor.available_days.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(", ")}
                     </p>
                   )}
                   <FormMessage />
@@ -313,22 +325,22 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
               name="appointment_time"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Select Time Slot</FormLabel>
+                  <FormLabel>{t("bookAppointmentPage.selectTimeSlot")}</FormLabel>
                   {availableSlots.length > 0 ? (
                     <div className="space-y-3">
                       {/* Legend */}
                       <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1.5">
                           <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500" />
-                          <span>Available</span>
+                          <span>{t("bookAppointmentPage.available")}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500" />
-                          <span>Booked</span>
+                          <span>{t("bookAppointmentPage.booked")}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <div className="w-3 h-3 rounded-full bg-primary" />
-                          <span>Selected</span>
+                          <span>{t("bookAppointmentPage.selected")}</span>
                         </div>
                       </div>
                       
@@ -372,10 +384,10 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
                       {/* Summary */}
                       <div className="flex items-center justify-between text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
                         <span>
-                          {availableSlots.length - bookedSlots.length} slots available
+                          {availableSlots.length - bookedSlots.length} {t("bookAppointmentPage.slotsAvailable")}
                         </span>
                         <span>
-                          {bookedSlots.length} slots booked
+                          {bookedSlots.length} {t("bookAppointmentPage.slotsBooked")}
                         </span>
                       </div>
                     </div>
@@ -383,17 +395,17 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
                     <div className="text-center py-6 bg-muted/50 rounded-lg border border-dashed">
                       <Clock className="h-8 w-8 text-muted-foreground/50 mx-auto mb-2" />
                       <p className="text-sm text-muted-foreground">
-                        No available slots for this date.
+                        {t("bookAppointmentPage.noSlotsForDate")}
                       </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Please select another date.
+                        {t("bookAppointmentPage.selectAnotherDate")}
                       </p>
                     </div>
                   ) : (
                     <div className="text-center py-6 bg-muted/50 rounded-lg border border-dashed">
                       <CalendarIcon className="h-8 w-8 text-muted-foreground/50 mx-auto mb-2" />
                       <p className="text-sm text-muted-foreground">
-                        Select a doctor and date to see available slots
+                        {t("bookAppointmentPage.selectDoctorAndDate")}
                       </p>
                     </div>
                   )}
@@ -409,11 +421,11 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
                 name="patient_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Your Name</FormLabel>
+                    <FormLabel>{t("bookAppointmentPage.yourName")}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                        <Input {...field} placeholder="Full name" className="pl-10" />
+                        <Input {...field} placeholder={t("bookAppointmentPage.fullNamePlaceholder")} className="pl-10" />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -426,7 +438,7 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
                 name="patient_phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
+                    <FormLabel>{t("bookAppointmentPage.phoneNumber")}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -444,11 +456,11 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
               name="patient_email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email (Optional)</FormLabel>
+                  <FormLabel>{t("bookAppointmentPage.emailOptional")}</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input {...field} placeholder="your@email.com" className="pl-10" />
+                      <Input {...field} placeholder={t("bookAppointmentPage.emailPlaceholder")} className="pl-10" />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -461,13 +473,13 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
               name="reason"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Reason for Visit (Optional)</FormLabel>
+                  <FormLabel>{t("bookAppointmentPage.reasonForVisit")}</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <FileText className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Textarea
                         {...field}
-                        placeholder="Briefly describe your symptoms or reason for consultation"
+                        placeholder={t("bookAppointmentPage.reasonPlaceholder")}
                         className="pl-10 min-h-[80px]"
                       />
                     </div>
@@ -478,7 +490,7 @@ export function AppointmentBookingForm({ onSuccess }: AppointmentBookingFormProp
             />
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Booking..." : "Confirm Appointment"}
+              {isSubmitting ? t("bookAppointmentPage.booking") : t("bookAppointmentPage.confirmAppointment")}
             </Button>
           </form>
         </Form>
