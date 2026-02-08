@@ -253,6 +253,13 @@ const en = {
     voiceSearch: "Voice Search",
     stopListening: "Stop",
     searchingFor: "Searching for",
+    yearsExp: "years exp.",
+    consultationFee: "Consultation Fee",
+    nextAvailable: "Next Available",
+    viewProfile: "View Profile",
+    bookNow: "Book Now",
+    more: "more",
+    reviews: "reviews",
   },
 
   // Book Test Page

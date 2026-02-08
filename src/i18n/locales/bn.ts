@@ -253,6 +253,13 @@ const bn = {
     voiceSearch: "ভয়েস সার্চ",
     stopListening: "বন্ধ করুন",
     searchingFor: "খোঁজা হচ্ছে",
+    yearsExp: "বছরের অভিজ্ঞতা",
+    consultationFee: "পরামর্শ ফি",
+    nextAvailable: "পরবর্তী সময়",
+    viewProfile: "প্রোফাইল দেখুন",
+    bookNow: "এখনই বুক করুন",
+    more: "আরও",
+    reviews: "রিভিউ",
   },
 
   // Book Test Page

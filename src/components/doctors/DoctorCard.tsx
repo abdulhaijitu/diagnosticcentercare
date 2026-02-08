@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -36,6 +37,7 @@ interface Props {
 
 export function DoctorCard({ doctor, onBookAppointment }: Props) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleViewProfile = () => {
     if (doctor.isFromDb && doctor.dbId) {
@@ -92,7 +94,7 @@ export function DoctorCard({ doctor, onBookAppointment }: Props) {
             </div>
             <div className="flex items-center gap-1.5">
               <Clock className="h-4 w-4" />
-              <span>{doctor.experience} years exp.</span>
+              <span>{doctor.experience} {t("doctorsPage.yearsExp")}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <MapPin className="h-4 w-4" />
@@ -108,7 +110,7 @@ export function DoctorCard({ doctor, onBookAppointment }: Props) {
             ))}
             {doctor.availability.length > 4 && (
               <Badge variant="outline" className="text-xs">
-                +{doctor.availability.length - 4} more
+                +{doctor.availability.length - 4} {t("doctorsPage.more")}
               </Badge>
             )}
           </div>
@@ -116,11 +118,11 @@ export function DoctorCard({ doctor, onBookAppointment }: Props) {
           <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border">
             <div className="flex items-center gap-4">
               <div>
-                <p className="text-sm text-muted-foreground">Consultation Fee</p>
+                <p className="text-sm text-muted-foreground">{t("doctorsPage.consultationFee")}</p>
                 <p className="text-xl font-bold text-foreground">৳{doctor.fee}</p>
               </div>
               <div className="pl-4 border-l border-border">
-                <p className="text-sm text-muted-foreground">Next Available</p>
+                <p className="text-sm text-muted-foreground">{t("doctorsPage.nextAvailable")}</p>
                 <p className="text-sm font-medium text-success flex items-center gap-1">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   {doctor.nextSlot}
@@ -130,11 +132,11 @@ export function DoctorCard({ doctor, onBookAppointment }: Props) {
             <div className="flex gap-2">
               {doctor.isFromDb && doctor.dbId && (
                 <Button variant="outline" onClick={handleViewProfile}>
-                  View Profile
+                  {t("doctorsPage.viewProfile")}
                 </Button>
               )}
               <Button onClick={handleBookAppointment}>
-                Book Now
+                {t("doctorsPage.bookNow")}
                 <ArrowRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
