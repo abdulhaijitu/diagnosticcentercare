@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -13,28 +14,32 @@ interface Message {
   timestamp: Date;
 }
 
-const quickReplies = [
-  "টেস্টের দাম জানতে চাই",
-  "হোম কালেকশন সম্পর্কে জানতে চাই",
-  "অ্যাপয়েন্টমেন্ট বুক করতে চাই",
-  "রিপোর্ট কবে পাব?",
-];
-
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat-support`;
 
 export function ChatWidget() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      content: "স্বাগতম! TrustCare Diagnostic Center-এ। আমি আপনাকে কীভাবে সাহায্য করতে পারি?",
-      role: "assistant",
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Initialize welcome message with current language
+  useEffect(() => {
+    setMessages([{
+      id: "welcome",
+      content: t("chatWidget.welcome"),
+      role: "assistant",
+      timestamp: new Date(),
+    }]);
+  }, [t]);
+
+  const quickReplies = [
+    t("chatWidget.quickTestPrice"),
+    t("chatWidget.quickHomeCollection"),
+    t("chatWidget.quickBookAppointment"),
+    t("chatWidget.quickReportTime"),
+  ];
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -142,14 +147,14 @@ export function ChatWidget() {
       await streamChat(apiMessages);
     } catch (error) {
       console.error("Chat error:", error);
-      toast.error(error instanceof Error ? error.message : "চ্যাটে সমস্যা হয়েছে");
+      toast.error(error instanceof Error ? error.message : t("chatWidget.errorGeneric"));
       
       // Add fallback message
       setMessages((prev) => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
-          content: "দুঃখিত, এই মুহূর্তে সমস্যা হচ্ছে। অনুগ্রহ করে 01345580203 নম্বরে কল করুন।",
+          content: t("chatWidget.errorFallback"),
           role: "assistant",
           timestamp: new Date(),
         },
@@ -197,9 +202,9 @@ export function ChatWidget() {
               <Bot className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-semibold">TrustCare AI Support</h3>
+              <h3 className="font-semibold">{t("chatWidget.title")}</h3>
               <p className="text-xs text-primary-foreground/80">
-                {isLoading ? "টাইপ করছে..." : "আপনার সেবায় প্রস্তুত"}
+                {isLoading ? t("chatWidget.typing") : t("chatWidget.ready")}
               </p>
             </div>
           </div>
@@ -279,7 +284,7 @@ export function ChatWidget() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="মেসেজ লিখুন..."
+              placeholder={t("chatWidget.placeholder")}
               className="flex-1"
               disabled={isLoading}
             />
