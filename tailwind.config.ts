@@ -85,8 +85,10 @@ export default {
         "2xl": "calc(var(--radius) + 8px)",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        heading: ["Inter", "system-ui", "sans-serif"],
+        sans: ["var(--font-family)", "system-ui", "sans-serif"],
+        heading: ["var(--font-family)", "system-ui", "sans-serif"],
+        en: ["'Inter'", "system-ui", "sans-serif"],
+        bn: ["'Hind Siliguri'", "system-ui", "sans-serif"],
       },
       fontSize: {
         "display-lg": ["3.5rem", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
