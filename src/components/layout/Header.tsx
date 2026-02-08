@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,20 +15,22 @@ import { cn } from "@/lib/utils";
 import trustCareLogo from "@/assets/trust-care-logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
-
-const navigation = [
-  { name: "Home", href: "/" },
-  { name: "About", href: "/about" },
-  { name: "Services", href: "/services" },
-  { name: "Doctors", href: "/doctors" },
-  { name: "Contact", href: "/contact" },
-];
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, isLoading, isAdmin, isStaff, signOut } = useAuth();
+  const { t } = useTranslation();
+
+  const navigation = [
+    { name: t("nav.home"), href: "/" },
+    { name: t("nav.about"), href: "/about" },
+    { name: t("nav.services"), href: "/services" },
+    { name: t("nav.doctors"), href: "/doctors" },
+    { name: t("nav.contact"), href: "/contact" },
+  ];
 
   const handleSignOut = async () => {
     await signOut();
@@ -56,9 +59,12 @@ export function Header() {
                 <span>trustcaredc@gmail.com</span>
               </a>
             </div>
-            <p className="text-primary-foreground/80">
-              Your Trust, Your Care — Fast & Accurate Lab Service
-            </p>
+            <div className="flex items-center gap-4">
+              <p className="text-primary-foreground/80">
+                {t("topBar.tagline")}
+              </p>
+              <LanguageSwitcher className="text-primary-foreground hover:text-primary-foreground/80 hover:bg-white/10" />
+            </div>
           </div>
         </div>
       </div>
@@ -88,7 +94,7 @@ export function Header() {
             <div className="hidden lg:flex items-center gap-1">
               {navigation.map((item) => (
                 <Link
-                  key={item.name}
+                  key={item.href}
                   to={item.href}
                   className={cn(
                     "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
@@ -106,7 +112,7 @@ export function Header() {
                 size="sm" 
                 className="ml-2 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:scale-105"
               >
-                <Link to="/book-test">Book Test</Link>
+                <Link to="/book-test">{t("nav.bookTest")}</Link>
               </Button>
             </div>
 
@@ -140,19 +146,19 @@ export function Header() {
                     <DropdownMenuItem asChild>
                       <Link to="/profile" className="flex items-center gap-2 cursor-pointer">
                         <User className="h-4 w-4" />
-                        My Profile
+                        {t("nav.myProfile")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/my-appointments" className="flex items-center gap-2 cursor-pointer">
                         <CalendarCheck className="h-4 w-4" />
-                        My Appointments
+                        {t("nav.myAppointments")}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/my-requests" className="flex items-center gap-2 cursor-pointer">
                         <ClipboardList className="h-4 w-4" />
-                        My Test Requests
+                        {t("nav.myTestRequests")}
                       </Link>
                     </DropdownMenuItem>
                     {(isAdmin || isStaff) && (
@@ -160,14 +166,14 @@ export function Header() {
                         <DropdownMenuItem asChild>
                           <Link to="/dashboard" className="flex items-center gap-2 cursor-pointer">
                             <LayoutDashboard className="h-4 w-4" />
-                            Dashboard
+                            {t("nav.dashboard")}
                           </Link>
                         </DropdownMenuItem>
                         {isAdmin && (
                           <DropdownMenuItem asChild>
                             <Link to="/settings/notifications" className="flex items-center gap-2 cursor-pointer">
                               <Settings className="h-4 w-4" />
-                              Notification Settings
+                              {t("nav.notificationSettings")}
                             </Link>
                           </DropdownMenuItem>
                         )}
@@ -179,7 +185,7 @@ export function Header() {
                       className="text-destructive focus:text-destructive cursor-pointer"
                     >
                       <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
+                      {t("nav.signOut")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -187,36 +193,39 @@ export function Header() {
               ) : (
                 <>
                   <Button variant="ghost" asChild>
-                    <Link to="/login">Log In</Link>
+                    <Link to="/login">{t("nav.login")}</Link>
                   </Button>
                   <Button asChild>
-                    <Link to="/register">Get Started</Link>
+                    <Link to="/register">{t("nav.register")}</Link>
                   </Button>
                 </>
               )}
             </div>
 
-            {/* Mobile menu button */}
-            <button
-              className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-            >
-              <div className="relative w-6 h-6">
-                <Menu 
-                  className={cn(
-                    "absolute inset-0 h-6 w-6 text-foreground transition-all duration-300",
-                    mobileMenuOpen ? "opacity-0 rotate-90 scale-75" : "opacity-100 rotate-0 scale-100"
-                  )} 
-                />
-                <X 
-                  className={cn(
-                    "absolute inset-0 h-6 w-6 text-foreground transition-all duration-300",
-                    mobileMenuOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-75"
-                  )} 
-                />
-              </div>
-            </button>
+            {/* Mobile menu button + language switcher */}
+            <div className="flex items-center gap-2 lg:hidden">
+              <LanguageSwitcher variant="icon" />
+              <button
+                className="p-2 rounded-lg hover:bg-muted transition-colors"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+              >
+                <div className="relative w-6 h-6">
+                  <Menu 
+                    className={cn(
+                      "absolute inset-0 h-6 w-6 text-foreground transition-all duration-300",
+                      mobileMenuOpen ? "opacity-0 rotate-90 scale-75" : "opacity-100 rotate-0 scale-100"
+                    )} 
+                  />
+                  <X 
+                    className={cn(
+                      "absolute inset-0 h-6 w-6 text-foreground transition-all duration-300",
+                      mobileMenuOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-75"
+                    )} 
+                  />
+                </div>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -232,7 +241,7 @@ export function Header() {
           <div className="container-custom py-4 space-y-2">
             {navigation.map((item, index) => (
               <Link
-                key={item.name}
+                key={item.href}
                 to={item.href}
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
@@ -267,7 +276,7 @@ export function Header() {
               }}
             >
               <Link to="/book-test" onClick={() => setMobileMenuOpen(false)}>
-                Book Test
+                {t("nav.bookTest")}
               </Link>
             </Button>
             <div 
@@ -304,14 +313,14 @@ export function Header() {
                     onClick={() => setMobileMenuOpen(false)}
                     className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                   >
-                    My Appointments
+                    {t("nav.myAppointments")}
                   </Link>
                   <Link
                     to="/my-requests"
                     onClick={() => setMobileMenuOpen(false)}
                     className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                   >
-                    My Requests
+                    {t("nav.myTestRequests")}
                   </Link>
                   {(isAdmin || isStaff) && (
                     <Link
@@ -319,7 +328,7 @@ export function Header() {
                       onClick={() => setMobileMenuOpen(false)}
                       className="block px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     >
-                      Dashboard
+                      {t("nav.dashboard")}
                     </Link>
                   )}
                   <Button
@@ -331,19 +340,19 @@ export function Header() {
                     }}
                   >
                     <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
+                    {t("nav.signOut")}
                   </Button>
                 </>
               ) : (
                 <>
                   <Button variant="outline" className="w-full" asChild>
                     <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                      Log In
+                      {t("nav.login")}
                     </Link>
                   </Button>
                   <Button className="w-full" asChild>
                     <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                      Get Started
+                      {t("nav.register")}
                     </Link>
                   </Button>
                 </>

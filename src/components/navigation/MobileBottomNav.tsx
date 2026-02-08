@@ -1,32 +1,24 @@
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Home, TestTube, Stethoscope, FileText, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 
-const navItems = [
-  { icon: Home, label: "হোম", labelEn: "Home", href: "/" },
-  { icon: TestTube, label: "টেস্ট", labelEn: "Book Test", href: "/book-test" },
-  { icon: Stethoscope, label: "ডাক্তার", labelEn: "Doctors", href: "/doctors" },
-  { icon: FileText, label: "রিপোর্ট", labelEn: "Reports", href: "/my-requests" },
-  { icon: User, label: "প্রোফাইল", labelEn: "Profile", href: "/profile" },
-];
-
 export function MobileBottomNav() {
   const location = useLocation();
   const { user } = useAuth();
+  const { t } = useTranslation();
 
-  // Update profile link based on auth status
-  const items = navItems.map((item) => {
-    if (item.href === "/profile" && !user) {
-      return { ...item, href: "/login" };
-    }
-    return item;
-  });
+  const navItems = [
+    { icon: Home, label: t("mobileNav.home"), href: "/" },
+    { icon: TestTube, label: t("mobileNav.bookTest"), href: "/book-test" },
+    { icon: Stethoscope, label: t("mobileNav.doctors"), href: "/doctors" },
+    { icon: FileText, label: t("mobileNav.reports"), href: "/my-requests" },
+    { icon: User, label: t("mobileNav.profile"), href: user ? "/profile" : "/login" },
+  ];
 
   const isActive = (href: string) => {
-    if (href === "/") {
-      return location.pathname === "/";
-    }
+    if (href === "/") return location.pathname === "/";
     return location.pathname.startsWith(href);
   };
 
@@ -35,14 +27,14 @@ export function MobileBottomNav() {
       className={cn(
         "fixed bottom-0 left-0 right-0 z-50",
         "bg-card/95 backdrop-blur-lg border-t border-border",
-        "lg:hidden", // Hide on desktop/laptop/tablet
-        "pb-safe" // Safe area for iOS
+        "lg:hidden",
+        "pb-safe"
       )}
       role="navigation"
       aria-label="Mobile navigation"
     >
       <div className="flex items-center justify-around h-16 max-w-lg mx-auto px-2">
-        {items.map((item) => {
+        {navItems.map((item) => {
           const active = isActive(item.href);
           return (
             <Link
@@ -52,7 +44,7 @@ export function MobileBottomNav() {
                 "flex flex-col items-center justify-center flex-1 h-full",
                 "transition-all duration-200 ease-out",
                 "min-w-[64px] py-2",
-                "touch-manipulation", // Better touch handling
+                "touch-manipulation",
                 active
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground"
