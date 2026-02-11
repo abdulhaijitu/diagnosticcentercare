@@ -1,10 +1,36 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Stethoscope, UserCheck, Home, ClipboardList, Shield, Clock, Award } from "lucide-react";
 
 export function HeroSection() {
   const { t } = useTranslation();
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const [visibleCards, setVisibleCards] = useState<boolean[]>([false, false, false]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Stagger each card with 150ms delay
+          [0, 1, 2].forEach((i) => {
+            setTimeout(() => {
+              setVisibleCards((prev) => {
+                const next = [...prev];
+                next[i] = true;
+                return next;
+              });
+            }, i * 150);
+          });
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+    if (cardsRef.current) observer.observe(cardsRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const serviceCards = [
     {
@@ -80,13 +106,18 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Service Cards - Inspired by reference */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-8 max-w-4xl mx-auto animate-fade-in-up animation-delay-300">
-          {serviceCards.map((card) => (
+        {/* Service Cards - Staggered fade-in on scroll */}
+        <div ref={cardsRef} className="grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-8 max-w-4xl mx-auto">
+          {serviceCards.map((card, index) => (
             <Link
               key={card.label}
               to={card.link}
-              className="group relative bg-white/15 backdrop-blur-md border border-white/20 rounded-3xl p-8 md:p-10 flex flex-col items-center text-center transition-all duration-300 hover:bg-white/25 hover:-translate-y-2 hover:shadow-elevated"
+              className={`group relative bg-white/15 backdrop-blur-md border border-white/20 rounded-3xl p-8 md:p-10 flex flex-col items-center text-center transition-all duration-500 hover:bg-white/25 hover:-translate-y-2 hover:shadow-elevated ${
+                visibleCards[index]
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-8"
+              }`}
+              style={{ transitionDelay: visibleCards[index] ? "0ms" : `${index * 150}ms` }}
             >
               {/* Icon container */}
               <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-white/20 border border-white/30 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
