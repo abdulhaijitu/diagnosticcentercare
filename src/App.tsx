@@ -26,6 +26,10 @@ import Tests from "./pages/Tests";
 import TestDetail from "./pages/TestDetail";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import HomeSampleCollection from "./pages/HomeSampleCollection";
+import HealthPackages from "./pages/HealthPackages";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +66,10 @@ function AppContent() {
             <Route path="/settings/notifications" element={<NotificationSettingsPage />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/home-collection" element={<HomeSampleCollection />} />
+            <Route path="/health-packages" element={<HealthPackages />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
