@@ -28,7 +28,7 @@ const bn = {
   hero: {
     trustBadge: "১০,০০০+ রোগীর বিশ্বাস",
     title: "আপনার বিশ্বাস,",
-    titleHighlight: "আপনার সেবা",
+    titleHighlight: "আমাদের সেবা",
     subtitle: "দ্রুত ও নির্ভুল ল্যাব সেবা সহমর্মী যত্নের সাথে। ডায়াগনস্টিক টেস্ট বুক করুন, বিশেষজ্ঞ ডাক্তারদের সাথে পরামর্শ করুন এবং রিপোর্ট ঘরে বসে পান।",
     bookTest: "টেস্ট বুক করুন",
     findDoctor: "ডাক্তার খুঁজুন",
@@ -42,6 +42,9 @@ const bn = {
     step3: "দ্রুত রিপোর্ট পান",
     startBooking: "বুকিং শুরু করুন",
     accuracyRate: "নির্ভুলতার হার",
+    diagnosticService: "ডায়াগনস্টিক সেবা",
+    doctorConsultation: "ডাক্তারের পরামর্শ",
+    homeCollection: "হোম স্যাম্পল কালেকশন",
   },
 
   // Services Section
