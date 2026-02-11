@@ -14,6 +14,7 @@ export interface Testimonial {
   service_bn: string | null;
   is_active: boolean;
   sort_order: number;
+  image_url: string | null;
 }
 
 export function useTestimonials() {
