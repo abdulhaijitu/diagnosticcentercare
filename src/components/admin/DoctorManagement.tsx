@@ -770,7 +770,7 @@ export function DoctorManagement() {
                             const file = e.target.files?.[0];
                             if (!file) return;
                             const ext = file.name.split('.').pop();
-                            const fileName = `doctor-${Date.now()}.${ext}`;
+                            const fileName = `doctors/doctor-${Date.now()}.${ext}`;
                             const { error: uploadError } = await supabase.storage
                               .from('avatars')
                               .upload(fileName, file, { upsert: true });
