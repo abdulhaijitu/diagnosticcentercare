@@ -44,7 +44,7 @@ export function HeroSection() {
       {/* Background image with overlay */}
       <div className="absolute inset-0">
         <img src={heroBg} alt="" className="w-full h-full object-cover" loading="eager" />
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/93 via-primary/90 to-primary/95" />
+        <div className="absolute inset-0 bg-gradient-to-br from-trust-teal-dark/93 via-primary/90 to-trust-teal-light/88" />
       </div>
 
       {/* Decorative blurs */}
@@ -55,12 +55,13 @@ export function HeroSection() {
 
       <div className="container-custom relative py-10 md:py-14 lg:py-16">
         {/* Tagline Image */}
-        <div className="flex justify-center mb-6 md:mb-8 animate-fade-in-up">
+        <div className="flex flex-col items-center mb-6 md:mb-8 animate-fade-in-up">
           <img
             src={trustCareTagline}
             alt="Your Trust, Our Care"
             className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto object-contain drop-shadow-lg"
           />
+          <div className="mt-3 h-1 w-48 sm:w-64 md:w-80 rounded-full bg-gradient-to-r from-care-amber via-primary-foreground/60 to-trust-teal-light" />
         </div>
 
         {/* Subtitle */}
