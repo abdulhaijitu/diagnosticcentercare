@@ -51,6 +51,7 @@ import {
   X,
   Upload,
   ImageIcon,
+  Check,
 } from "lucide-react";
 import { z } from "zod";
 
@@ -133,6 +134,11 @@ export function DoctorManagement() {
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [activeSection, setActiveSection] = useState<"basic" | "education" | "experience">("basic");
   const [specialties, setSpecialties] = useState<string[]>(DEFAULT_SPECIALTIES);
+  const [specialtyFilter, setSpecialtyFilter] = useState<string>("all");
+  const [isSpecialtyMgmtOpen, setIsSpecialtyMgmtOpen] = useState(false);
+  const [newSpecialtyName, setNewSpecialtyName] = useState("");
+  const [editingSpecialtyIdx, setEditingSpecialtyIdx] = useState<number | null>(null);
+  const [editingSpecialtyName, setEditingSpecialtyName] = useState("");
 
   // Form states
   const [formData, setFormData] = useState({
@@ -488,11 +494,39 @@ export function DoctorManagement() {
     setExperienceList(updated);
   };
 
-  const filteredDoctors = doctors.filter(
-    (d) =>
+  const filteredDoctors = doctors.filter((d) => {
+    const matchesSearch =
       d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      d.specialty.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+      d.specialty.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSpecialty = specialtyFilter === "all" || d.specialty === specialtyFilter;
+    return matchesSearch && matchesSpecialty;
+  });
+
+  const handleAddSpecialty = () => {
+    const trimmed = newSpecialtyName.trim();
+    if (trimmed && !specialties.includes(trimmed)) {
+      setSpecialties([...specialties, trimmed].sort());
+      setNewSpecialtyName("");
+    }
+  };
+
+  const handleEditSpecialty = (idx: number) => {
+    const trimmed = editingSpecialtyName.trim();
+    if (trimmed && trimmed !== specialties[idx]) {
+      const old = specialties[idx];
+      setSpecialties(specialties.map((s, i) => (i === idx ? trimmed : s)).sort());
+      // Also update the filter if needed
+      if (specialtyFilter === old) setSpecialtyFilter(trimmed);
+    }
+    setEditingSpecialtyIdx(null);
+    setEditingSpecialtyName("");
+  };
+
+  const handleDeleteSpecialty = (idx: number) => {
+    const name = specialties[idx];
+    setSpecialties(specialties.filter((_, i) => i !== idx));
+    if (specialtyFilter === name) setSpecialtyFilter("all");
+  };
 
   const toggleDay = (dayId: string) => {
     if (formData.available_days.includes(dayId)) {
@@ -530,6 +564,124 @@ export function DoctorManagement() {
           {t("doctorMgmt.addDoctor")}
         </Button>
       </div>
+
+      {/* Specialty Category Management */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Stethoscope className="h-4 w-4 text-primary" />
+              স্পেশাল্টি ক্যাটাগরি
+            </CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsSpecialtyMgmtOpen(!isSpecialtyMgmtOpen)}
+            >
+              {isSpecialtyMgmtOpen ? "বন্ধ করুন" : "ম্যানেজ করুন"}
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {/* Filter by specialty */}
+          <div className="flex flex-wrap gap-2">
+            <Badge
+              variant={specialtyFilter === "all" ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() => setSpecialtyFilter("all")}
+            >
+              সব ({doctors.length})
+            </Badge>
+            {specialties.map((s) => {
+              const count = doctors.filter((d) => d.specialty === s).length;
+              return (
+                <Badge
+                  key={s}
+                  variant={specialtyFilter === s ? "default" : "outline"}
+                  className="cursor-pointer"
+                  onClick={() => setSpecialtyFilter(s)}
+                >
+                  {s} ({count})
+                </Badge>
+              );
+            })}
+          </div>
+
+          {/* Manage specialties - expandable */}
+          {isSpecialtyMgmtOpen && (
+            <div className="border rounded-lg p-4 space-y-3 bg-muted/30">
+              {/* Add new */}
+              <div className="flex gap-2">
+                <Input
+                  value={newSpecialtyName}
+                  onChange={(e) => setNewSpecialtyName(e.target.value)}
+                  placeholder="নতুন স্পেশাল্টি নাম..."
+                  className="flex-1"
+                  onKeyDown={(e) => e.key === "Enter" && handleAddSpecialty()}
+                />
+                <Button size="sm" onClick={handleAddSpecialty} disabled={!newSpecialtyName.trim()}>
+                  <Plus className="h-4 w-4 mr-1" />
+                  যোগ করুন
+                </Button>
+              </div>
+
+              {/* List */}
+              <div className="space-y-1 max-h-60 overflow-y-auto">
+                {specialties.map((s, idx) => (
+                  <div key={s} className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-background group">
+                    {editingSpecialtyIdx === idx ? (
+                      <>
+                        <Input
+                          value={editingSpecialtyName}
+                          onChange={(e) => setEditingSpecialtyName(e.target.value)}
+                          className="h-8 text-sm flex-1"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") handleEditSpecialty(idx);
+                            if (e.key === "Escape") setEditingSpecialtyIdx(null);
+                          }}
+                          autoFocus
+                        />
+                        <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => handleEditSpecialty(idx)}>
+                          <Check className="h-3.5 w-3.5 text-primary" />
+                        </Button>
+                        <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => setEditingSpecialtyIdx(null)}>
+                          <X className="h-3.5 w-3.5" />
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-sm flex-1">{s}</span>
+                        <Badge variant="secondary" className="text-[10px]">
+                          {doctors.filter((d) => d.specialty === s).length}
+                        </Badge>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => {
+                            setEditingSpecialtyIdx(idx);
+                            setEditingSpecialtyName(s);
+                          }}
+                        >
+                          <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => handleDeleteSpecialty(idx)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Search */}
       <div className="relative max-w-md">
