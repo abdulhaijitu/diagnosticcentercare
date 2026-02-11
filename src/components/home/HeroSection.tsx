@@ -2,9 +2,12 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, UserCheck, Home, ClipboardList, Shield, Clock, Award } from "lucide-react";
+import { ArrowRight, Shield, Clock, Award } from "lucide-react";
 import heroBg from "@/assets/hero-bg.jpg";
 import trustCareTagline from "@/assets/your-trust-our-care.png";
+import heroCard1 from "@/assets/hero-card-1.png";
+import heroCard2 from "@/assets/hero-card-2.png";
+import heroCard3 from "@/assets/hero-card-3.png";
 
 export function HeroSection() {
   const { t } = useTranslation();
@@ -34,9 +37,9 @@ export function HeroSection() {
   }, []);
 
   const serviceCards = [
-    { icon: ClipboardList, label: t("hero.diagnosticService"), link: "/book-test" },
-    { icon: UserCheck, label: t("hero.doctorConsultation"), link: "/doctors" },
-    { icon: Home, label: t("hero.homeCollection"), link: "/book-test" },
+    { image: heroCard1, label: t("hero.diagnosticService"), link: "/book-test" },
+    { image: heroCard2, label: t("hero.doctorConsultation"), link: "/doctors" },
+    { image: heroCard3, label: t("hero.homeCollection"), link: "/book-test" },
   ];
 
   return (
@@ -78,16 +81,15 @@ export function HeroSection() {
             <Link
               key={card.label}
               to={card.link}
-              className={`group bg-white/12 backdrop-blur-lg border border-white/20 rounded-2xl p-4 md:p-6 flex flex-col items-center text-center transition-all duration-500 hover:bg-white/20 hover:-translate-y-1 hover:shadow-elevated ${
+              className={`group overflow-hidden rounded-2xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-elevated ${
                 visibleCards[index] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
               }`}
             >
-              <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl bg-white/15 border border-white/25 flex items-center justify-center mb-3 group-hover:scale-110 group-hover:bg-white/25 transition-all duration-300">
-                <card.icon className="w-6 h-6 md:w-8 md:h-8 text-primary-foreground" strokeWidth={1.5} />
-              </div>
-              <h3 className="text-xs sm:text-sm md:text-base font-bold text-primary-foreground leading-tight">
-                {card.label}
-              </h3>
+              <img
+                src={card.image}
+                alt={card.label}
+                className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-300"
+              />
             </Link>
           ))}
         </div>
