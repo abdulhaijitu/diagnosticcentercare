@@ -54,6 +54,8 @@ import {
   GraduationCap,
   Briefcase,
   X,
+  Upload,
+  ImageIcon,
 } from "lucide-react";
 import { z } from "zod";
 
@@ -743,11 +745,53 @@ export function DoctorManagement() {
                 </div>
                 <div className="space-y-2">
                   <Label>{t("doctorMgmt.avatarUrlLabel")}</Label>
-                  <Input
-                    value={formData.avatar_url}
-                    onChange={(e) => setFormData({ ...formData, avatar_url: e.target.value })}
-                    placeholder="https://..."
-                  />
+                  <div className="space-y-2">
+                    {formData.avatar_url && (
+                      <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-border">
+                        <img src={formData.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          className="absolute top-0 right-0 bg-destructive text-destructive-foreground rounded-full p-0.5"
+                          onClick={() => setFormData({ ...formData, avatar_url: "" })}
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <label className="flex items-center gap-2 px-3 py-2 border border-input rounded-md cursor-pointer hover:bg-accent transition-colors text-sm">
+                        <Upload className="h-4 w-4" />
+                        ছবি আপলোড
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const ext = file.name.split('.').pop();
+                            const fileName = `doctor-${Date.now()}.${ext}`;
+                            const { error: uploadError } = await supabase.storage
+                              .from('avatars')
+                              .upload(fileName, file, { upsert: true });
+                            if (uploadError) {
+                              toast({ title: "আপলোড ব্যর্থ", description: uploadError.message, variant: "destructive" });
+                              return;
+                            }
+                            const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(fileName);
+                            setFormData({ ...formData, avatar_url: urlData.publicUrl });
+                            toast({ title: "ছবি আপলোড সফল" });
+                          }}
+                        />
+                      </label>
+                      {!formData.avatar_url && (
+                        <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                          <ImageIcon className="h-4 w-4" />
+                          কোনো ছবি নেই
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
 
