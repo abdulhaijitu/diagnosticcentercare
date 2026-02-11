@@ -239,7 +239,10 @@ const Dashboard = () => {
                   "fixed inset-y-0 left-0 z-50 w-72 shadow-xl",
                   mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
                 )
-              : sidebarCollapsed ? "w-[68px]" : "w-64"
+              : cn(
+                  "sticky top-0 h-screen",
+                  sidebarCollapsed ? "w-[68px]" : "w-64"
+                )
           )}
         >
           {/* Sidebar Header */}
