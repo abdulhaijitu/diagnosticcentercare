@@ -1,7 +1,14 @@
 import { useTranslation } from "react-i18next";
-import { Star, Quote } from "lucide-react";
+import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTestimonials } from "@/hooks/useTestimonials";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 export function TestimonialsSection() {
   const { t, i18n } = useTranslation();
@@ -41,47 +48,61 @@ export function TestimonialsSection() {
             ))}
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {testimonials?.map((testimonial) => (
-              <div key={testimonial.id} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10">
-                <Quote className="h-10 w-10 text-care-amber mb-4 opacity-50" />
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-care-amber text-care-amber" />
-                  ))}
-                </div>
-                <p className="text-primary-foreground/90 leading-relaxed mb-6">
-                  "{isBn && testimonial.text_bn ? testimonial.text_bn : testimonial.text}"
-                </p>
-                <div className="flex items-center gap-4">
-                  {testimonial.image_url ? (
-                    <img
-                      src={testimonial.image_url}
-                      alt={isBn && testimonial.name_bn ? testimonial.name_bn : testimonial.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-white/20"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                      <span className="text-lg font-bold">
-                        {(isBn && testimonial.name_bn ? testimonial.name_bn : testimonial.name)[0]}
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4">
+              {testimonials?.map((testimonial) => (
+                <CarouselItem key={testimonial.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10 h-full flex flex-col">
+                    <Quote className="h-10 w-10 text-care-amber mb-4 opacity-50" />
+                    <div className="flex items-center gap-1 mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-care-amber text-care-amber" />
+                      ))}
+                    </div>
+                    <p className="text-primary-foreground/90 leading-relaxed mb-6 flex-1">
+                      "{isBn && testimonial.text_bn ? testimonial.text_bn : testimonial.text}"
+                    </p>
+                    <div className="flex items-center gap-4">
+                      {testimonial.image_url ? (
+                        <img
+                          src={testimonial.image_url}
+                          alt={isBn && testimonial.name_bn ? testimonial.name_bn : testimonial.name}
+                          className="w-12 h-12 rounded-full object-cover border-2 border-white/20"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                          <span className="text-lg font-bold">
+                            {(isBn && testimonial.name_bn ? testimonial.name_bn : testimonial.name)[0]}
+                          </span>
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-semibold">{isBn && testimonial.name_bn ? testimonial.name_bn : testimonial.name}</p>
+                        <p className="text-sm text-primary-foreground/70">
+                          {isBn && testimonial.location_bn ? testimonial.location_bn : testimonial.location}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-white/10">
+                      <span className="text-xs text-care-amber font-medium">
+                        {isBn && testimonial.service_bn ? testimonial.service_bn : testimonial.service}
                       </span>
                     </div>
-                  )}
-                  <div>
-                    <p className="font-semibold">{isBn && testimonial.name_bn ? testimonial.name_bn : testimonial.name}</p>
-                    <p className="text-sm text-primary-foreground/70">
-                      {isBn && testimonial.location_bn ? testimonial.location_bn : testimonial.location}
-                    </p>
                   </div>
-                </div>
-                <div className="mt-4 pt-4 border-t border-white/10">
-                  <span className="text-xs text-care-amber font-medium">
-                    {isBn && testimonial.service_bn ? testimonial.service_bn : testimonial.service}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="flex items-center justify-center gap-4 mt-8">
+              <CarouselPrevious className="static translate-y-0 bg-white/10 border-white/20 text-primary-foreground hover:bg-white/20 hover:text-primary-foreground" />
+              <CarouselNext className="static translate-y-0 bg-white/10 border-white/20 text-primary-foreground hover:bg-white/20 hover:text-primary-foreground" />
+            </div>
+          </Carousel>
         )}
       </div>
     </section>
