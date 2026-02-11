@@ -33,7 +33,7 @@ import {
   CheckCircle2, ClipboardList,
   FileUp, UserPlus, Filter,
   FileText, Users, CalendarCheck, Stethoscope, Mail,
-  Menu, ChevronLeft, Package
+  Menu, ChevronLeft, Package, MessageSquareQuote
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { StaffManagement } from "@/components/admin/StaffManagement";
@@ -41,6 +41,7 @@ import { AppointmentsManagement } from "@/components/admin/AppointmentsManagemen
 import { DoctorManagement } from "@/components/admin/DoctorManagement";
 import { ContactMessagesManagement } from "@/components/admin/ContactMessagesManagement";
 import { HealthPackagesManagement } from "@/components/admin/HealthPackagesManagement";
+import { TestimonialsManagement } from "@/components/admin/TestimonialsManagement";
 import { StaffDashboard } from "@/components/dashboard/StaffDashboard";
 import { format, isToday, isThisWeek, isThisMonth } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -54,7 +55,7 @@ const statusColors: Record<CollectionStatus, string> = {
   ready: "bg-green-100 text-green-800",
 };
 
-type AdminSection = "bookings" | "appointments" | "doctors" | "staff" | "messages" | "packages";
+type AdminSection = "bookings" | "appointments" | "doctors" | "staff" | "messages" | "packages" | "testimonials";
 
 interface SidebarNavItem {
   id: AdminSection;
@@ -90,6 +91,7 @@ const Dashboard = () => {
     { id: "staff", label: t("dashboard.staffManagement"), icon: Users, adminOnly: true },
     { id: "messages", label: t("dashboard.messages"), icon: Mail, adminOnly: true },
     { id: "packages", label: "হেলথ প্যাকেজ", icon: Package, adminOnly: true },
+    { id: "testimonials", label: "টেস্টিমোনিয়াল", icon: MessageSquareQuote, adminOnly: true },
   ];
 
   const visibleNavItems = navItems.filter(item => !item.adminOnly || isAdmin);
@@ -531,6 +533,9 @@ const Dashboard = () => {
 
             {/* Health Packages Section */}
             {activeSection === "packages" && isAdmin && <HealthPackagesManagement />}
+
+            {/* Testimonials Section */}
+            {activeSection === "testimonials" && isAdmin && <TestimonialsManagement />}
           </div>
         </main>
       </div>
