@@ -37,13 +37,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { SpecialtyCombobox } from "@/components/admin/SpecialtyCombobox";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Plus,
@@ -112,7 +107,7 @@ const DAYS_OF_WEEK = [
   "saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday",
 ];
 
-const SPECIALTIES = [
+const DEFAULT_SPECIALTIES = [
   "General Physician",
   "Cardiology",
   "Dermatology",
@@ -137,6 +132,7 @@ export function DoctorManagement() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [activeSection, setActiveSection] = useState<"basic" | "education" | "experience">("basic");
+  const [specialties, setSpecialties] = useState<string[]>(DEFAULT_SPECIALTIES);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -690,30 +686,21 @@ export function DoctorManagement() {
                 </div>
                 <div className="space-y-2">
                   <Label>{t("doctorMgmt.specialtyLabel")}</Label>
-                  <Select
+                  <SpecialtyCombobox
                     value={formData.specialty}
-                    onValueChange={(v) => setFormData({ ...formData, specialty: v })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder={t("doctorMgmt.specialtyPlaceholder")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {SPECIALTIES.map((s) => (
-                        <SelectItem key={s} value={s}>
-                          {s}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    onChange={(v) => setFormData({ ...formData, specialty: v })}
+                    specialties={specialties}
+                    onSpecialtiesChange={setSpecialties}
+                  />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>{t("doctorMgmt.qualificationLabel")}</Label>
-                  <Input
+                  <RichTextEditor
                     value={formData.qualification}
-                    onChange={(e) => setFormData({ ...formData, qualification: e.target.value })}
+                    onChange={(v) => setFormData({ ...formData, qualification: v })}
                     placeholder="MBBS, MD, FCPS"
                   />
                 </div>
