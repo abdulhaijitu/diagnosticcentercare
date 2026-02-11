@@ -21,7 +21,7 @@ export function ServicesSection() {
       description: t("servicesSection.consultDesc"),
       features: [t("servicesSection.consultF1"), t("servicesSection.consultF2"), t("servicesSection.consultF3")],
       href: "/services#consultation",
-      color: "bg-care-amber",
+      color: "bg-accent",
     },
     {
       icon: HomeIcon,
