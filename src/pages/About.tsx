@@ -14,6 +14,12 @@ import {
 import heroAbout1 from "@/assets/hero-about-1.jpg";
 import heroAbout2 from "@/assets/hero-about-2.jpg";
 import heroServices from "@/assets/hero-services.jpg";
+import teamAhmedKarim from "@/assets/team-ahmed-karim.jpg";
+import teamFatemaNasrin from "@/assets/team-fatema-nasrin.jpg";
+import teamMohammadRafi from "@/assets/team-mohammad-rafi.jpg";
+import teamSabrina from "@/assets/team-sabrina.jpg";
+import teamTanvir from "@/assets/team-tanvir.jpg";
+import teamNazma from "@/assets/team-nazma.jpg";
 
 const About = () => {
   const { t } = useTranslation();
@@ -35,12 +41,12 @@ const About = () => {
   ];
 
   const teamMembers = [
-    { nameKey: "about.teamMembers.m1Name", roleKey: "about.teamMembers.m1Role", qualification: "MBBS, FCPS (Pathology)", bioKey: "about.teamMembers.m1Bio", email: "ahmed.karim@trustcaredc.com", linkedin: "#" },
-    { nameKey: "about.teamMembers.m2Name", roleKey: "about.teamMembers.m2Role", qualification: "MBBS, MD (Clinical Pathology)", bioKey: "about.teamMembers.m2Bio", email: "fatema.nasrin@trustcaredc.com", linkedin: "#" },
-    { nameKey: "about.teamMembers.m3Name", roleKey: "about.teamMembers.m3Role", qualification: "MBA, Healthcare Management", bioKey: "about.teamMembers.m3Bio", email: "rafi@trustcaredc.com", linkedin: "#" },
-    { nameKey: "about.teamMembers.m4Name", roleKey: "about.teamMembers.m4Role", qualification: "BSc MLT, Diploma in Lab Medicine", bioKey: "about.teamMembers.m4Bio", email: "sabrina@trustcaredc.com", linkedin: "#" },
-    { nameKey: "about.teamMembers.m5Name", roleKey: "about.teamMembers.m5Role", qualification: "MBBS, MD (Radiology)", bioKey: "about.teamMembers.m5Bio", email: "tanvir@trustcaredc.com", linkedin: "#" },
-    { nameKey: "about.teamMembers.m6Name", roleKey: "about.teamMembers.m6Role", qualification: "BA, Customer Service Certified", bioKey: "about.teamMembers.m6Bio", email: "nazma@trustcaredc.com", linkedin: "#" },
+    { nameKey: "about.teamMembers.m1Name", roleKey: "about.teamMembers.m1Role", qualification: "MBBS, FCPS (Pathology)", bioKey: "about.teamMembers.m1Bio", email: "ahmed.karim@trustcaredc.com", linkedin: "#", avatar: teamAhmedKarim },
+    { nameKey: "about.teamMembers.m2Name", roleKey: "about.teamMembers.m2Role", qualification: "MBBS, MD (Clinical Pathology)", bioKey: "about.teamMembers.m2Bio", email: "fatema.nasrin@trustcaredc.com", linkedin: "#", avatar: teamFatemaNasrin },
+    { nameKey: "about.teamMembers.m3Name", roleKey: "about.teamMembers.m3Role", qualification: "MBA, Healthcare Management", bioKey: "about.teamMembers.m3Bio", email: "rafi@trustcaredc.com", linkedin: "#", avatar: teamMohammadRafi },
+    { nameKey: "about.teamMembers.m4Name", roleKey: "about.teamMembers.m4Role", qualification: "BSc MLT, Diploma in Lab Medicine", bioKey: "about.teamMembers.m4Bio", email: "sabrina@trustcaredc.com", linkedin: "#", avatar: teamSabrina },
+    { nameKey: "about.teamMembers.m5Name", roleKey: "about.teamMembers.m5Role", qualification: "MBBS, MD (Radiology)", bioKey: "about.teamMembers.m5Bio", email: "tanvir@trustcaredc.com", linkedin: "#", avatar: teamTanvir },
+    { nameKey: "about.teamMembers.m6Name", roleKey: "about.teamMembers.m6Role", qualification: "BA, Customer Service Certified", bioKey: "about.teamMembers.m6Bio", email: "nazma@trustcaredc.com", linkedin: "#", avatar: teamNazma },
   ];
 
   const achievements = [
@@ -201,6 +207,7 @@ const About = () => {
                     <CardContent className="pt-8 pb-6">
                       <div className="text-center">
                         <Avatar className="h-24 w-24 mx-auto mb-4 ring-4 ring-primary/10 group-hover:ring-primary/20 transition-all">
+                          <AvatarImage src={member.avatar} alt={name} className="object-cover" />
                           <AvatarFallback className="text-xl bg-gradient-to-br from-primary/20 to-accent/20 text-primary font-semibold">
                             {name.split(" ").slice(-1)[0].charAt(0)}
                           </AvatarFallback>
