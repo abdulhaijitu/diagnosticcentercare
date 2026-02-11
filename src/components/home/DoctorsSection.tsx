@@ -2,12 +2,16 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Star, Calendar } from "lucide-react";
+import doctor1 from "@/assets/doctor-1.jpg";
+import doctor2 from "@/assets/doctor-2.jpg";
+import doctor3 from "@/assets/doctor-3.jpg";
+import doctor4 from "@/assets/doctor-4.jpg";
 
 const doctors = [
-  { id: 1, name: "Dr. Sarah Rahman", specialty: "Cardiologist", experience: "15+", rating: 4.9, availableToday: true },
-  { id: 2, name: "Dr. Ahmed Hossain", specialty: "General Physician", experience: "12+", rating: 4.8, availableToday: true },
-  { id: 3, name: "Dr. Fatima Khan", specialty: "Gynecologist", experience: "18+", rating: 4.9, availableToday: false },
-  { id: 4, name: "Dr. Karim Uddin", specialty: "Orthopedic", experience: "10+", rating: 4.7, availableToday: true },
+  { id: 1, name: "Dr. Sarah Rahman", specialty: "Cardiologist", experience: "15+", rating: 4.9, availableToday: true, image: doctor1 },
+  { id: 2, name: "Dr. Ahmed Hossain", specialty: "General Physician", experience: "12+", rating: 4.8, availableToday: true, image: doctor2 },
+  { id: 3, name: "Dr. Fatima Khan", specialty: "Gynecologist", experience: "18+", rating: 4.9, availableToday: false, image: doctor3 },
+  { id: 4, name: "Dr. Karim Uddin", specialty: "Orthopedic", experience: "10+", rating: 4.7, availableToday: true, image: doctor4 },
 ];
 
 export function DoctorsSection() {
@@ -36,14 +40,12 @@ export function DoctorsSection() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {doctors.map((doctor) => (
             <div key={doctor.id} className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elevated transition-all duration-300 ease-out hover:-translate-y-1">
-              <div className="aspect-[4/3] bg-gradient-to-br from-secondary to-muted relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-primary">
-                      {doctor.name.split(' ')[1]?.[0] || doctor.name[0]}
-                    </span>
-                  </div>
-                </div>
+              <div className="aspect-[4/3] relative overflow-hidden">
+                <img
+                  src={doctor.image}
+                  alt={doctor.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
                 {doctor.availableToday && (
                   <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-success text-white text-xs font-medium">
                     {t("doctorsSection.availableToday")}

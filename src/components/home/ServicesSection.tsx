@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import { FlaskConical, Stethoscope, Home, ArrowRight, CheckCircle2 } from "lucide-react";
+import { FlaskConical, Stethoscope, Home as HomeIcon, ArrowRight, CheckCircle2 } from "lucide-react";
 
 export function ServicesSection() {
   const { t } = useTranslation();
@@ -24,7 +24,7 @@ export function ServicesSection() {
       color: "bg-care-amber",
     },
     {
-      icon: Home,
+      icon: HomeIcon,
       title: t("servicesSection.homeCollection"),
       description: t("servicesSection.homeCollDesc"),
       features: [t("servicesSection.homeCollF1"), t("servicesSection.homeCollF2"), t("servicesSection.homeCollF3")],
