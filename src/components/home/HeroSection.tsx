@@ -111,7 +111,7 @@ export function HeroSection() {
             { icon: Award, text: t("hero.expertDoctors") },
           ].map((feature) => (
             <div key={feature.text} className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-black/30 backdrop-blur-md shadow-md">
-              <feature.icon className="h-3.5 w-3.5 text-care-amber" />
+              <feature.icon className="h-3.5 w-3.5 text-white" />
               <span className="text-xs font-semibold text-white">{feature.text}</span>
             </div>
           ))}
