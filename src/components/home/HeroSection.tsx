@@ -67,10 +67,6 @@ export function HeroSection() {
           <div className="mt-3 h-1 w-48 sm:w-64 md:w-80 rounded-full bg-gradient-to-r from-care-amber via-primary-foreground/60 to-trust-teal-light" />
         </div>
 
-        {/* Subtitle */}
-        <p className="text-center text-sm md:text-base text-primary-foreground max-w-xl mx-auto leading-relaxed mb-8 md:mb-10 animate-fade-in-up animation-delay-100">
-          {t("hero.subtitle")}
-        </p>
 
         {/* Service Cards */}
         <div
