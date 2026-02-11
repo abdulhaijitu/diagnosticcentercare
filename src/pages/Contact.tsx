@@ -12,10 +12,13 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
+import { PageHero } from "@/components/shared/PageHero";
 import { 
   Phone, Mail, MapPin, Clock, Send, MessageSquare,
   Building2, ArrowRight, Facebook, MessageCircle
 } from "lucide-react";
+import heroContactImg from "@/assets/hero-contact.jpg";
+import heroServicesImg from "@/assets/hero-services.jpg";
 
 const Contact = () => {
   const { toast } = useToast();
@@ -30,7 +33,6 @@ const Contact = () => {
     message: "",
   });
 
-  // Dynamic validation schema using translations
   const contactSchema = z.object({
     name: z.string().trim().min(1, t("validation.nameRequired")).max(100, t("validation.nameMax")),
     email: z.string().trim().email(t("validation.emailInvalid")).max(255, t("validation.emailMax")),
@@ -155,21 +157,13 @@ const Contact = () => {
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-hero text-white py-16 md:py-20">
-          <div className="container-custom">
-            <div className="text-center max-w-3xl mx-auto">
-              <span className="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-sm font-medium mb-4">
-                {t("contactPage.badge")}
-              </span>
-              <h1 className="text-display-sm md:text-display-md font-bold mb-4">
-                {t("contactPage.title")}
-              </h1>
-              <p className="text-white/80 text-lg">
-                {t("contactPage.subtitle")}
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          badge={t("contactPage.badge")}
+          title={t("contactPage.title")}
+          subtitle={t("contactPage.subtitle")}
+          images={[heroContactImg, heroServicesImg]}
+          variant="gradient"
+        />
 
         {/* Contact Info Cards */}
         <section className="section-padding bg-muted/30">
@@ -240,21 +234,15 @@ const Contact = () => {
                   <div className="space-y-3 text-sm">
                     <div className="flex items-start gap-3">
                       <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <p className="text-muted-foreground">
-                        {t("contactPage.fullAddress")}
-                      </p>
+                      <p className="text-muted-foreground">{t("contactPage.fullAddress")}</p>
                     </div>
                     <div className="flex items-center gap-3">
                       <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-                      <a href="tel:+8801345580203" className="text-foreground hover:text-primary font-medium">
-                        +880 1345-580203
-                      </a>
+                      <a href="tel:+8801345580203" className="text-foreground hover:text-primary font-medium">+880 1345-580203</a>
                     </div>
                     <div className="flex items-center gap-3">
                       <Mail className="h-5 w-5 text-primary flex-shrink-0" />
-                      <a href="mailto:trustcaredc@gmail.com" className="text-foreground hover:text-primary">
-                        trustcaredc@gmail.com
-                      </a>
+                      <a href="mailto:trustcaredc@gmail.com" className="text-foreground hover:text-primary">trustcaredc@gmail.com</a>
                     </div>
                   </div>
                 </div>
@@ -262,20 +250,10 @@ const Contact = () => {
                 <div className="mt-6">
                   <h3 className="font-semibold text-foreground mb-4">{t("contactPage.socialMedia")}</h3>
                   <div className="flex gap-3">
-                    <a 
-                      href="https://facebook.com" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="w-12 h-12 rounded-xl bg-[#1877F2] text-white flex items-center justify-center hover:opacity-90 transition-opacity"
-                    >
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-xl bg-[#1877F2] text-white flex items-center justify-center hover:opacity-90 transition-opacity">
                       <Facebook className="h-5 w-5" />
                     </a>
-                    <a 
-                      href="https://wa.me/8801345580203" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="w-12 h-12 rounded-xl bg-[#25D366] text-white flex items-center justify-center hover:opacity-90 transition-opacity"
-                    >
+                    <a href="https://wa.me/8801345580203" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-xl bg-[#25D366] text-white flex items-center justify-center hover:opacity-90 transition-opacity">
                       <MessageCircle className="h-5 w-5" />
                     </a>
                   </div>
@@ -304,25 +282,12 @@ const Contact = () => {
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="name">{t("contactPage.fullName")}</Label>
-                          <Input
-                            id="name"
-                            placeholder={t("contactPage.namePlaceholder")}
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className={errors.name ? "border-destructive" : ""}
-                          />
+                          <Input id="name" placeholder={t("contactPage.namePlaceholder")} value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className={errors.name ? "border-destructive" : ""} />
                           {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="email">{t("contactPage.emailLabel")}</Label>
-                          <Input
-                            id="email"
-                            type="email"
-                            placeholder={t("contactPage.emailPlaceholder")}
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className={errors.email ? "border-destructive" : ""}
-                          />
+                          <Input id="email" type="email" placeholder={t("contactPage.emailPlaceholder")} value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className={errors.email ? "border-destructive" : ""} />
                           {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
                         </div>
                       </div>
@@ -330,38 +295,19 @@ const Contact = () => {
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="phone">{t("contactPage.phoneLabel")}</Label>
-                          <Input
-                            id="phone"
-                            placeholder={t("contactPage.phonePlaceholder")}
-                            value={formData.phone}
-                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            className={errors.phone ? "border-destructive" : ""}
-                          />
+                          <Input id="phone" placeholder={t("contactPage.phonePlaceholder")} value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className={errors.phone ? "border-destructive" : ""} />
                           {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="subject">{t("contactPage.subject")}</Label>
-                          <Input
-                            id="subject"
-                            placeholder={t("contactPage.subjectPlaceholder")}
-                            value={formData.subject}
-                            onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                            className={errors.subject ? "border-destructive" : ""}
-                          />
+                          <Input id="subject" placeholder={t("contactPage.subjectPlaceholder")} value={formData.subject} onChange={(e) => setFormData({ ...formData, subject: e.target.value })} className={errors.subject ? "border-destructive" : ""} />
                           {errors.subject && <p className="text-xs text-destructive">{errors.subject}</p>}
                         </div>
                       </div>
 
                       <div className="space-y-2">
                         <Label htmlFor="message">{t("contactPage.message")}</Label>
-                        <Textarea
-                          id="message"
-                          placeholder={t("contactPage.messagePlaceholder")}
-                          value={formData.message}
-                          onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                          rows={5}
-                          className={errors.message ? "border-destructive" : ""}
-                        />
+                        <Textarea id="message" placeholder={t("contactPage.messagePlaceholder")} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} rows={5} className={errors.message ? "border-destructive" : ""} />
                         {errors.message && <p className="text-xs text-destructive">{errors.message}</p>}
                       </div>
 

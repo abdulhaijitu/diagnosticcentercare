@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { PageHero } from "@/components/shared/PageHero";
 import { 
   Microscope, Stethoscope, Home, ArrowRight, CheckCircle2,
   Clock, Shield, Award, Users, FileText, CalendarCheck, Truck,
@@ -19,6 +20,8 @@ import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { CorporateInquiryForm } from "@/components/corporate/CorporateInquiryForm";
 import { useCorporatePackages } from "@/hooks/useCorporatePackages";
 import { Skeleton } from "@/components/ui/skeleton";
+import heroServicesImg from "@/assets/hero-services.jpg";
+import heroAbout2 from "@/assets/hero-about-2.jpg";
 
 const Services = () => {
   const { t } = useTranslation();
@@ -128,34 +131,27 @@ const Services = () => {
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-hero text-white py-16 md:py-24">
-          <div className="container-custom">
-            <div className="text-center max-w-3xl mx-auto">
-              <span className="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-sm font-medium mb-4">
-                {t("servicesPage.heroBadge")}
-              </span>
-              <h1 className="text-display-sm md:text-display-lg font-bold mb-6">
-                {t("servicesPage.heroTitle")}
-              </h1>
-              <p className="text-white/80 text-lg mb-8">
-                {t("servicesPage.heroSubtitle")}
-              </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <Link to="/book-test">
-                  <Button size="lg" variant="secondary">
-                    {t("servicesPage.bookTest")}
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Button>
-                </Link>
-                <Link to="/book-appointment">
-                  <Button size="lg" variant="outline" className="bg-white/10 border-white/30 hover:bg-white/20">
-                    {t("servicesPage.doctorAppointment")}
-                  </Button>
-                </Link>
-              </div>
-            </div>
+        <PageHero
+          badge={t("servicesPage.heroBadge")}
+          title={t("servicesPage.heroTitle")}
+          subtitle={t("servicesPage.heroSubtitle")}
+          images={[heroServicesImg, heroAbout2]}
+          variant="gradient"
+        >
+          <div className="flex flex-wrap gap-4">
+            <Link to="/book-test">
+              <Button size="lg" variant="secondary">
+                {t("servicesPage.bookTest")}
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </Link>
+            <Link to="/book-appointment">
+              <Button size="lg" variant="outline" className="bg-white/10 border-white/30 hover:bg-white/20 text-white">
+                {t("servicesPage.doctorAppointment")}
+              </Button>
+            </Link>
           </div>
-        </section>
+        </PageHero>
 
         {/* Stats */}
         <section className="py-12 bg-card border-b border-border">

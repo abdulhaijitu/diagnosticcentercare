@@ -5,11 +5,15 @@ import { FloatingActions } from "@/components/ui/FloatingActions";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PageHero } from "@/components/shared/PageHero";
 import { 
   Heart, Target, Eye, Shield, Users, Award, 
   Clock, CheckCircle2, Building2, Microscope,
   Linkedin, Mail, Trophy, Medal, BadgeCheck, Star
 } from "lucide-react";
+import heroAbout1 from "@/assets/hero-about-1.jpg";
+import heroAbout2 from "@/assets/hero-about-2.jpg";
+import heroServices from "@/assets/hero-services.jpg";
 
 const About = () => {
   const { t } = useTranslation();
@@ -69,18 +73,13 @@ const About = () => {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-primary/10 via-background to-accent/10 py-16 md:py-24">
-          <div className="container-custom">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-display-md md:text-display-lg font-bold text-foreground mb-6">
-                {t("about.heroTitle")}
-              </h1>
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                {t("about.heroSubtitle")}
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          badge={t("about.heroTitle")}
+          title={t("about.heroTitle")}
+          subtitle={t("about.heroSubtitle")}
+          images={[heroAbout1, heroAbout2, heroServices]}
+          variant="light"
+        />
 
         {/* Stats Section */}
         <section className="py-12 bg-card border-y border-border">
@@ -143,16 +142,13 @@ const About = () => {
         <section className="section-padding bg-muted/30">
           <div className="container-custom">
             <div className="grid md:grid-cols-2 gap-8">
-              {/* Mission */}
               <Card className="bg-card border-2 border-primary/20">
                 <CardContent className="pt-8 pb-8">
                   <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
                     <Target className="h-8 w-8 text-primary" />
                   </div>
                   <h3 className="text-2xl font-bold text-foreground mb-4">{t("about.mission.title")}</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {t("about.mission.description")}
-                  </p>
+                  <p className="text-muted-foreground leading-relaxed">{t("about.mission.description")}</p>
                   <ul className="mt-6 space-y-3">
                     {["about.mission.f1", "about.mission.f2", "about.mission.f3"].map((key) => (
                       <li key={key} className="flex items-start gap-3">
@@ -164,16 +160,13 @@ const About = () => {
                 </CardContent>
               </Card>
 
-              {/* Vision */}
               <Card className="bg-card border-2 border-accent/20">
                 <CardContent className="pt-8 pb-8">
                   <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-6">
                     <Eye className="h-8 w-8 text-accent" />
                   </div>
                   <h3 className="text-2xl font-bold text-foreground mb-4">{t("about.vision.title")}</h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {t("about.vision.description")}
-                  </p>
+                  <p className="text-muted-foreground leading-relaxed">{t("about.vision.description")}</p>
                   <ul className="mt-6 space-y-3">
                     {["about.vision.f1", "about.vision.f2", "about.vision.f3"].map((key) => (
                       <li key={key} className="flex items-start gap-3">
@@ -196,12 +189,8 @@ const About = () => {
                 <Users className="h-5 w-5 text-primary" />
                 <span className="text-sm font-medium text-primary uppercase tracking-wider">{t("about.team.badge")}</span>
               </div>
-              <h2 className="text-display-sm md:text-display-md font-bold text-foreground mb-4">
-                {t("about.team.title")}
-              </h2>
-              <p className="text-muted-foreground">
-                {t("about.team.subtitle")}
-              </p>
+              <h2 className="text-display-sm md:text-display-md font-bold text-foreground mb-4">{t("about.team.title")}</h2>
+              <p className="text-muted-foreground">{t("about.team.subtitle")}</p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -220,20 +209,11 @@ const About = () => {
                         <p className="text-sm font-medium text-primary mb-1">{t(member.roleKey)}</p>
                         <p className="text-xs text-muted-foreground mb-3">{member.qualification}</p>
                         <p className="text-sm text-muted-foreground leading-relaxed mb-4">{t(member.bioKey)}</p>
-                        
                         <div className="flex items-center justify-center gap-3 pt-4 border-t border-border">
-                          <a 
-                            href={`mailto:${member.email}`}
-                            className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
-                            title={t("about.emailTooltip")}
-                          >
+                          <a href={`mailto:${member.email}`} className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors" title={t("about.emailTooltip")}>
                             <Mail className="h-4 w-4" />
                           </a>
-                          <a 
-                            href={member.linkedin}
-                            className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors"
-                            title={t("about.linkedinTooltip")}
-                          >
+                          <a href={member.linkedin} className="p-2 rounded-full bg-muted hover:bg-primary/10 hover:text-primary transition-colors" title={t("about.linkedinTooltip")}>
                             <Linkedin className="h-4 w-4" />
                           </a>
                         </div>
@@ -254,12 +234,8 @@ const About = () => {
                 <Trophy className="h-5 w-5 text-primary" />
                 <span className="text-sm font-medium text-primary uppercase tracking-wider">{t("about.achievements.badge")}</span>
               </div>
-              <h2 className="text-display-sm md:text-display-md font-bold text-foreground mb-4">
-                {t("about.achievements.title")}
-              </h2>
-              <p className="text-muted-foreground">
-                {t("about.achievements.subtitle")}
-              </p>
+              <h2 className="text-display-sm md:text-display-md font-bold text-foreground mb-4">{t("about.achievements.title")}</h2>
+              <p className="text-muted-foreground">{t("about.achievements.subtitle")}</p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -272,18 +248,10 @@ const About = () => {
                         <achievement.icon className="h-7 w-7 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <span className="inline-block px-2 py-0.5 text-xs font-medium bg-primary/10 text-primary rounded-full mb-2">
-                          {achievement.year}
-                        </span>
-                        <h3 className="text-lg font-semibold text-foreground mb-1 leading-tight">
-                          {t(achievement.titleKey)}
-                        </h3>
-                        <p className="text-sm text-primary/80 font-medium mb-2">
-                          {t(achievement.orgKey)}
-                        </p>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          {t(achievement.descKey)}
-                        </p>
+                        <span className="inline-block px-2 py-0.5 text-xs font-medium bg-primary/10 text-primary rounded-full mb-2">{achievement.year}</span>
+                        <h3 className="text-lg font-semibold text-foreground mb-1 leading-tight">{t(achievement.titleKey)}</h3>
+                        <p className="text-sm text-primary/80 font-medium mb-2">{t(achievement.orgKey)}</p>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{t(achievement.descKey)}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -297,12 +265,8 @@ const About = () => {
         <section className="section-padding bg-muted/30">
           <div className="container-custom">
             <div className="text-center max-w-2xl mx-auto mb-12">
-              <h2 className="text-display-sm md:text-display-md font-bold text-foreground mb-4">
-                {t("about.values.title")}
-              </h2>
-              <p className="text-muted-foreground">
-                {t("about.values.subtitle")}
-              </p>
+              <h2 className="text-display-sm md:text-display-md font-bold text-foreground mb-4">{t("about.values.title")}</h2>
+              <p className="text-muted-foreground">{t("about.values.subtitle")}</p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -324,30 +288,11 @@ const About = () => {
         {/* CTA Section */}
         <section className="section-padding bg-primary text-primary-foreground">
           <div className="container-custom text-center">
-            <h2 className="text-display-sm font-bold mb-4">
-              {t("about.cta.title")}
-            </h2>
-            <p className="text-primary-foreground/80 max-w-2xl mx-auto mb-8">
-              {t("about.cta.subtitle")}
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <a
-                href="/book-test"
-                className="inline-flex items-center justify-center px-6 py-3 bg-background text-foreground font-medium rounded-lg hover:bg-background/90 transition-colors"
-              >
-                {t("about.cta.bookTest")}
-              </a>
-              <a
-                href="/contact"
-                className="inline-flex items-center justify-center px-6 py-3 border-2 border-primary-foreground text-primary-foreground font-medium rounded-lg hover:bg-primary-foreground/10 transition-colors"
-              >
-                {t("about.cta.contactUs")}
-              </a>
-            </div>
+            <h2 className="text-display-sm font-bold mb-4">{t("about.cta.title")}</h2>
+            <p className="text-primary-foreground/80 max-w-2xl mx-auto mb-8">{t("about.cta.subtitle")}</p>
           </div>
         </section>
       </main>
-
       <Footer />
       <FloatingActions />
     </div>
