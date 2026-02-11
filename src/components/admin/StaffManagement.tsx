@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -83,6 +84,12 @@ export function StaffManagement() {
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isAddStaffOpen, setIsAddStaffOpen] = useState(false);
+  const [newStaffEmail, setNewStaffEmail] = useState("");
+  const [newStaffPassword, setNewStaffPassword] = useState("");
+  const [newStaffName, setNewStaffName] = useState("");
+  const [newStaffPhone, setNewStaffPhone] = useState("");
+  const [newStaffRole, setNewStaffRole] = useState<AppRole>("staff");
 
   const fetchUsers = async () => {
     try {
@@ -279,6 +286,37 @@ export function StaffManagement() {
     }
   };
 
+  const handleAddStaff = async () => {
+    if (!newStaffEmail || !newStaffPassword || !newStaffRole) return;
+    try {
+      setIsSubmitting(true);
+      const { data, error } = await supabase.functions.invoke("add-staff", {
+        body: {
+          email: newStaffEmail,
+          password: newStaffPassword,
+          full_name: newStaffName,
+          phone: newStaffPhone,
+          role: newStaffRole,
+        },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast({ title: t("common.success"), description: "স্টাফ সফলভাবে যোগ করা হয়েছে" });
+      setIsAddStaffOpen(false);
+      setNewStaffEmail("");
+      setNewStaffPassword("");
+      setNewStaffName("");
+      setNewStaffPhone("");
+      setNewStaffRole("staff");
+      await fetchUsers();
+    } catch (error: any) {
+      console.error("Error adding staff:", error);
+      toast({ title: t("common.error"), description: error.message || "স্টাফ যোগ করতে সমস্যা হয়েছে", variant: "destructive" });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // Get available roles for a user (roles they don't have yet)
   const getAvailableRoles = (userItem: UserWithRoles): AppRole[] => {
     const allRoles: AppRole[] = ["staff", "doctor", "manager", "sales", "admin"];
@@ -366,14 +404,20 @@ export function StaffManagement() {
               <CardTitle>{t("staffMgmt.userManagement")}</CardTitle>
               <CardDescription>{t("staffMgmt.userManagementDesc")}</CardDescription>
             </div>
-            <div className="relative w-full md:w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder={t("staffMgmt.searchPlaceholder")}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
+            <div className="flex items-center gap-3">
+              <div className="relative w-full md:w-72">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder={t("staffMgmt.searchPlaceholder")}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <Button onClick={() => setIsAddStaffOpen(true)}>
+                <UserPlus className="h-4 w-4 mr-2" />
+                Add Staff
+              </Button>
             </div>
           </div>
         </CardHeader>
@@ -612,6 +656,58 @@ export function StaffManagement() {
                 <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{t("staffMgmt.removing")}</>
               ) : (
                 <><Trash2 className="h-4 w-4 mr-2" />{t("staffMgmt.deleteUser")}</>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Add Staff Dialog */}
+      <Dialog open={isAddStaffOpen} onOpenChange={setIsAddStaffOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>নতুন স্টাফ যোগ করুন</DialogTitle>
+            <DialogDescription>নতুন স্টাফ মেম্বারের তথ্য দিন</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>নাম *</Label>
+              <Input value={newStaffName} onChange={(e) => setNewStaffName(e.target.value)} placeholder="পুরো নাম" />
+            </div>
+            <div className="space-y-2">
+              <Label>ইমেইল *</Label>
+              <Input type="email" value={newStaffEmail} onChange={(e) => setNewStaffEmail(e.target.value)} placeholder="email@example.com" />
+            </div>
+            <div className="space-y-2">
+              <Label>পাসওয়ার্ড *</Label>
+              <Input type="password" value={newStaffPassword} onChange={(e) => setNewStaffPassword(e.target.value)} placeholder="ন্যূনতম ৬ অক্ষর" />
+            </div>
+            <div className="space-y-2">
+              <Label>ফোন</Label>
+              <Input value={newStaffPhone} onChange={(e) => setNewStaffPhone(e.target.value)} placeholder="০১XXXXXXXXX" />
+            </div>
+            <div className="space-y-2">
+              <Label>রোল *</Label>
+              <Select value={newStaffRole} onValueChange={(val) => setNewStaffRole(val as AppRole)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="staff">Staff</SelectItem>
+                  <SelectItem value="doctor">Doctor</SelectItem>
+                  <SelectItem value="manager">Manager</SelectItem>
+                  <SelectItem value="sales">Sales</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsAddStaffOpen(false)}>{t("common.cancel")}</Button>
+            <Button onClick={handleAddStaff} disabled={!newStaffEmail || !newStaffPassword || isSubmitting}>
+              {isSubmitting ? (
+                <><Loader2 className="h-4 w-4 mr-2 animate-spin" />যোগ করা হচ্ছে...</>
+              ) : (
+                <><UserPlus className="h-4 w-4 mr-2" />যোগ করুন</>
               )}
             </Button>
           </DialogFooter>
