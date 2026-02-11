@@ -7,6 +7,7 @@ import { SEOHead } from "@/components/seo/SEOHead";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SkeletonCard } from "@/components/ui/skeleton-card";
+import { PageHero } from "@/components/shared/PageHero";
 import {
   Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger,
 } from "@/components/ui/sheet";
@@ -16,6 +17,8 @@ import { DoctorCard, DoctorCardProps } from "@/components/doctors/DoctorCard";
 import { useVoiceSearch } from "@/hooks/useVoiceSearch";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
+import heroDoctorsImg from "@/assets/hero-doctors.jpg";
+import heroAbout2 from "@/assets/hero-about-2.jpg";
 
 // Mock data for specialties - kept as IDs for filtering, labels from i18n
 const specialtyIds = ["all", "general", "cardiology", "dermatology", "orthopedics", "gynecology", "pediatrics", "neurology", "gastroenterology"];
@@ -145,27 +148,24 @@ const Doctors = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <main className="flex-1">
-        <section className="bg-gradient-hero text-white py-16 md:py-20">
-          <div className="container-custom">
-            <div className="text-center max-w-3xl mx-auto">
-              <span className="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-sm font-medium mb-4">
-                {t("doctorsPage.badge")}
-              </span>
-              <h1 className="text-display-sm md:text-display-md font-bold mb-4">{t("doctorsPage.title")}</h1>
-              <p className="text-white/80 text-lg mb-8">{t("doctorsPage.subtitle")}</p>
-              <div className="relative max-w-xl mx-auto">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input type="text" placeholder={isListening ? t("doctorsPage.listening") : t("doctorsPage.searchPlaceholder")} value={isListening ? transcript || searchQuery : searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-12 pr-14 h-14 rounded-xl bg-white text-foreground border-0 shadow-elevated" />
-                {isSupported && (
-                  <Button type="button" size="icon" variant={isListening ? "default" : "ghost"} onClick={isListening ? stopListening : startListening} className={`absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-lg transition-all ${isListening ? "bg-destructive hover:bg-destructive/90 animate-pulse" : "hover:bg-muted"}`} title={isListening ? t("doctorsPage.stopListening") : t("doctorsPage.voiceSearch")}>
-                    {isListening ? <MicOff className="h-5 w-5 text-destructive-foreground" /> : <Mic className="h-5 w-5 text-muted-foreground" />}
-                  </Button>
-                )}
-              </div>
-              {isListening && <p className="text-white/80 text-sm mt-3 animate-pulse">🎤 {t("doctorsPage.listening")} "{transcript || "..."}"</p>}
-            </div>
+        <PageHero
+          badge={t("doctorsPage.badge")}
+          title={t("doctorsPage.title")}
+          subtitle={t("doctorsPage.subtitle")}
+          images={[heroDoctorsImg, heroAbout2]}
+          variant="gradient"
+        >
+          <div className="relative max-w-xl">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input type="text" placeholder={isListening ? t("doctorsPage.listening") : t("doctorsPage.searchPlaceholder")} value={isListening ? transcript || searchQuery : searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-12 pr-14 h-14 rounded-xl bg-white text-foreground border-0 shadow-elevated" />
+            {isSupported && (
+              <Button type="button" size="icon" variant={isListening ? "default" : "ghost"} onClick={isListening ? stopListening : startListening} className={`absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-lg transition-all ${isListening ? "bg-destructive hover:bg-destructive/90 animate-pulse" : "hover:bg-muted"}`} title={isListening ? t("doctorsPage.stopListening") : t("doctorsPage.voiceSearch")}>
+                {isListening ? <MicOff className="h-5 w-5 text-destructive-foreground" /> : <Mic className="h-5 w-5 text-muted-foreground" />}
+              </Button>
+            )}
           </div>
-        </section>
+          {isListening && <p className="text-white/80 text-sm mt-3 animate-pulse">🎤 {t("doctorsPage.listening")} "{transcript || "..."}"</p>}
+        </PageHero>
 
         <section className="section-padding">
           <div className="container-custom">

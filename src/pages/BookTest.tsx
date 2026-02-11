@@ -57,6 +57,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useHomeCollectionRequests } from "@/hooks/useHomeCollectionRequests";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
+import { PageHero } from "@/components/shared/PageHero";
+import heroBooktestImg from "@/assets/hero-booktest.jpg";
+import heroAbout1 from "@/assets/hero-about-1.jpg";
 
 // Mock data for diagnostic tests
 const testCategories = [
@@ -320,33 +323,24 @@ const BookTest = () => {
       <Header />
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-gradient-hero text-white py-16 md:py-20">
-          <div className="container-custom">
-            <div className="text-center max-w-3xl mx-auto">
-              <span className="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-sm font-medium mb-4">
-                {t("bookTestPage.badge")}
-              </span>
-              <h1 className="text-display-sm md:text-display-md font-bold mb-4">
-                {t("bookTestPage.title")}
-              </h1>
-              <p className="text-white/80 text-lg mb-8">
-                {t("bookTestPage.subtitle")}
-              </p>
-              
-              {/* Search Bar */}
-              <div className="relative max-w-xl mx-auto">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  type="text"
-                  placeholder={t("bookTestPage.searchPlaceholder")}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-12 h-14 rounded-xl bg-white text-foreground border-0 shadow-elevated"
-                />
-              </div>
-            </div>
+        <PageHero
+          badge={t("bookTestPage.badge")}
+          title={t("bookTestPage.title")}
+          subtitle={t("bookTestPage.subtitle")}
+          images={[heroBooktestImg, heroAbout1]}
+          variant="gradient"
+        >
+          <div className="relative max-w-xl">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder={t("bookTestPage.searchPlaceholder")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 h-14 rounded-xl bg-white text-foreground border-0 shadow-elevated"
+            />
           </div>
-        </section>
+        </PageHero>
 
         {/* Main Content */}
         <section className="section-padding">
