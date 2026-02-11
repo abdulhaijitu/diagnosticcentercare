@@ -54,11 +54,19 @@ export function TestimonialsSection() {
                   "{isBn && testimonial.text_bn ? testimonial.text_bn : testimonial.text}"
                 </p>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                    <span className="text-lg font-bold">
-                      {(isBn && testimonial.name_bn ? testimonial.name_bn : testimonial.name)[0]}
-                    </span>
-                  </div>
+                  {testimonial.image_url ? (
+                    <img
+                      src={testimonial.image_url}
+                      alt={isBn && testimonial.name_bn ? testimonial.name_bn : testimonial.name}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-white/20"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                      <span className="text-lg font-bold">
+                        {(isBn && testimonial.name_bn ? testimonial.name_bn : testimonial.name)[0]}
+                      </span>
+                    </div>
+                  )}
                   <div>
                     <p className="font-semibold">{isBn && testimonial.name_bn ? testimonial.name_bn : testimonial.name}</p>
                     <p className="text-sm text-primary-foreground/70">
