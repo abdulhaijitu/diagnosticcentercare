@@ -26,8 +26,9 @@ export function PageHero({ badge, title, subtitle, images, children, variant = "
       ref={ref}
       className={cn(
         "relative overflow-hidden py-16 md:py-24",
-        isGradient ? "bg-gradient-hero text-white" : "bg-gradient-to-br from-primary/10 via-background to-accent/10"
+        isGradient ? "text-white" : "bg-gradient-to-br from-primary/10 via-background to-accent/10"
       )}
+      style={isGradient ? { background: "var(--gradient-hero)" } : undefined}
     >
       <div className="container-custom">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
