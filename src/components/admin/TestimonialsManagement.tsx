@@ -21,7 +21,8 @@ import {
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { Plus, Edit, Trash2, Star, Loader2, MessageSquareQuote } from "lucide-react";
+import { Plus, Edit, Trash2, Star, Loader2, MessageSquareQuote, Upload, X } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface TestimonialForm {
   name: string;
@@ -35,12 +36,13 @@ interface TestimonialForm {
   service_bn: string;
   is_active: boolean;
   sort_order: number;
+  image_url: string;
 }
 
 const emptyForm: TestimonialForm = {
   name: "", name_bn: "", location: "", location_bn: "",
   rating: 5, text: "", text_bn: "", service: "", service_bn: "",
-  is_active: true, sort_order: 0,
+  is_active: true, sort_order: 0, image_url: "",
 };
 
 export function TestimonialsManagement() {
@@ -54,6 +56,26 @@ export function TestimonialsManagement() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [form, setForm] = useState<TestimonialForm>(emptyForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setIsUploading(true);
+      const ext = file.name.split(".").pop();
+      const path = `testimonials/${Date.now()}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file);
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(path);
+      setForm((prev) => ({ ...prev, image_url: publicUrl }));
+      toast({ title: "সফল", description: "ছবি আপলোড হয়েছে" });
+    } catch (error: any) {
+      toast({ title: "ত্রুটি", description: error.message, variant: "destructive" });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const openCreate = () => {
     setEditingId(null);
@@ -67,7 +89,7 @@ export function TestimonialsManagement() {
       name: item.name, name_bn: item.name_bn || "", location: item.location,
       location_bn: item.location_bn || "", rating: item.rating, text: item.text,
       text_bn: item.text_bn || "", service: item.service, service_bn: item.service_bn || "",
-      is_active: item.is_active, sort_order: item.sort_order,
+      is_active: item.is_active, sort_order: item.sort_order, image_url: item.image_url || "",
     });
     setIsFormOpen(true);
   };
@@ -84,12 +106,13 @@ export function TestimonialsManagement() {
     }
     try {
       setIsSubmitting(true);
+      const payload = { ...form, image_url: form.image_url || null };
       if (editingId) {
-        const { error } = await supabase.from("testimonials").update(form).eq("id", editingId);
+        const { error } = await supabase.from("testimonials").update(payload).eq("id", editingId);
         if (error) throw error;
         toast({ title: "সফল", description: "রিভিউ আপডেট হয়েছে" });
       } else {
-        const { error } = await supabase.from("testimonials").insert(form);
+        const { error } = await supabase.from("testimonials").insert(payload);
         if (error) throw error;
         toast({ title: "সফল", description: "নতুন রিভিউ যোগ হয়েছে" });
       }
@@ -167,13 +190,19 @@ export function TestimonialsManagement() {
                 ) : (
                   testimonials.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell>
-                        <div>
-                          <p className="font-medium">{item.name}</p>
-                          {item.name_bn && <p className="text-xs text-muted-foreground">{item.name_bn}</p>}
-                          <p className="text-xs text-muted-foreground">{item.location}</p>
+                       <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8">
+                            {item.image_url && <AvatarImage src={item.image_url} alt={item.name} />}
+                            <AvatarFallback className="text-xs">{item.name.charAt(0)}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium">{item.name}</p>
+                            {item.name_bn && <p className="text-xs text-muted-foreground">{item.name_bn}</p>}
+                            <p className="text-xs text-muted-foreground">{item.location}</p>
+                          </div>
                         </div>
-                      </TableCell>
+                       </TableCell>
                       <TableCell className="text-sm">{item.service}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-0.5">
@@ -253,6 +282,28 @@ export function TestimonialsManagement() {
             <div className="space-y-2 md:col-span-2">
               <Label>রিভিউ (বাংলা)</Label>
               <Textarea rows={3} value={form.text_bn} onChange={(e) => setForm({ ...form, text_bn: e.target.value })} />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <Label>ছবি</Label>
+              {form.image_url ? (
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage src={form.image_url} alt="Preview" />
+                    <AvatarFallback>IMG</AvatarFallback>
+                  </Avatar>
+                  <Button type="button" variant="outline" size="sm" onClick={() => setForm({ ...form, image_url: "" })}>
+                    <X className="h-4 w-4 mr-1" /> সরান
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <label className="inline-flex items-center gap-2 cursor-pointer px-4 py-2 border rounded-lg text-sm hover:bg-muted transition-colors">
+                    {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                    {isUploading ? "আপলোড হচ্ছে..." : "ছবি আপলোড করুন"}
+                    <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={isUploading} />
+                  </label>
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-3 md:col-span-2">
               <Switch checked={form.is_active} onCheckedChange={(v) => setForm({ ...form, is_active: v })} />
