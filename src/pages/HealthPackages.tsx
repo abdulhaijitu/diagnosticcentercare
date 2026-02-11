@@ -6,65 +6,16 @@ import { PageHero } from "@/components/shared/PageHero";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { CheckCircle2, ArrowRight, Phone, Heart, Shield, Star } from "lucide-react";
+import { useCorporatePackages } from "@/hooks/useCorporatePackages";
 import heroServicesImg from "@/assets/hero-services.jpg";
 import heroAbout1 from "@/assets/hero-about-1.jpg";
 
 const HealthPackages = () => {
-  const { t } = useTranslation();
-
-  const packages = [
-    {
-      name: t("healthPackagesPage.basic.name"),
-      price: "১,৫০০",
-      priceEn: "1,500",
-      popular: false,
-      color: "primary",
-      tests: [
-        t("healthPackagesPage.basic.t1"),
-        t("healthPackagesPage.basic.t2"),
-        t("healthPackagesPage.basic.t3"),
-        t("healthPackagesPage.basic.t4"),
-        t("healthPackagesPage.basic.t5"),
-      ],
-    },
-    {
-      name: t("healthPackagesPage.standard.name"),
-      price: "৩,০০০",
-      priceEn: "3,000",
-      popular: true,
-      color: "accent",
-      tests: [
-        t("healthPackagesPage.standard.t1"),
-        t("healthPackagesPage.standard.t2"),
-        t("healthPackagesPage.standard.t3"),
-        t("healthPackagesPage.standard.t4"),
-        t("healthPackagesPage.standard.t5"),
-        t("healthPackagesPage.standard.t6"),
-        t("healthPackagesPage.standard.t7"),
-        t("healthPackagesPage.standard.t8"),
-      ],
-    },
-    {
-      name: t("healthPackagesPage.premium.name"),
-      price: "৫,৫০০",
-      priceEn: "5,500",
-      popular: false,
-      color: "primary",
-      tests: [
-        t("healthPackagesPage.premium.t1"),
-        t("healthPackagesPage.premium.t2"),
-        t("healthPackagesPage.premium.t3"),
-        t("healthPackagesPage.premium.t4"),
-        t("healthPackagesPage.premium.t5"),
-        t("healthPackagesPage.premium.t6"),
-        t("healthPackagesPage.premium.t7"),
-        t("healthPackagesPage.premium.t8"),
-        t("healthPackagesPage.premium.t9"),
-        t("healthPackagesPage.premium.t10"),
-      ],
-    },
-  ];
+  const { t, i18n } = useTranslation();
+  const { data: packages, isLoading } = useCorporatePackages();
+  const isBn = i18n.language === "bn";
 
   const whyPackages = [
     { icon: Heart, titleKey: "healthPackagesPage.why1", descKey: "healthPackagesPage.why1Desc" },
@@ -95,45 +46,76 @@ const HealthPackages = () => {
       {/* Packages */}
       <section className="section-padding">
         <div className="container-custom">
-          <div className="grid md:grid-cols-3 gap-8 -mt-12">
-            {packages.map((pkg, idx) => (
-              <Card
-                key={idx}
-                className={`relative overflow-hidden hover:shadow-xl transition-all duration-300 ${
-                  pkg.popular ? "ring-2 ring-accent scale-[1.02]" : ""
-                }`}
-              >
-                {pkg.popular && (
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-accent text-accent-foreground">{t("healthPackagesPage.mostPopular")}</Badge>
-                  </div>
-                )}
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-xl">{pkg.name}</CardTitle>
-                  <div className="mt-2">
-                    <span className="text-3xl font-bold text-foreground">৳{pkg.price}</span>
-                    <span className="text-muted-foreground text-sm ml-1">/ {t("healthPackagesPage.perPerson")}</span>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3 mb-6">
-                    {pkg.tests.map((test, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-muted-foreground">{test}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link to="/book-test">
-                    <Button className="w-full" variant={pkg.popular ? "default" : "outline"}>
-                      {t("healthPackagesPage.bookNow")}
-                      <ArrowRight className="h-4 w-4 ml-2" />
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid md:grid-cols-3 gap-8 -mt-12">
+              {[1, 2, 3].map((i) => (
+                <Card key={i} className="overflow-hidden">
+                  <CardHeader><Skeleton className="h-6 w-40" /><Skeleton className="h-10 w-32 mt-2" /></CardHeader>
+                  <CardContent><div className="space-y-3">{[1,2,3,4,5].map(j => <Skeleton key={j} className="h-5 w-full" />)}</div></CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : packages && packages.length > 0 ? (
+            <div className="grid md:grid-cols-3 gap-8 -mt-12">
+              {packages.map((pkg) => (
+                <Card
+                  key={pkg.id}
+                  className={`relative overflow-hidden hover:shadow-xl transition-all duration-300 ${
+                    pkg.is_popular ? "ring-2 ring-accent scale-[1.02]" : ""
+                  }`}
+                >
+                  {pkg.is_popular && (
+                    <div className="absolute top-4 right-4">
+                      <Badge className="bg-accent text-accent-foreground">{t("healthPackagesPage.mostPopular")}</Badge>
+                    </div>
+                  )}
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-xl">{isBn ? pkg.name : pkg.name_en}</CardTitle>
+                    {pkg.description && (
+                      <p className="text-sm text-muted-foreground mt-1">{pkg.description}</p>
+                    )}
+                    <div className="mt-2">
+                      <span className="text-3xl font-bold text-foreground">৳{pkg.price.toLocaleString()}</span>
+                      <span className="text-muted-foreground text-sm ml-1">/ {pkg.price_label}</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-3 mb-6">
+                      {pkg.tests.map((test, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                          <span className="text-sm text-muted-foreground">{test}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    {pkg.features.length > 0 && (
+                      <div className="mb-6 pt-4 border-t border-border">
+                        <p className="text-xs font-semibold text-foreground mb-2">{t("healthPackagesPage.includes") || "অন্তর্ভুক্ত সুবিধা"}</p>
+                        <ul className="space-y-1.5">
+                          {pkg.features.map((f, i) => (
+                            <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <Star className="h-3 w-3 text-accent flex-shrink-0" />
+                              {f}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    <Link to="/book-test">
+                      <Button className="w-full" variant={pkg.is_popular ? "default" : "outline"}>
+                        {t("healthPackagesPage.bookNow")}
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">{t("healthPackagesPage.noPackages") || "কোনো প্যাকেজ পাওয়া যায়নি"}</p>
+            </div>
+          )}
         </div>
       </section>
 
