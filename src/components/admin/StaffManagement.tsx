@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/select";
 import { 
   Users, UserPlus, Shield, Search, 
-  Mail, Phone, CheckCircle2, XCircle, Loader2
+  Mail, Phone, CheckCircle2, XCircle, Loader2, Edit, Trash2
 } from "lucide-react";
 
 type AppRole = "super_admin" | "admin" | "doctor" | "manager" | "sales" | "staff" | "patient";
@@ -79,6 +79,10 @@ export function StaffManagement() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRemoveRoleOpen, setIsRemoveRoleOpen] = useState(false);
   const [roleToRemove, setRoleToRemove] = useState<AppRole | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const fetchUsers = async () => {
     try {
@@ -219,6 +223,59 @@ export function StaffManagement() {
     } finally {
       setIsSubmitting(false);
       setIsRemoveRoleOpen(false);
+    }
+  };
+
+  const openEdit = (userItem: UserWithRoles) => {
+    setSelectedUser(userItem);
+    setEditName(userItem.full_name || "");
+    setEditPhone(userItem.phone || "");
+    setIsEditOpen(true);
+  };
+
+  const handleEditUser = async () => {
+    if (!selectedUser) return;
+    try {
+      setIsSubmitting(true);
+      const { error } = await supabase
+        .from("profiles")
+        .update({ full_name: editName, phone: editPhone })
+        .eq("id", selectedUser.id);
+      if (error) throw error;
+      toast({ title: t("common.success"), description: t("staffMgmt.userUpdated") });
+      await fetchUsers();
+    } catch (error) {
+      console.error("Error updating user:", error);
+      toast({ title: t("common.error"), description: t("staffMgmt.failedUpdateUser"), variant: "destructive" });
+    } finally {
+      setIsSubmitting(false);
+      setIsEditOpen(false);
+    }
+  };
+
+  const openDelete = (userItem: UserWithRoles) => {
+    setSelectedUser(userItem);
+    setIsDeleteOpen(true);
+  };
+
+  const handleDeleteUser = async () => {
+    if (!selectedUser) return;
+    try {
+      setIsSubmitting(true);
+      // Remove all roles for this user
+      const { error } = await supabase
+        .from("user_roles")
+        .delete()
+        .eq("user_id", selectedUser.id);
+      if (error) throw error;
+      toast({ title: t("common.success"), description: t("staffMgmt.userRolesRemoved") });
+      await fetchUsers();
+    } catch (error) {
+      console.error("Error deleting user roles:", error);
+      toast({ title: t("common.error"), description: t("staffMgmt.failedDeleteUser"), variant: "destructive" });
+    } finally {
+      setIsSubmitting(false);
+      setIsDeleteOpen(false);
     }
   };
 
@@ -390,15 +447,32 @@ export function StaffManagement() {
                         </div>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => openAddRole(userItem)}
-                          disabled={getAvailableRoles(userItem).length === 0}
-                        >
-                          <UserPlus className="h-4 w-4 mr-1" />
-                          {t("staffMgmt.addRole")}
-                        </Button>
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openAddRole(userItem)}
+                            disabled={getAvailableRoles(userItem).length === 0}
+                          >
+                            <UserPlus className="h-4 w-4 mr-1" />
+                            {t("staffMgmt.addRole")}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => openEdit(userItem)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => openDelete(userItem)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))
@@ -481,6 +555,63 @@ export function StaffManagement() {
                   <XCircle className="h-4 w-4 mr-2" />
                   {t("staffMgmt.removeRole")}
                 </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* Edit User Dialog */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("staffMgmt.editUser")}</DialogTitle>
+            <DialogDescription>
+              {t("staffMgmt.editUserDesc")} {selectedUser?.full_name || selectedUser?.email}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">{t("staffMgmt.fullName")}</label>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">{t("staffMgmt.phone")}</label>
+              <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditOpen(false)}>
+              {t("common.cancel")}
+            </Button>
+            <Button onClick={handleEditUser} disabled={isSubmitting}>
+              {isSubmitting ? (
+                <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{t("common.saving")}</>
+              ) : (
+                <><CheckCircle2 className="h-4 w-4 mr-2" />{t("common.save")}</>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete User Roles Dialog */}
+      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("staffMgmt.deleteUser")}</DialogTitle>
+            <DialogDescription>
+              {t("staffMgmt.deleteUserDesc")} {selectedUser?.full_name || selectedUser?.email}?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>
+              {t("common.cancel")}
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteUser} disabled={isSubmitting}>
+              {isSubmitting ? (
+                <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{t("staffMgmt.removing")}</>
+              ) : (
+                <><Trash2 className="h-4 w-4 mr-2" />{t("staffMgmt.deleteUser")}</>
               )}
             </Button>
           </DialogFooter>
