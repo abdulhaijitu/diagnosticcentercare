@@ -16,8 +16,8 @@ export function Footer() {
   const services = [
     { name: t("footer.diagnosticTests"), href: "/services#diagnostic" },
     { name: t("footer.doctorConsultation"), href: "/services#consultation" },
-    { name: t("footer.homeSampleCollection"), href: "/services#home-collection" },
-    { name: t("footer.healthPackages"), href: "/services#packages" },
+    { name: t("footer.homeSampleCollection"), href: "/home-collection" },
+    { name: t("footer.healthPackages"), href: "/health-packages" },
   ];
 
   const quickLinks = [
