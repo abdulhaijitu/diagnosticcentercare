@@ -108,21 +108,6 @@ const DAYS_OF_WEEK = [
   "saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday",
 ];
 
-const DEFAULT_SPECIALTIES = [
-  "General Physician",
-  "Cardiology",
-  "Dermatology",
-  "Orthopedics",
-  "Gynecology",
-  "Pediatrics",
-  "Neurology",
-  "Gastroenterology",
-  "ENT",
-  "Ophthalmology",
-  "Psychiatry",
-  "Urology",
-];
-
 export function DoctorManagement() {
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -133,12 +118,25 @@ export function DoctorManagement() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [activeSection, setActiveSection] = useState<"basic" | "education" | "experience">("basic");
-  const [specialties, setSpecialties] = useState<string[]>(DEFAULT_SPECIALTIES);
   const [specialtyFilter, setSpecialtyFilter] = useState<string>("all");
   const [isSpecialtyMgmtOpen, setIsSpecialtyMgmtOpen] = useState(false);
   const [newSpecialtyName, setNewSpecialtyName] = useState("");
   const [editingSpecialtyIdx, setEditingSpecialtyIdx] = useState<number | null>(null);
   const [editingSpecialtyName, setEditingSpecialtyName] = useState("");
+
+  // Fetch specialties from DB
+  const { data: specialtiesData = [] } = useQuery({
+    queryKey: ["specialty-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("specialty_categories")
+        .select("*")
+        .order("name");
+      if (error) throw error;
+      return data as { id: string; name: string }[];
+    },
+  });
+  const specialties = specialtiesData.map((s) => s.name);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -502,30 +500,53 @@ export function DoctorManagement() {
     return matchesSearch && matchesSpecialty;
   });
 
-  const handleAddSpecialty = () => {
+  const handleAddSpecialty = async () => {
     const trimmed = newSpecialtyName.trim();
     if (trimmed && !specialties.includes(trimmed)) {
-      setSpecialties([...specialties, trimmed].sort());
-      setNewSpecialtyName("");
+      const { error } = await supabase.from("specialty_categories").insert({ name: trimmed });
+      if (!error) {
+        queryClient.invalidateQueries({ queryKey: ["specialty-categories"] });
+        setNewSpecialtyName("");
+      }
     }
   };
 
-  const handleEditSpecialty = (idx: number) => {
+  const handleEditSpecialty = async (idx: number) => {
     const trimmed = editingSpecialtyName.trim();
-    if (trimmed && trimmed !== specialties[idx]) {
-      const old = specialties[idx];
-      setSpecialties(specialties.map((s, i) => (i === idx ? trimmed : s)).sort());
-      // Also update the filter if needed
-      if (specialtyFilter === old) setSpecialtyFilter(trimmed);
+    const old = specialtiesData[idx];
+    if (trimmed && old && trimmed !== old.name) {
+      const { error } = await supabase.from("specialty_categories").update({ name: trimmed }).eq("id", old.id);
+      if (!error) {
+        queryClient.invalidateQueries({ queryKey: ["specialty-categories"] });
+        if (specialtyFilter === old.name) setSpecialtyFilter(trimmed);
+      }
     }
     setEditingSpecialtyIdx(null);
     setEditingSpecialtyName("");
   };
 
-  const handleDeleteSpecialty = (idx: number) => {
-    const name = specialties[idx];
-    setSpecialties(specialties.filter((_, i) => i !== idx));
-    if (specialtyFilter === name) setSpecialtyFilter("all");
+  const handleDeleteSpecialty = async (idx: number) => {
+    const item = specialtiesData[idx];
+    if (item) {
+      const { error } = await supabase.from("specialty_categories").delete().eq("id", item.id);
+      if (!error) {
+        queryClient.invalidateQueries({ queryKey: ["specialty-categories"] });
+        if (specialtyFilter === item.name) setSpecialtyFilter("all");
+      }
+    }
+  };
+
+  const handleSpecialtiesChangeFromCombobox = async (newList: string[]) => {
+    // Find added items
+    const added = newList.filter((s) => !specialties.includes(s));
+    const removed = specialties.filter((s) => !newList.includes(s));
+    for (const name of added) {
+      await supabase.from("specialty_categories").insert({ name });
+    }
+    for (const name of removed) {
+      await supabase.from("specialty_categories").delete().eq("name", name);
+    }
+    queryClient.invalidateQueries({ queryKey: ["specialty-categories"] });
   };
 
   const toggleDay = (dayId: string) => {
@@ -842,7 +863,7 @@ export function DoctorManagement() {
                     value={formData.specialty}
                     onChange={(v) => setFormData({ ...formData, specialty: v })}
                     specialties={specialties}
-                    onSpecialtiesChange={setSpecialties}
+                    onSpecialtiesChange={handleSpecialtiesChangeFromCombobox}
                   />
                 </div>
               </div>
