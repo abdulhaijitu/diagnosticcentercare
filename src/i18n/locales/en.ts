@@ -28,7 +28,7 @@ const en = {
   hero: {
     trustBadge: "Trusted by 10,000+ Patients",
     title: "Your Trust,",
-    titleHighlight: "Your Care",
+    titleHighlight: "Our Care",
     subtitle: "Fast & accurate lab services with compassionate care. Book diagnostic tests, consult with expert doctors, and get your results delivered to your doorstep.",
     bookTest: "Book a Test",
     findDoctor: "Find a Doctor",
@@ -42,6 +42,9 @@ const en = {
     step3: "Get Results Fast",
     startBooking: "Start Booking",
     accuracyRate: "Accuracy Rate",
+    diagnosticService: "Diagnostic Service",
+    doctorConsultation: "Doctor Consultation",
+    homeCollection: "Home Sample Collection",
   },
 
   // Services Section
