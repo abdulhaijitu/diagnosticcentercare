@@ -44,7 +44,7 @@ export function HeroSection() {
       {/* Background image with overlay */}
       <div className="absolute inset-0">
         <img src={heroBg} alt="" className="w-full h-full object-cover" loading="eager" />
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/88 via-primary/82 to-primary/92" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/93 via-primary/90 to-primary/95" />
       </div>
 
       {/* Decorative blurs */}
@@ -64,7 +64,7 @@ export function HeroSection() {
         </div>
 
         {/* Subtitle */}
-        <p className="text-center text-sm md:text-base text-primary-foreground/75 max-w-xl mx-auto leading-relaxed mb-8 md:mb-10 animate-fade-in-up animation-delay-100">
+        <p className="text-center text-sm md:text-base text-primary-foreground max-w-xl mx-auto leading-relaxed mb-8 md:mb-10 animate-fade-in-up animation-delay-100">
           {t("hero.subtitle")}
         </p>
 
